@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/auth")
+@RequestMapping(path = "auth")
 public class AuthAPI {
     @GetMapping
     public ResponseEntity<?> ping() {
