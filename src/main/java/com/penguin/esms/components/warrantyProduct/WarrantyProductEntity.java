@@ -9,16 +9,27 @@ import java.util.Date;
 @Table
 public class WarrantyProductEntity extends NoteEntity {
     private String staffId;
+    private String warrantyBillId;
+
     private String productId;
     private Integer quantity;
     private String warrantyContent;
 
-    public WarrantyProductEntity(String note, String staffId, String productId, Integer quantity, String warrantyContent) {
+    public WarrantyProductEntity(String note, String warrantyBillId,String staffId, String productId, Integer quantity, String warrantyContent) {
         super(note);
+        this.warrantyBillId = warrantyBillId;
         this.staffId = staffId;
         this.productId = productId;
         this.quantity = quantity;
         this.warrantyContent = warrantyContent;
+    }
+
+    public String getWarrantyBillId() {
+        return warrantyBillId;
+    }
+
+    public void setWarrantyBillId(String warrantyBillId) {
+        this.warrantyBillId = warrantyBillId;
     }
 
     public String getStaffId() {
@@ -57,6 +68,7 @@ public class WarrantyProductEntity extends NoteEntity {
     public String toString() {
         return "WarrantyProductEntity{" +
                 "staffId='" + staffId + '\'' +
+                ", warrantyBillId='" + warrantyBillId + '\'' +
                 ", productId='" + productId + '\'' +
                 ", quantity=" + quantity +
                 ", warrantyContent='" + warrantyContent + '\'' +

@@ -1,29 +1,22 @@
 package com.penguin.esms.components.staff;
+import com.penguin.esms.entity.BaseEntity;
 
-import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
-public class StaffEntity extends NoteEntity {
+public class StaffEntity extends BaseEntity {
     private String name;
     private String phone;
-    private String username;
     private String password;
     private String role;
     private String email;
     private String citizenId;
 
-    public StaffEntity(String note) {
-        super(note);
-    }
-
-    public StaffEntity(String note, String name, String phone, String username, String password, String role, String email, String citizenId) {
-        super(note);
+    public StaffEntity(String name, String phone, String password, String role, String email, String citizenId) {
         this.name = name;
         this.phone = phone;
-        this.username = username;
         this.password = password;
         this.role = role;
         this.email = email;
@@ -44,14 +37,6 @@ public class StaffEntity extends NoteEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -91,7 +76,6 @@ public class StaffEntity extends NoteEntity {
         return "StaffEntity{" +
                 "name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
-                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
                 ", email='" + email + '\'' +

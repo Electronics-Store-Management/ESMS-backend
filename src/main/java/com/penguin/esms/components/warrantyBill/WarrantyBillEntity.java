@@ -1,5 +1,6 @@
 package com.penguin.esms.components.warrantyBill;
 
+import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -8,14 +9,13 @@ import java.util.Date;
 
 @Entity
 @Table
-public class WarrantyBillEntity extends NoteEntity {
+public class WarrantyBillEntity extends BaseEntity {
     private String staffId;
     private String customerId;
 
     private Date warrantyDate;
 
-    public WarrantyBillEntity(String note, String staffId, String customerId, Date warrantyDate) {
-        super(note);
+    public WarrantyBillEntity(String staffId, String customerId, Date warrantyDate) {
         this.staffId = staffId;
         this.customerId = customerId;
         this.warrantyDate = warrantyDate;

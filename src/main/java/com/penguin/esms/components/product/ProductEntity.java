@@ -1,5 +1,6 @@
 package com.penguin.esms.components.product;
 
+import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -7,19 +8,49 @@ import java.util.Date;
 
 @Entity
 @Table
-public class ProductEntity {
+public class ProductEntity extends BaseEntity {
     private String name;
+    private String categoryId;
+    private String supplierId;
+    private String unit;
     private Long price;
     private Integer quantity;
     private Date warrantyPeriod;
     private Boolean isAvailable;
 
-    public ProductEntity(String name, Long price, Integer quantity, Date warrantyPeriod, Boolean isAvailable) {
+    public ProductEntity(String name, String categoryId, String supplierId, String unit, Long price, Integer quantity, Date warrantyPeriod, Boolean isAvailable) {
         this.name = name;
+        this.categoryId = categoryId;
+        this.supplierId = supplierId;
+        this.unit = unit;
         this.price = price;
         this.quantity = quantity;
         this.warrantyPeriod = warrantyPeriod;
         this.isAvailable = isAvailable;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getName() {
@@ -66,6 +97,9 @@ public class ProductEntity {
     public String toString() {
         return "ProductEntity{" +
                 "name='" + name + '\'' +
+                ", categoryId='" + categoryId + '\'' +
+                ", supplierId='" + supplierId + '\'' +
+                ", unit='" + unit + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +
                 ", warrantyPeriod=" + warrantyPeriod +

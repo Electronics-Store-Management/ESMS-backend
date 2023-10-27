@@ -1,17 +1,20 @@
 package com.penguin.esms.components.permissionAssign;
 
+import com.penguin.esms.entity.BaseEntity;
+import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
-public class PermissionAssignEntity {
+public class PermissionAssignEntity extends NoteEntity {
     private String staffId;
     private String permissionId;
     private String itemId;
     private String type;
 
-    public PermissionAssignEntity(String staffId, String permissionId, String itemId, String type) {
+    public PermissionAssignEntity(String note, String staffId, String permissionId, String itemId, String type) {
+        super(note);
         this.staffId = staffId;
         this.permissionId = permissionId;
         this.itemId = itemId;

@@ -9,17 +9,28 @@ import jakarta.persistence.Table;
 @Table
 public class ImportProductEntity extends BaseEntity {
     private String productId;
+    private String importBillId;
+
     private Integer quantity;
     private Integer index;
     private Long price;
     private String unit;
 
-    public ImportProductEntity(String productId, Integer quantity, Integer index, Long price, String unit) {
+    public ImportProductEntity(String productId,String importBillId, Integer quantity, Integer index, Long price, String unit) {
         this.productId = productId;
+        this.importBillId = importBillId;
         this.quantity = quantity;
         this.index = index;
         this.price = price;
         this.unit = unit;
+    }
+
+    public String getImportBillId() {
+        return importBillId;
+    }
+
+    public void setImportBillId(String importBillId) {
+        this.importBillId = importBillId;
     }
 
     public String getProductId() {
@@ -66,6 +77,7 @@ public class ImportProductEntity extends BaseEntity {
     public String toString() {
         return "ImportProductEntity{" +
                 "productId='" + productId + '\'' +
+                ", importBillId='" + importBillId + '\'' +
                 ", quantity=" + quantity +
                 ", index=" + index +
                 ", price=" + price +
