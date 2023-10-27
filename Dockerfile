@@ -13,7 +13,7 @@ RUN mvn clean install
 
 FROM openjdk:21
 
-COPY --from=build /target/classes .
+COPY --from=build /target/classes/production.properties application.properties
 COPY --from=build /target/*.jar app.jar
 
 EXPOSE 8080

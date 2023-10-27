@@ -1,0 +1,21 @@
+services:
+  #  redis:
+  #    image: 'redis:latest'
+  #    ports:
+  #      - '6379'
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: jnhbgvfc
+      POSTGRES_DB: account
+      POSTGRES_USER: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - postgresql
+
+networks:
+  postgresql:
+volumes:
+  postgresql-volumne:

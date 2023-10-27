@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthAPI {
     @GetMapping
     public ResponseEntity<?> ping() {
-        return ResponseEntity.ok("OKII");
+        return ResponseEntity.ok("OKEE");
     }
 }
