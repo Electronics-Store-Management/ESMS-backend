@@ -60,4 +60,15 @@ public abstract class BaseEntity {
     public Long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                ", modifiedDate=" + modifiedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", modifiedBy='" + modifiedBy + '\'' +
+                '}';
+    }
 }
