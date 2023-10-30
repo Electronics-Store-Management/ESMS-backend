@@ -1,7 +1,12 @@
 package com.penguin.esms.components.permissionAssign;
 
+import com.penguin.esms.components.permission.PermissionEntity;
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -12,6 +17,13 @@ public class PermissionAssignEntity extends NoteEntity {
     private String permissionId;
     private String itemId;
     private String type;
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private StaffEntity staff;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private PermissionEntity permission;
 
     public PermissionAssignEntity(String note, String staffId, String permissionId, String itemId, String type) {
         super(note);

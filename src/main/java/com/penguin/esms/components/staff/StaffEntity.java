@@ -1,8 +1,11 @@
 package com.penguin.esms.components.staff;
+import com.penguin.esms.components.permissionAssign.PermissionAssignEntity;
 import com.penguin.esms.entity.BaseEntity;
+import jakarta.persistence.OneToMany;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table
@@ -14,6 +17,8 @@ public class StaffEntity extends BaseEntity {
     private String email;
     private String citizenId;
     private int status;
+    @OneToMany(mappedBy = "staff")
+    private Set<PermissionAssignEntity> permissionAssigns;
 
 
     public StaffEntity(String name, String phone, String password, String role, String email, String citizenId) {
