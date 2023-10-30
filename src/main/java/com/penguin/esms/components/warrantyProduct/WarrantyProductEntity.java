@@ -1,8 +1,8 @@
 package com.penguin.esms.components.warrantyProduct;
 
 import com.penguin.esms.entity.NoteEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import java.util.Date;
 @Entity
