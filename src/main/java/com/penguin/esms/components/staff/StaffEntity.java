@@ -1,8 +1,8 @@
 package com.penguin.esms.components.staff;
 import com.penguin.esms.entity.BaseEntity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table
@@ -13,6 +13,8 @@ public class StaffEntity extends BaseEntity {
     private String role;
     private String email;
     private String citizenId;
+    private int status;
+
 
     public StaffEntity(String name, String phone, String password, String role, String email, String citizenId) {
         this.name = name;
@@ -69,6 +71,14 @@ public class StaffEntity extends BaseEntity {
 
     public void setCitizenId(String citizenId) {
         this.citizenId = citizenId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
