@@ -24,9 +24,8 @@ public class StaffController {
 
     @GetMapping("profile")
     public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
-//        System.out.println(connectedUser.getName());
-//        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 //        return ResponseEntity.ok(staff);
-        return ResponseEntity.ok(connectedUser);
+        return ResponseEntity.ok(staff);
     }
 }

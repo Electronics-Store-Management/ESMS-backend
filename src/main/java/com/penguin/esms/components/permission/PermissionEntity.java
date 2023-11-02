@@ -3,6 +3,7 @@ package com.penguin.esms.components.permission;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,12 @@ public class PermissionEntity extends BaseEntity {
     private PermissionType permissionType;
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
+    @Nullable
     private String entityId;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<StaffEntity> staffs;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @Nullable
+    private StaffEntity staff;
 
     @Override
     public String toString() {
