@@ -27,8 +27,8 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<PermissionEntity> permissions;
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PermissionEntity> permissions = new ArrayList<>();
 
     public StaffEntity() {}
 

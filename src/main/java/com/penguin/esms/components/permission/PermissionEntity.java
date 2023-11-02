@@ -25,6 +25,7 @@ public class PermissionEntity extends BaseEntity {
     private String entityId;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "staff_id")
     @Nullable
     private StaffEntity staff;
 
