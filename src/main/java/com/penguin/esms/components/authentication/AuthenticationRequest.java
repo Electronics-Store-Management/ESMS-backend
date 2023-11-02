@@ -1,15 +1,14 @@
 package com.penguin.esms.components.authentication;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
     private String email;
-    String password;
+    private String password;
 }

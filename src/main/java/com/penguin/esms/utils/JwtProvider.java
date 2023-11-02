@@ -15,8 +15,9 @@ import java.util.function.Function;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class JwtProvider {
     @Value("${jwt.JWT_SECRET}")
     private String signature;

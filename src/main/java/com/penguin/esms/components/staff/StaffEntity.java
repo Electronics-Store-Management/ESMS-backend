@@ -1,8 +1,10 @@
 package com.penguin.esms.components.staff;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.utils.Role;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,9 +22,13 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String name;
     private String phone;
     private String password;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String citizenId;
     private Role role;
+
+    public StaffEntity() {}
 
     public StaffEntity(String name, String phone, String password, String email, String citizenId, Role role) {
         this.name = name;

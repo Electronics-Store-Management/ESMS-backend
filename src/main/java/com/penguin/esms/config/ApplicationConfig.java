@@ -21,7 +21,7 @@ import java.util.UUID;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private StaffRepository repository;
+    private final StaffRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService() {
