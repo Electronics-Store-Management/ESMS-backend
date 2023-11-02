@@ -17,4 +17,5 @@ public class PermissionRequest {
     private EntityType entityType;
     @Nullable
     private String entityId;
+    private String staffId;
 }

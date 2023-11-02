@@ -29,4 +29,10 @@ public class PermissionService {
 
         return permissionRepo.save(permission);
     }
+
+    public void remove(String permissionId) {
+//        Optional<PermissionEntity> permission = permissionRepo.findByPermissionTypeAndEntityTypeAndEntityIdAndStaffId(permissionRequest.getPermissionType().name(), permissionRequest.getEntityType().name(), permissionRequest.getEntityId(), staffId);
+//        permission.ifPresent(permissionRepo::delete);
+        permissionRepo.findById(permissionId);
+    }
 }

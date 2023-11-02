@@ -13,9 +13,16 @@ import org.springframework.web.bind.annotation.*;
 public class PermissionController {
     private final PermissionService permissionService;
 
-    @PutMapping("{staffId}")
+    @PostMapping("")
     @PreAuthorize("hasAuthority('UPDATE_ALL:PERMISSION') or hasAuthority('UPDATE_ITEM:PERMISSION:#staffId') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> updatePermission(@PathVariable String staffId, @RequestBody PermissionRequest permissionRequest) {
-        return ResponseEntity.ok(permissionService.add(permissionRequest, staffId));
+    public ResponseEntity<?> addPermission(@RequestBody PermissionRequest permissionRequest) {
+        return ResponseEntity.ok(permissionService.add(permissionRequest, permissionRequest.getStaffId()));
+    }
+
+    @DeleteMapping("{permissionId}")
+    @PreAuthorize("hasAuthority('DELETE_ALL:PERMISSION') or hasAuthority('DELETE_ITEM:PERMISSION:#staffId') or hasAuthority('ADMIN')")
+    public ResponseEntity<?> deletePermission(@PathVariable String permissionId) {
+        permissionService.remove(permissionId);
+        return ResponseEntity.ok().build();
     }
 }
