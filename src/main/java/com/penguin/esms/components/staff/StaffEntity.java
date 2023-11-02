@@ -9,12 +9,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@Builder
 @Entity
 @Table
 public class StaffEntity extends BaseEntity implements UserDetails {
@@ -27,24 +28,23 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String citizenId;
     private Role role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<PermissionEntity> permissions;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PermissionEntity> permissions = new ArrayList<>();
 
     public StaffEntity() {}
 
-    public StaffEntity(String name, String phone, String password, String email, String citizenId, Role role, List<PermissionEntity> permissions) {
+    public StaffEntity(String name, String phone, String password, String email, String citizenId, Role role) {
         this.name = name;
         this.phone = phone;
         this.password = password;
         this.email = email;
         this.citizenId = citizenId;
         this.role = role;
-        this.permissions = permissions;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return permissions.stream().map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.toString())).collect(Collectors.toList());
     }
 
     @Override

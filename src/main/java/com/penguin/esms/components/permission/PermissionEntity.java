@@ -25,4 +25,9 @@ public class PermissionEntity extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<StaffEntity> staffs;
+
+    @Override
+    public String toString() {
+        return permissionType + ":" + entityType + (entityId != null ? ":" + entityId : "");
+    }
 }
