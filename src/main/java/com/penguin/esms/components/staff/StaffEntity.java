@@ -1,12 +1,10 @@
 package com.penguin.esms.components.staff;
+import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.entity.BaseEntity;
-import com.penguin.esms.utils.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @Table
@@ -28,27 +27,19 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String citizenId;
     private Role role;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<PermissionEntity> permissions;
+
     public StaffEntity() {}
 
-    public StaffEntity(String name, String phone, String password, String email, String citizenId, Role role) {
+    public StaffEntity(String name, String phone, String password, String email, String citizenId, Role role, List<PermissionEntity> permissions) {
         this.name = name;
         this.phone = phone;
         this.password = password;
         this.email = email;
         this.citizenId = citizenId;
         this.role = role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+        this.permissions = permissions;
     }
 
     @Override
@@ -79,18 +70,6 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCitizenId(String citizenId) {
-        this.citizenId = citizenId;
     }
 
     @Override

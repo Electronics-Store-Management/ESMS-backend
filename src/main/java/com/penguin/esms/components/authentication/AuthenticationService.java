@@ -1,6 +1,9 @@
 package com.penguin.esms.components.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.penguin.esms.components.authentication.requests.AuthenticationRequest;
+import com.penguin.esms.components.authentication.requests.RegisterRequest;
+import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.components.token.Token;
@@ -10,10 +13,8 @@ import com.penguin.esms.utils.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

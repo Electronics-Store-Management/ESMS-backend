@@ -1,4 +1,4 @@
-package com.penguin.esms.components.authentication;
+package com.penguin.esms.components.authentication.requests;
 
 import lombok.*;
 

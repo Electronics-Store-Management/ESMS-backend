@@ -1,42 +1,28 @@
 package com.penguin.esms.components.permission;
 
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
 @Table
+@RequiredArgsConstructor
 public class PermissionEntity extends BaseEntity {
-    private String name;
-    private String description;
+    private PermissionType permissionType;
+    private EntityType entityType;
+    private String entityId;
 
-    public PermissionEntity(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "PermissionEntity{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<StaffEntity> staffs;
 }

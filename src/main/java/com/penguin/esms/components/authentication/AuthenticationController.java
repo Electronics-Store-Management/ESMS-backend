@@ -1,5 +1,8 @@
 package com.penguin.esms.components.authentication;
 
+import com.penguin.esms.components.authentication.requests.AuthenticationRequest;
+import com.penguin.esms.components.authentication.requests.RegisterRequest;
+import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(service.register(request));
     }
+
     @PostMapping("authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
