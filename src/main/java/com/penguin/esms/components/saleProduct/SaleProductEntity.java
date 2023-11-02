@@ -1,8 +1,8 @@
 package com.penguin.esms.components.saleProduct;
 
 import com.penguin.esms.entity.BaseEntity;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table
