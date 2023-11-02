@@ -30,15 +30,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-//        var user = StaffEntity.builder()
-//                .name(request.getName())
-//                .phone(request.getPhone())
-//                .citizenId(request.getCitizenId())
-//                .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
-//                .role(request.getRole())
-//                .build();
-        var user = new StaffEntity(request.getName(), request.getPhone(), request.getPassword(), request.getPassword(), request.getCitizenId(), request.getRole());
+        var user = new StaffEntity(request.getName(), request.getPhone(), request.getPassword(), request.getEmail(), request.getCitizenId(), request.getRole());
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);

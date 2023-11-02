@@ -2,7 +2,6 @@ package com.penguin.esms.components.staff;
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -26,6 +24,7 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String email;
     @Column(unique = true)
     private String citizenId;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -44,7 +43,9 @@ public class StaffEntity extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return permissions.stream().map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.toString())).collect(Collectors.toList());
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>(permissions.stream().map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.toString())).toList());
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+        return authorities;
     }
 
     @Override
