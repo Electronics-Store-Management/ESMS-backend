@@ -63,9 +63,8 @@ public abstract class BaseEntity {
     public String getId() {
         return id;
     }
-    private final UUID ID = UUID.fromString(getId());
     public UUID getID() {
-        return ID;
+        return UUID.fromString(getId());
     }
 
     @Override
