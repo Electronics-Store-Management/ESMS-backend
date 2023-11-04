@@ -1,6 +1,9 @@
 package com.penguin.esms.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -9,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.UUID;
-
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
@@ -60,6 +62,10 @@ public abstract class BaseEntity {
     }
     public String getId() {
         return id;
+    }
+    private final UUID ID = UUID.fromString(getId());
+    public UUID getID() {
+        return ID;
     }
 
     @Override
