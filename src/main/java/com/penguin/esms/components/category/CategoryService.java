@@ -2,10 +2,12 @@ package com.penguin.esms.components.category;
 
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,28 +20,28 @@ import java.util.UUID;
 @Service
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepo categoryRepo;
-    @Autowired
-    public CategoryService(CategoryRepo categoryRepo) {
-        this.categoryRepo = categoryRepo;
-    }
+    private final DTOtoEntityMapper mapper;
 
-    public List<CategoryEntity> postCategory(CategoryEntity categoryEntity) {
+    public CategoryEntity postCategory(CategoryEntity categoryEntity) {
         if (categoryRepo.findByName(categoryEntity.getName()).isPresent())
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Category existed");
-        List<CategoryEntity> categoryEntities = new ArrayList<CategoryEntity>();
-        categoryEntities.add(categoryEntity);
-        return categoryRepo.saveAll(categoryEntities);
+        return categoryRepo.save(categoryEntity);
     }
 
-    public CategoryEntity editCategory(CategoryEntity categoryEntity, String id) {
-        if (categoryRepo.findById(id).isEmpty())
+    public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+        if (categoryEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Category not existed");
-        categoryRepo.deleteById(categoryEntity.getId());
-        return categoryRepo.save(categoryEntity);
+        else {
+            CategoryEntity category = categoryEntityOptional.get();
+            mapper.updateCategoryFromDto(categoryDTO, category);
+            return categoryRepo.save(category);
+        }
     }
     public void deleteCategory(String id) {
         if (categoryRepo.findById(id).isEmpty())
@@ -47,11 +49,7 @@ public class CategoryService {
                     HttpStatus.NOT_FOUND, "Category not existed");
         categoryRepo.deleteById(id);
     }
-    public CategoryEntity getCategory(String name) {
-        if (categoryRepo.findByName(name).isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Category not found");
-
-        return categoryRepo.findByName(name).get();
+    public List<CategoryEntity> getCategory(String name) {
+        return categoryRepo.findByNameContainingIgnoreCase(name);
     }
 }
