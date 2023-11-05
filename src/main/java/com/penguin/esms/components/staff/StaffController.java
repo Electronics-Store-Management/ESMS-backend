@@ -26,6 +26,6 @@ public class StaffController {
     public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         System.out.println(staff.getPermissions());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(staff);
     }
 }
