@@ -13,6 +13,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.Date;
 import java.util.UUID;
 @MappedSuperclass
+@Getter
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
@@ -35,37 +37,6 @@ public abstract class BaseEntity {
     @Column(name = "modifiedby")
     @LastModifiedBy
     private String modifiedBy;
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-    public String getCreatedBy() {
-        return createdBy;
-    }
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-    public String getId() {
-        return id;
-    }
-    public UUID getID() {
-        return UUID.fromString(getId());
-    }
 
     @Override
     public String toString() {
