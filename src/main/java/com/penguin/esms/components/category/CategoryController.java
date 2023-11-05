@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +31,13 @@ public class CategoryController {
     public List<CategoryEntity> post(@RequestBody CategoryEntity categoryEntity) {
         return categoryService.postCategory(categoryEntity);
     }
-    @PutMapping
-    public List<CategoryEntity> edit(@RequestBody CategoryEntity categoryEntity) {
-        return categoryService.editCategory(categoryEntity);
+    @PutMapping(path = "{id}")
+    public CategoryEntity edit(@RequestBody CategoryEntity categoryEntity, @PathVariable String id) {
+        return categoryService.editCategory(categoryEntity, id);
     }
 
-    @DeleteMapping
-    public CategoryEntity delete(@RequestBody CategoryEntity categoryEntity) {
-        return categoryService.deleteCategory(categoryEntity);
+    @DeleteMapping(path = "{id}")
+    public void delete(@PathVariable String id) {
+        categoryService.deleteCategory(id);
     }
 }

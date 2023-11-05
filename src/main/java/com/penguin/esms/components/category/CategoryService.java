@@ -34,21 +34,18 @@ public class CategoryService {
         return categoryRepo.saveAll(categoryEntities);
     }
 
-    public List<CategoryEntity> editCategory(CategoryEntity categoryEntity) {
-        if (categoryRepo.findByName((categoryEntity.getName())).isEmpty())
+    public CategoryEntity editCategory(CategoryEntity categoryEntity, String id) {
+        if (categoryRepo.findById(id).isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Category not existed");
-        List<CategoryEntity> categoryEntities = new ArrayList<CategoryEntity>();
-        categoryEntities.add(categoryEntity);
-        categoryRepo.deleteById(categoryEntity.getID());
-        return categoryRepo.saveAll(categoryEntities);
-    }
-    public CategoryEntity deleteCategory(CategoryEntity categoryEntity) {
-        if (categoryRepo.findByName((categoryEntity.getName())).isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Category not existed");
-        categoryRepo.deleteById(categoryEntity.getID());
+        categoryRepo.deleteById(categoryEntity.getId());
         return categoryRepo.save(categoryEntity);
+    }
+    public void deleteCategory(String id) {
+        if (categoryRepo.findById(id).isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category not existed");
+        categoryRepo.deleteById(id);
     }
     public CategoryEntity getCategory(String name) {
         if (categoryRepo.findByName(name).isEmpty())
