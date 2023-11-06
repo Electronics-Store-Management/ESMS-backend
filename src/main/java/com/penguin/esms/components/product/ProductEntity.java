@@ -1,11 +1,9 @@
 package com.penguin.esms.components.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class ProductEntity extends BaseEntity {
+    @Column(unique = true)
     private String name;
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -28,8 +27,8 @@ public class ProductEntity extends BaseEntity {
     private String unit;
     private Long price;
     private Integer quantity;
-    private Date warrantyPeriod;
-    private Boolean isAvailable;
+    private Integer warrantyPeriod;
+    private Boolean isAvailable = true;
 
     @Override
     public String toString() {
