@@ -1,13 +1,11 @@
 package com.penguin.esms.components.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,8 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryEntity extends BaseEntity {
     private String name;
-    @JsonIgnore
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"category"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<ProductEntity> products;
 
     @Override

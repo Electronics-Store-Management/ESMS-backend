@@ -1,6 +1,7 @@
 package com.penguin.esms.components.category;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.penguin.esms.components.category.response.FoundCategoryItem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryEntity> getALl(@RequestParam(defaultValue = "") String name) {
+    public List<FoundCategoryItem> getALl(@RequestParam(defaultValue = "") String name) {
         return categoryService.getCategory(name);
     }
 

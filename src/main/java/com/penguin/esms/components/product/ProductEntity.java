@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
@@ -22,6 +23,7 @@ public class ProductEntity extends BaseEntity {
     private String name;
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties(value = {"products"})
     private CategoryEntity category;
     private String supplierId;
     private String unit;

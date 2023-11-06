@@ -1,5 +1,6 @@
 package com.penguin.esms.components.category;
 
+import com.penguin.esms.components.category.response.FoundCategoryItem;
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
@@ -49,8 +50,8 @@ public class CategoryService {
                     HttpStatus.NOT_FOUND, "Category not existed");
         categoryRepo.deleteById(id);
     }
-    public List<CategoryEntity> getCategory(String name) {
-        return categoryRepo.findByNameContainingIgnoreCase(name);
+    public List<FoundCategoryItem> getCategory(String name) {
+        return categoryRepo.findByRelevantName(name);
     }
 
     public CategoryEntity getCategoryById(String id) {
