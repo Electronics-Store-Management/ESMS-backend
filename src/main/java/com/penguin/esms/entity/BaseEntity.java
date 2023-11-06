@@ -1,5 +1,6 @@
 package com.penguin.esms.entity;
 
+import com.penguin.esms.components.staff.StaffEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,15 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private Date modifiedDate;
 
-    @Column(name = "createdby")
     @CreatedBy
-    private String createdBy;
+    @ManyToOne
+    @JoinColumn(name="created_by")
+    private StaffEntity createdBy;
 
-    @Column(name = "modifiedby")
     @LastModifiedBy
-    private String modifiedBy;
+    @ManyToOne
+    @JoinColumn(name="modified_by")
+    private StaffEntity modifiedBy;
 
     @Override
     public String toString() {
