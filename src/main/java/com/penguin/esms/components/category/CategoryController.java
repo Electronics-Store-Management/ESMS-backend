@@ -20,8 +20,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryEntity> get(@RequestParam(defaultValue = "") String name) {
+    public List<CategoryEntity> getALl(@RequestParam(defaultValue = "") String name) {
         return categoryService.getCategory(name);
+    }
+
+    @GetMapping("{id}")
+    public CategoryEntity getItem(@PathVariable String id) {
+        return categoryService.getCategoryById(id);
     }
 
     @PostMapping

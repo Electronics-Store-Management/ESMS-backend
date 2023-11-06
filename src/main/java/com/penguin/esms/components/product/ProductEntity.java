@@ -1,16 +1,29 @@
 package com.penguin.esms.components.product;
 
+import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Table
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ProductEntity extends BaseEntity {
     private String name;
-    private String categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
     private String supplierId;
     private String unit;
     private Long price;
@@ -18,86 +31,11 @@ public class ProductEntity extends BaseEntity {
     private Date warrantyPeriod;
     private Boolean isAvailable;
 
-    public ProductEntity(String name, String categoryId, String supplierId, String unit, Long price, Integer quantity, Date warrantyPeriod, Boolean isAvailable) {
-        this.name = name;
-        this.categoryId = categoryId;
-        this.supplierId = supplierId;
-        this.unit = unit;
-        this.price = price;
-        this.quantity = quantity;
-        this.warrantyPeriod = warrantyPeriod;
-        this.isAvailable = isAvailable;
-    }
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(String supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getPrice() {
-        return price;
-    }
-
-    public void setPrice(Long price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Date getWarrantyPeriod() {
-        return warrantyPeriod;
-    }
-
-    public void setWarrantyPeriod(Date warrantyPeriod) {
-        this.warrantyPeriod = warrantyPeriod;
-    }
-
-    public Boolean getAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
     @Override
     public String toString() {
         return "ProductEntity{" +
                 "name='" + name + '\'' +
-                ", categoryId='" + categoryId + '\'' +
+                (", category='" + (category != null ? category.getName() : "None")) + '\'' +
                 ", supplierId='" + supplierId + '\'' +
                 ", unit='" + unit + '\'' +
                 ", price=" + price +

@@ -52,4 +52,14 @@ public class CategoryService {
     public List<CategoryEntity> getCategory(String name) {
         return categoryRepo.findByNameContainingIgnoreCase(name);
     }
+
+    public CategoryEntity getCategoryById(String id) {
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+        if (categoryEntityOptional.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category not existed");
+        else {
+            return categoryEntityOptional.get();
+        }
+    }
 }
