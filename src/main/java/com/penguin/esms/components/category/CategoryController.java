@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryEntity post(@RequestBody CategoryEntity categoryEntity) {
-        return categoryService.postCategory(categoryEntity);
+    public ResponseEntity<?> post(@RequestBody CategoryEntity categoryEntity) {
+        return ResponseEntity.ok(categoryService.postCategory(categoryEntity));
     }
     @PutMapping(path = "{id}")
     public CategoryEntity edit(@RequestBody CategoryDTO categoryDTO, @PathVariable String id) {
@@ -42,5 +43,10 @@ public class CategoryController {
     @DeleteMapping(path = "{id}")
     public void delete(@PathVariable String id) {
         categoryService.deleteCategory(id);
+    }
+
+    @ExceptionHandler({ ResponseStatusException.class })
+    public ResponseEntity<?> handleException(ResponseStatusException e) {
+        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
     }
 }

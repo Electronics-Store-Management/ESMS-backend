@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryEntity extends BaseEntity {
     private String name;
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<ProductEntity> products;
 
     @Override
