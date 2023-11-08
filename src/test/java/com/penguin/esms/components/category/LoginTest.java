@@ -26,7 +26,7 @@ import java.util.Random;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-class AuthenticationTest {
+class LoginTest {
 
     @Autowired
     private  MockMvc mockMvc;
@@ -34,13 +34,13 @@ class AuthenticationTest {
     private  ObjectMapper objectMapper;
 
     @Autowired
-    public AuthenticationTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+    public LoginTest(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }
 
     @Test
-    @DisplayName("UTC_001")
+    @DisplayName("UTCID_Login_01")
     @Order(1)
     public void shouldCreateUser() throws Exception {
         StaffEntity staffEntity = new StaffEntity();
@@ -62,7 +62,7 @@ class AuthenticationTest {
 
 
     @Test
-    @DisplayName("UTC_002")
+    @DisplayName("UTCID_Login_02")
     @Order(2)
     public void shouldNotCreateUser() throws Exception {
         StaffEntity staffEntity = new StaffEntity();
@@ -81,7 +81,7 @@ class AuthenticationTest {
     }
 
     @Test
-    @DisplayName("UTC_003")
+    @DisplayName("UTCID_Login_03")
     @Order(3)
     public void shouldSignIn() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest("hoanghy@gmail.com", "123456");
@@ -96,9 +96,22 @@ class AuthenticationTest {
     }
 
     @Test
-    @DisplayName("UTC_004")
+    @DisplayName("UTCID_Login_04")
     @Order(3)
     public void shouldNotSignIn() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest("hoanghy@gmail.com", "123746");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("UTCID_Login_05")
+    @Order(3)
+    public void UTCID_Login_05() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest("hoanghy@gmail.com", "123746");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/authenticate")
