@@ -1,7 +1,11 @@
 package com.penguin.esms.components.staff;
 import com.penguin.esms.components.permission.PermissionEntity;
+import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,12 +21,19 @@ import java.util.List;
 @Entity
 @Table
 public class StaffEntity extends BaseEntity implements UserDetails {
+    @Pattern(regexp = "^[a-z0-9A-Z_àáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ]*$", message = "Name should not contain special characters")
     private String name;
+    @PhoneNumberFormat(message = "Invalid phone number")
     private String phone;
+    @Size(min = 1, message = "Password must be at least 1 characters long")
     private String password;
     @Column(unique = true)
+    @Email(message = "Invalid email address format")
     private String email;
     @Column(unique = true)
+    @Size.List({
+            @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
+    })
     private String citizenId;
     @Enumerated(EnumType.STRING)
     private Role role;
