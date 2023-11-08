@@ -1,6 +1,7 @@
 package com.penguin.esms.components.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.penguin.esms.components.authentication.requests.AuthenticationRequest;
 import com.penguin.esms.components.staff.Role;
 import com.penguin.esms.components.staff.StaffEntity;
 import org.junit.jupiter.api.*;
@@ -25,7 +26,7 @@ import java.util.Random;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-class CategoryServiceTest {
+class AuthenticationTest {
 
     @Autowired
     private  MockMvc mockMvc;
@@ -33,13 +34,13 @@ class CategoryServiceTest {
     private  ObjectMapper objectMapper;
 
     @Autowired
-    public CategoryServiceTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+    public AuthenticationTest(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }
 
     @Test
-    @DisplayName("Should create admin account")
+    @DisplayName("UTC_001")
     @Order(1)
     public void shouldCreateUser() throws Exception {
         StaffEntity staffEntity = new StaffEntity();
@@ -61,7 +62,7 @@ class CategoryServiceTest {
 
 
     @Test
-    @DisplayName("Should not create user")
+    @DisplayName("UTC_002")
     @Order(2)
     public void shouldNotCreateUser() throws Exception {
         StaffEntity staffEntity = new StaffEntity();
@@ -79,41 +80,31 @@ class CategoryServiceTest {
                 .andDo(print());
     }
 
-//    @Test
-//    @DisplayName("Should signin")
-//    @Order(3)
-//    public void shouldSignIn() throws Exception {
-//
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setUsername("quangduong");
-//        userDTO.setPassword("292003");
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/auth/signin")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.username").value("quangduong"))
-//                .andExpect(jsonPath("$.token").isString())
-//                .andDo(print());
-//    }
+    @Test
+    @DisplayName("UTC_003")
+    @Order(3)
+    public void shouldSignIn() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest("hoanghy@gmail.com", "123456");
 
-//    @Test
-//    @DisplayName("Should not signin")
-//    @Order(3)
-//    public void shouldNotSignIn() throws Exception {
-//
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setUsername("quangduong");
-//        userDTO.setPassword("15092003");
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/auth/signin")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDTO)))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.status").value("400"))
-//                .andExpect(jsonPath("$.error").value("Bad credentials"))
-//                .andDo(print());
-//    }
-//
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.access_token").isString())
+                .andExpect(jsonPath("$.refresh_token").exists())
+                .andDo(print());
+    }
 
+    @Test
+    @DisplayName("UTC_004")
+    @Order(3)
+    public void shouldNotSignIn() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest("hoanghy@gmail.com", "123746");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
 }
