@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<start-class>com.penguin.esms.EsmsApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
