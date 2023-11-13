@@ -56,18 +56,8 @@ public class StaffController {
         staffService.remove(id);
     }
 
-    @ExceptionHandler({ ResponseStatusException.class })
-    public ResponseEntity<?> handleException(ResponseStatusException e) {
-        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
-    }
-
-    @ExceptionHandler({ HttpMessageNotReadableException.class })
-    public ResponseEntity<?> handleNotReadableException() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
-    }
-
-    @ExceptionHandler({ SQLException.class })
-    public ResponseEntity<?> handleSQLException(SQLException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
-    }
+//    @ExceptionHandler({ SQLException.class })
+//    public ResponseEntity<?> handleSQLException(SQLException e) {
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
+//    }
 }

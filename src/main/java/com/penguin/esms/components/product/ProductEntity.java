@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Date;
 @Setter
 public class ProductEntity extends BaseEntity {
     @Column(unique = true)
+    @NotNull
     private String name;
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -31,6 +33,7 @@ public class ProductEntity extends BaseEntity {
     private Integer quantity;
     private Integer warrantyPeriod;
     private Boolean isAvailable = true;
+    private String photoURL;
 
     @Override
     public String toString() {

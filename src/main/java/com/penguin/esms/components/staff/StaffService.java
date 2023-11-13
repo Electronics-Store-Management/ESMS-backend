@@ -1,17 +1,10 @@
 package com.penguin.esms.components.staff;
 
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.product.ProductDTO;
-import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
