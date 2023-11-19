@@ -5,6 +5,7 @@ import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,12 +22,12 @@ public class PermissionEntity extends BaseEntity {
     private PermissionType permissionType;
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
-    @Nullable
+    @NotNull
     private String entityId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "staff_id")
-    @Nullable
+    @NotNull
     private StaffEntity staff;
 
     @Override

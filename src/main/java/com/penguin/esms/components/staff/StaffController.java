@@ -40,7 +40,7 @@ public class StaffController {
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasAuthority('VIEW:STAFF') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public ResponseEntity<?> getStaffById(@PathVariable String id) {
         if (staffRepository.findById(id).isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(staffRepository.findById(id));
