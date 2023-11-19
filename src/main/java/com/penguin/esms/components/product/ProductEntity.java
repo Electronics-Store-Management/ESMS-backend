@@ -2,6 +2,7 @@ package com.penguin.esms.components.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -27,7 +29,9 @@ public class ProductEntity extends BaseEntity {
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties(value = {"products"})
     private CategoryEntity category;
-    private String supplierId;
+    @ManyToMany
+    @JsonIgnoreProperties(value = {"products"})
+    private List<SupplierEntity> suppliers;
     private String unit;
     private Long price;
     private Integer quantity;
@@ -40,7 +44,6 @@ public class ProductEntity extends BaseEntity {
         return "ProductEntity{" +
                 "name='" + name + '\'' +
                 (", category='" + (category != null ? category.getName() : "None")) + '\'' +
-                ", supplierId='" + supplierId + '\'' +
                 ", unit='" + unit + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +

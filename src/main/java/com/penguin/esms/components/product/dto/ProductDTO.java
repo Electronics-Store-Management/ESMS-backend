@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class ProductDTO {
     @NotNull(message = "name is required")
     private String name;
     private String categoryId;
-    private String supplierId;
+    private List<String> suppliers = new ArrayList<>();
     private String unit;
     private Long price;
     private Integer quantity;
