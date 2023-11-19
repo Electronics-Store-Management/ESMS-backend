@@ -1,5 +1,6 @@
 package com.penguin.esms.exceptionHandler;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,12 @@ public class GeneralExceptionHandler {
         result.put("errors", errors);
 
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<?> expiredJWT() {
+
+        return new ResponseEntity<>("Jwt expired", HttpStatus.UNAUTHORIZED);
     }
 
 //    @ExceptionHandler({ HttpMessageNotReadableException.class })

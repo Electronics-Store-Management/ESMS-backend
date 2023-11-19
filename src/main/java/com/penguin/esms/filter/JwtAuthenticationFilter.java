@@ -1,12 +1,16 @@
 package com.penguin.esms.filter;
 
+import com.penguin.esms.entity.Error;
 import com.penguin.esms.utils.JwtProvider;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,8 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Failed on set user authentication " + e);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(new Error(e.getMessage()).toString());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            return;
         }
         filterChain.doFilter(request, response);
     }
