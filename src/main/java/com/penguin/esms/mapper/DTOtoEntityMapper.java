@@ -6,7 +6,11 @@ import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffDTO;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DTOtoEntityMapper {
@@ -18,4 +22,11 @@ public interface DTOtoEntityMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateStaffFromDto(StaffDTO dto, @MappingTarget StaffEntity entity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateSupplierFromDto(SupplierDTO dto, @MappingTarget SupplierEntity entity);
+
+    default List<SupplierEntity> map(List<String> value) {
+        return value.stream().map(v -> new SupplierEntity()).toList();
+    }
 }

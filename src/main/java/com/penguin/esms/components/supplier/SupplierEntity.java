@@ -17,8 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SupplierEntity extends NoteEntity {
-    @Id
-    private String supplierId;
     private String name;
     private String phone;
     private String email;

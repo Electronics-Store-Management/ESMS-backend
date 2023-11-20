@@ -1,16 +1,25 @@
 package com.penguin.esms.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 public class Error {
-    private String message;
+    private List<String> errors = new ArrayList<>();
 
     public Error(String message) {
-        this.message = message;
+        this.errors = new ArrayList<>();
+        this.errors.add(message);
     }
 
     @Override
     public String toString() {
         return "{" +
-                "\"message\":\"" + message + '\"' +
+                "\"errors\":[\"" + errors.get(0) + "\"]" +
                 '}';
     }
 }

@@ -1,15 +1,48 @@
 package com.penguin.esms.components.supplier;
 
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.dto.ProductDTO;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "supplier")
+@RequiredArgsConstructor
 public class SupplierController {
-    private final SupplierService supplierService;
-    @Autowired
-    public SupplierController(SupplierService supplierService) {
-        this.supplierService = supplierService;
+    private final SupplierService service;
+
+    @GetMapping
+    public List<SupplierEntity> getAl(@RequestParam(defaultValue = "") String name) {
+        return service.findByName(name);
+    }
+
+    @GetMapping("{id}")
+    public SupplierEntity getOne(@PathVariable String id) {
+        return service.getOne(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> post(@Valid SupplierDTO supplierDTO) {
+        return ResponseEntity.ok(service.add(supplierDTO));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> put(@Valid SupplierDTO supplierDTO, @PathVariable String id) {
+        return ResponseEntity.ok(service.update(supplierDTO, id));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        SupplierEntity supplier = service.remove(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -14,5 +14,5 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NoteEntity extends BaseEntity{
-    private String note;
+    protected String note;
 }

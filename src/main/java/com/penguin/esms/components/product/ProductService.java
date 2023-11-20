@@ -47,7 +47,7 @@ public class ProductService {
     public ProductEntity add(ProductDTO productDTO) {
         if (productRepo.findByName(productDTO.getName()).isPresent())
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Product existed");
+                    HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
         ProductEntity product = updateFromDTO(productDTO, new ProductEntity());
         return productRepo.save(product);
     }

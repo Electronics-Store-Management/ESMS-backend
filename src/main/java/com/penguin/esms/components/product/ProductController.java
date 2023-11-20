@@ -43,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> putProduct(@RequestParam MultipartFile photo, ProductDTO productDTO, @PathVariable String id) throws IOException {
+    public ResponseEntity<?> putProduct(@RequestParam MultipartFile photo, @Valid ProductDTO productDTO, @PathVariable String id) throws IOException {
         return ResponseEntity.ok(service.update(productDTO, id, photo));
     }
 
