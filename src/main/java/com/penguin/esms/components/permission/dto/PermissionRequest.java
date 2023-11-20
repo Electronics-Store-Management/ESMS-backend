@@ -1,4 +1,4 @@
-package com.penguin.esms.components.permission.requests;
+package com.penguin.esms.components.permission.dto;
 
 import com.penguin.esms.components.permission.EntityType;
 import com.penguin.esms.components.permission.PermissionType;
@@ -15,7 +15,6 @@ import lombok.Setter;
 public class PermissionRequest {
     private PermissionType permissionType;
     private EntityType entityType;
-    @Nullable
     private String entityId;
     private String staffId;
 }

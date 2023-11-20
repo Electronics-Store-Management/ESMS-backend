@@ -3,6 +3,7 @@ package com.penguin.esms.components.staff;
 import com.penguin.esms.components.category.CategoryDTO;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.staff.requests.NewStaffRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,14 +29,13 @@ public class StaffController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> createStaff(@RequestBody NewStaffRequest newStaff) {
+    public ResponseEntity<?> createStaff(@Valid @RequestBody NewStaffRequest newStaff) {
         return  ResponseEntity.ok(staffRepository.save(new StaffEntity(newStaff.getName(), newStaff.getPhone(), newStaff.getPassword(), newStaff.getEmail(), newStaff.getCitizenId(), newStaff.getRole())));
     }
 
     @GetMapping("profile")
     public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        System.out.println(staff.getPermissions());
         return ResponseEntity.ok(staff);
     }
 

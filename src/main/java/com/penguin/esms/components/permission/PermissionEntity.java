@@ -22,7 +22,6 @@ public class PermissionEntity extends BaseEntity {
     private PermissionType permissionType;
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
-    @NotNull
     private String entityId;
 
     @ManyToOne(cascade = CascadeType.ALL)

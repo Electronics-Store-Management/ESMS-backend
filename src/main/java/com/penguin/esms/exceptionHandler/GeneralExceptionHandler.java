@@ -2,6 +2,7 @@ package com.penguin.esms.exceptionHandler;
 
 import com.penguin.esms.entity.Error;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,8 @@ public class GeneralExceptionHandler {
 
     @ExceptionHandler({ ConstraintViolationException.class })
     public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return new ResponseEntity<>(new Error(e.getConstraintViolations().stream().map(constraintViolation -> constraintViolation.getPropertyPath() + " " + constraintViolation.getMessage()).toList()), HttpStatus.BAD_REQUEST);
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getConstraintViolations().stream().toList());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

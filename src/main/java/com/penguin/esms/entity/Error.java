@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,14 @@ public class Error {
     public Error(String message) {
         this.errors = new ArrayList<>();
         this.errors.add(message);
+    }
+
+    public Error(String... messages) {
+        this.errors = Arrays.stream(messages).toList();
+    }
+
+    public Error(List<String> messages) {
+        this.errors = messages;
     }
 
     @Override

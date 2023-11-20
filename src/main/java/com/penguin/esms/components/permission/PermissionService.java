@@ -1,15 +1,11 @@
 package com.penguin.esms.components.permission;
 
-import com.penguin.esms.components.permission.requests.PermissionRequest;
+import com.penguin.esms.components.permission.dto.PermissionRequest;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Optional;
 
 @Service
