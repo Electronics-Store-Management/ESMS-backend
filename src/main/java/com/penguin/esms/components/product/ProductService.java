@@ -5,6 +5,7 @@ import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
+import com.penguin.esms.entity.Error;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import com.penguin.esms.services.AmazonS3Service;
 import lombok.Getter;
