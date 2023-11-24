@@ -3,6 +3,11 @@ os: linux
 files:
   - source: /
     destination: /var/server/
+permissions:
+  - object: /home/ubuntu/
+    owner: root
+    group: root
+    mode: 777
 file_exists_behavior: OVERWRITE
 hooks:
   BeforeInstall:
