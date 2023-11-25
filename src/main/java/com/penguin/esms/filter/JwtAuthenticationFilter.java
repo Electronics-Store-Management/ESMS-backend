@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import io.jsonwebtoken.security.SignatureException;
 
 @Component
 @RequiredArgsConstructor
@@ -50,10 +51,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(new Error(e.getMessage()).toString());
+            response.getWriter().write(new Error("Expired JWT").toString());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            return;
+        } catch (SignatureException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(new Error("Invalid JWT").toString());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             return;
         }
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
         filterChain.doFilter(request, response);
     }
 

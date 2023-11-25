@@ -2,6 +2,7 @@ package com.penguin.esms.exceptionHandler;
 
 import com.penguin.esms.entity.Error;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -56,8 +57,8 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(new Error("Method not supported"), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-//    @ExceptionHandler({ HttpMessageNotReadableException.class })
-//    public ResponseEntity<?> handleNotReadableException() {
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
-//    }
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<?> invalidJWT(SignatureException e) {
+        return new ResponseEntity<>(new Error("JWT invalid"), HttpStatus.UNAUTHORIZED);
+    }
 }
