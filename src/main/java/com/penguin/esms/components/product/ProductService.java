@@ -34,7 +34,7 @@ public class ProductService {
     private final AmazonS3Service amazonS3Service;
 
     public List<ProductEntity> findByName(String name, String categoryName) {
-        if (categoryName != null) {
+        if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
             if (optionalCategory.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
@@ -78,7 +78,7 @@ public class ProductService {
         Optional<ProductEntity> productEntityOptional = productRepo.findById(id);
         if (productEntityOptional.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Product not existed");
+                    HttpStatus.NOT_FOUND, new Error("Product not existed").toString());
         productRepo.deleteById(id);
         return productEntityOptional.get();
     }

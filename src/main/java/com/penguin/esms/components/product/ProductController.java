@@ -51,7 +51,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable String id) {
         ProductEntity product = service.remove(id);
         List<String> parsedURL = Arrays.stream(product.getPhotoURL().split("/")).toList();
-        amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
+//        amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
         return ResponseEntity.ok().build();
     }
 }
