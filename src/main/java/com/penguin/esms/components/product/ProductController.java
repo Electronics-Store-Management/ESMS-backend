@@ -18,15 +18,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(maxAge = 3600, origins = {"http://localhost:3000"})
 @RequestMapping(path ="product")
 public class ProductController {
     private final ProductService service;
     private final AmazonS3Service amazonS3Service;
 
     @GetMapping
-    public List<ProductEntity> getAl(@RequestParam(defaultValue = "") String name) {
-        return service.findByName(name);
+    public List<ProductEntity> getAl(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String category) {
+        return service.findByName(name, category);
     }
 
     @GetMapping("{id}")

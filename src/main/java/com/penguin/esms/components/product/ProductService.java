@@ -33,7 +33,14 @@ public class ProductService {
     private final DTOtoEntityMapper mapper;
     private final AmazonS3Service amazonS3Service;
 
-    public List<ProductEntity> findByName(String name) {
+    public List<ProductEntity> findByName(String name, String categoryName) {
+        if (categoryName != null) {
+            Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
+            if (optionalCategory.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
+            }
+            return productRepo.findByNameContainingIgnoreCaseAndCategory(name, optionalCategory.get());
+        }
         return productRepo.findByNameContainingIgnoreCase(name);
     }
 
@@ -81,7 +88,7 @@ public class ProductService {
         if (productDTO.getCategoryId() != null) {
             Optional<CategoryEntity> category = categoryRepo.findById(productDTO.getCategoryId());
             if (category.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
             }
             product.setCategory(category.get());
         }

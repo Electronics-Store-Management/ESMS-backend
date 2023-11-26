@@ -21,7 +21,7 @@ public class ProductDTO {
     private List<String> suppliers = new ArrayList<>();
     private String unit;
     private Long price;
-    private Integer quantity;
+    private Integer quantity = 0;
     private Integer warrantyPeriod;
     private Boolean isAvailable;
     private String photoURL;
