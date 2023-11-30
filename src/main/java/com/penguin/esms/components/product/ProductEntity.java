@@ -2,9 +2,11 @@ package com.penguin.esms.components.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.saleProduct.SaleProductEntity;
 import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -51,4 +53,9 @@ public class ProductEntity extends BaseEntity {
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<WarrantyProductEntity> warrantyProducts;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties(value = {"products"})
+    private CustomerEntity customer;
 }
