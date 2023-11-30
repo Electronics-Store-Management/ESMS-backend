@@ -28,7 +28,7 @@ public class SaleProductEntity extends BaseEntity {
     @JsonIgnoreProperties(value = {"sale_products"})
     private ProductEntity product;
     @ManyToOne
-    @JoinColumn(name = "saletBill_id")
+    @JoinColumn(name = "saleBill_id")
     @JsonIgnoreProperties(value = {"sale_products"})
     private SaleBillEntity saleBill;
 
