@@ -25,4 +25,6 @@ public class ProductDTO {
     private Integer warrantyPeriod;
     private Boolean isAvailable;
     private String photoURL;
+    private List<String> saleProducts = new ArrayList<>();
+
 }
