@@ -2,6 +2,7 @@ package com.penguin.esms.components.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -39,16 +40,8 @@ public class ProductEntity extends BaseEntity {
     private Boolean isAvailable = true;
     private String photoURL;
 
-    @Override
-    public String toString() {
-        return "ProductEntity{" +
-                "name='" + name + '\'' +
-                (", category='" + (category != null ? category.getName() : "None")) + '\'' +
-                ", unit='" + unit + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", warrantyPeriod=" + warrantyPeriod +
-                ", isAvailable=" + isAvailable +
-                '}';
-    }
+    @JsonIgnoreProperties(value = {"importProducts"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<ImportProductEntity> importProducts;
+
 }
