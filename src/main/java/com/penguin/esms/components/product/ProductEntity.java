@@ -5,6 +5,7 @@ import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.saleProduct.SaleProductEntity;
 import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -47,5 +48,7 @@ public class ProductEntity extends BaseEntity {
     @JsonIgnoreProperties(value = {"saleProducts"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<SaleProductEntity> saleProducts;
-
+    @JsonIgnoreProperties(value = {"warrantyProducts"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<WarrantyProductEntity> warrantyProducts;
 }

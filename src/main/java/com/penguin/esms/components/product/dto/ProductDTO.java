@@ -26,5 +26,7 @@ public class ProductDTO {
     private Boolean isAvailable;
     private String photoURL;
     private List<String> saleProducts = new ArrayList<>();
+    private List<String> warrantyProducts = new ArrayList<>();
+    private List<String> importProducts = new ArrayList<>();
 
 }
