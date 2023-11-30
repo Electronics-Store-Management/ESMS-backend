@@ -1,55 +1,29 @@
 package com.penguin.esms.components.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
 
 @Entity
 @Table
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class CustomerEntity extends BaseEntity {
-
     private String name;
     private String phone;
     private String address;
-
-    public CustomerEntity(String name, String phone, String address) {
-        this.name = name;
-        this.phone = phone;
-        this.address = address;
-    }
-
-    public CustomerEntity(){}
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
+    @JsonIgnoreProperties(value = {"products"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    private List<ProductEntity> products;
 }
