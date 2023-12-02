@@ -2,6 +2,8 @@ package com.penguin.esms.components.customer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.Entity;
@@ -23,7 +25,12 @@ public class CustomerEntity extends BaseEntity {
     private String name;
     private String phone;
     private String address;
-    @JsonIgnoreProperties(value = {"products"})
+    //sai ne
+    @JsonIgnoreProperties(value = {"warrantyBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    private List<ProductEntity> products;
+    private List<WarrantyBillEntity> warrantyBills;
+
+//    @JsonIgnoreProperties(value = {"saleBill"})
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+//    private List<SaleBillEntity> saleBills;
 }
