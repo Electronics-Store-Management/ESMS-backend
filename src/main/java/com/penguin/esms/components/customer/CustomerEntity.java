@@ -30,7 +30,7 @@ public class CustomerEntity extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private List<WarrantyBillEntity> warrantyBills;
 
-//    @JsonIgnoreProperties(value = {"saleBill"})
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-//    private List<SaleBillEntity> saleBills;
+    @JsonIgnoreProperties(value = {"saleBill"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    private List<SaleBillEntity> saleBills;
 }
