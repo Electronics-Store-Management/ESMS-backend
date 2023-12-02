@@ -6,10 +6,7 @@ import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerEntity extends BaseEntity {
     private String name;
+    @Column(unique=true)
     private String phone;
     private String address;
     //sai ne
