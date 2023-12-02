@@ -1,8 +1,4 @@
 services:
-#  redis:
-#    image: 'redis:latest'
-#    ports:
-#      - '6379'
   db:
     image: postgres:latest
     restart: always
@@ -15,7 +11,7 @@ services:
     networks:
       - postgresql
     volumes:
-      - postgresql-volume:/var/lib/postgres
+      - postgresql-volume:/var/lib/postgresql/data
 
   web:
     build: .
