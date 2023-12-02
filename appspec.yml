@@ -14,14 +14,14 @@ permissions:
     mode: 777
 file_exists_behavior: OVERWRITE
 hooks:
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/install_dependencies
       timeout: 300
       runas: root
+  ApplicationStart:
     - location: scripts/start_server
       runas: root
-#  ApplicationStart:
-#  ApplicationStop:
-#    - location: scripts/stop_server
-#      runas: root
-#      timeout: 300
+  ApplicationStop:
+    - location: scripts/stop_server
+      runas: root
+      timeout: 300
