@@ -25,11 +25,11 @@ public class WarrantyProductEntity extends NoteEntity {
     private String warrantyContent;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties(value = {"warranty_products"})
+    @JsonIgnoreProperties(value = {"warrantyProducts"})
     private ProductEntity product;
     @ManyToOne
     @JoinColumn(name = "warrantyBill_id")
-    @JsonIgnoreProperties(value = {"warranty_products"})
+    @JsonIgnoreProperties(value = {"warrantyProducts"})
     private WarrantyBillEntity warrantyBill;
 
 }

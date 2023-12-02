@@ -25,11 +25,11 @@ public class ImportProductEntity extends BaseEntity {
     private String unit;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnoreProperties(value = {"import_products"})
+    @JsonIgnoreProperties(value = {"importProducts"})
     private ProductEntity product;
     @ManyToOne
     @JoinColumn(name = "importBill_id")
-    @JsonIgnoreProperties(value = {"import_products"})
+    @JsonIgnoreProperties(value = {"importProducts"})
     private ImportBillEntity importBill;
 
 }

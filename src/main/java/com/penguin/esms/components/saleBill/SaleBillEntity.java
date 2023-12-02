@@ -26,7 +26,7 @@ public class SaleBillEntity extends NoteEntity {
     private String paymentMethod;
     private Date saleDate;
     private Float discount;
-    @JsonIgnoreProperties(value = {"sale_bill"})
+    @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleBill")
     private List<SaleProductEntity> saleProducts;
 }
