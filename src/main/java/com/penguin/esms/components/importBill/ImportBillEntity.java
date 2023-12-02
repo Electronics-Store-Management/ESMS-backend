@@ -23,7 +23,6 @@ public class ImportBillEntity extends NoteEntity {
     private String staffId;
     private String supplierId;
     private String paymentMethod;
-    private Date importDate;
 
     @JsonIgnoreProperties(value = {"import_bill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "importBill")

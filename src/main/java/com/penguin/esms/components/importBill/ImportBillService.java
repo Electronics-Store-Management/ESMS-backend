@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ImportBillService {
     private final ImportBillRepo importBillRepo;
-        public ImportBillEntity getImportBill(String importBillId) {
+    public ImportBillEntity getImportBill(String importBillId) {
         Optional<ImportBillEntity> importBill = importBillRepo.findById(importBillId);
         if (importBill.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Import bill not found");

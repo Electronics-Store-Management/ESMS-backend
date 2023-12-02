@@ -16,7 +16,6 @@ public class ImportBillDTO {
     private String staffId;
     private String supplierId;
     private String paymentMethod;
-    private Date importDate;
     private List<String> importProducts = new ArrayList<>();
 
 }
