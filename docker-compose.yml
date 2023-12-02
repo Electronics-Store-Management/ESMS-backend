@@ -16,6 +16,7 @@ services:
       - postgresql
     volumes:
       - postgresql-volume:/var/lib/postgres
+      - /root/.aws:/root/.aws
 
   web:
     build: .
@@ -32,3 +33,4 @@ networks:
   postgresql:
 volumes:
   postgresql-volume:
+    external: true
