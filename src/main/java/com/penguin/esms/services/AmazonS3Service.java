@@ -13,7 +13,7 @@ import java.io.IOException;
 public class AmazonS3Service {
     @Value("${amazonProperties.bucket-name}")
     private String AWS_BUCKET;
-    public Region AWS_REGION = Region.AP_SOUTHEAST_1;
+    public Region AWS_REGION = Region.US_EAST_1;
     AwsS3Client s3Service;
 
     public AmazonS3Service() {
