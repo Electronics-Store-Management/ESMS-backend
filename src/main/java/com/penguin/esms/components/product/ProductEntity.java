@@ -54,8 +54,4 @@ public class ProductEntity extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<WarrantyProductEntity> warrantyProducts;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties(value = {"products"})
-    private CustomerEntity customer;
 }

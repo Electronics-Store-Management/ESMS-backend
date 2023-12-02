@@ -1,6 +1,7 @@
 package com.penguin.esms.components.warrantyProduct;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
@@ -31,5 +32,7 @@ public class WarrantyProductEntity extends NoteEntity {
     @JoinColumn(name = "warrantyBill_id")
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     private WarrantyBillEntity warrantyBill;
+
+
 
 }
