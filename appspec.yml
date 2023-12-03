@@ -21,6 +21,7 @@ hooks:
 
   ApplicationStart:
     - location: scripts/start_server
+      runas: root
   ApplicationStop:
     - location: scripts/stop_server
       runas: root
