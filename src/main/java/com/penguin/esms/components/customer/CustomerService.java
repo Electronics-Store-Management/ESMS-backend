@@ -27,13 +27,32 @@ public class CustomerService {
     private final CustomerRepo customerRepo;
     private final DTOtoEntityMapper mapper;
 
-    public CustomerEntity getCustomer(String customerId) {
-        Optional<CustomerEntity> customer = customerRepo.findById(customerId);
+    public CustomerEntity getById(String id) {
+        Optional<CustomerEntity> customer = customerRepo.findById(id);
         if (customer.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
         }
         return customer.get();
     }
+    public CustomerEntity getByPhone(String phone) {
+        Optional<CustomerEntity> customer = customerRepo.findByPhone(phone);
+        if (customer.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+        return customer.get();
+    }
+    public Optional<CustomerEntity> findById(String customerId) {
+        return customerRepo.findById(customerId);
+    }
+
+    public List<CustomerEntity> findByName(String name) {
+        return customerRepo.findByNameContainingIgnoreCase(name);
+    }
+    public Optional<CustomerEntity> findByPhone(String phone) {
+        return customerRepo.findByPhone(phone);
+    }
+
+
     public CustomerEntity postCustomer(CustomerDTO customerDTO) {
         if (customerRepo.findByPhone(customerDTO.getPhone()).isPresent())
             throw new ResponseStatusException(
