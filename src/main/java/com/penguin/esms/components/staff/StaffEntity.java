@@ -1,4 +1,6 @@
 package com.penguin.esms.components.staff;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.entity.BaseEntity;
@@ -40,7 +42,8 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"staff"})
     private List<PermissionEntity> permissions = new ArrayList<>();
 
     public StaffEntity() {}

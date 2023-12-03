@@ -39,6 +39,11 @@ public class StaffController {
         return ResponseEntity.ok(staff);
     }
 
+    @GetMapping("")
+    public ResponseEntity<?> getList(@RequestParam(defaultValue = "") String name) {
+        return ResponseEntity.ok(staffService.findByName(name));
+    }
+
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public ResponseEntity<?> getStaffById(@PathVariable String id) {
@@ -55,9 +60,4 @@ public class StaffController {
     public void delete(@PathVariable String id) {
         staffService.remove(id);
     }
-
-//    @ExceptionHandler({ SQLException.class })
-//    public ResponseEntity<?> handleSQLException(SQLException e) {
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
-//    }
 }

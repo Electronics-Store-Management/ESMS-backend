@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,13 +21,16 @@ public class StaffService {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
     }
 
-
     public StaffEntity getOne(String id) {
         Optional<StaffEntity> staff = staffRepository.findById(id);
         if (staff.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found");
         }
         return staff.get();
+    }
+
+    public List<StaffEntity> findByName(String name) {
+        return staffRepository.findByNameContainingIgnoreCase(name);
     }
 
     public StaffEntity update(StaffDTO staffDTO, String id) {

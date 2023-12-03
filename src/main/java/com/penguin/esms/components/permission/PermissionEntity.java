@@ -1,5 +1,6 @@
 package com.penguin.esms.components.permission;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
@@ -26,6 +27,7 @@ public class PermissionEntity extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "staff_id")
+    @JsonIgnoreProperties(value = {"permissions"})
     @NotNull
     private StaffEntity staff;
 
