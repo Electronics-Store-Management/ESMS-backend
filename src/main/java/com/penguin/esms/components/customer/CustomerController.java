@@ -24,8 +24,8 @@ public class CustomerController {
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody CustomerEntity customerEntity) {
-        return ResponseEntity.ok(customerService.postCustomer(customerEntity));
+    public ResponseEntity<?> post(@RequestBody CustomerDTO customerDTO) {
+        return ResponseEntity.ok(customerService.postCustomer(customerDTO));
     }
     @PutMapping("{id}")
     public ResponseEntity<?> put(@RequestParam MultipartFile photo, @Valid CustomerDTO customerDTO, @PathVariable String id) throws IOException {

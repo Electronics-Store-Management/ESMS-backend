@@ -34,8 +34,12 @@ public class CustomerService {
         }
         return customer.get();
     }
-    public CustomerEntity postCustomer(CustomerEntity customerEntity) {
-        return customerRepo.save(customerEntity);
+    public CustomerEntity postCustomer(CustomerDTO customerDTO) {
+        if (customerRepo.findByPhone(customerDTO.getPhone()).isPresent())
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, new Error("Customer existed").toString());
+        CustomerEntity customer = updateFromDTO(customerDTO, new CustomerEntity());
+        return customerRepo.save(customer);
     }
     public CustomerEntity removeCustomer(String id) {
         Optional<CustomerEntity> customer = customerRepo.findById(id);
