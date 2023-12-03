@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "import bill")
+@RequestMapping(path = "import")
 @RequiredArgsConstructor
 public class ImportBillController {
     private final ImportBillService importBillService;
     @GetMapping("{id}")
-    public ImportBillEntity getProduct(@PathVariable String id) {
+    public ImportBillEntity get(@PathVariable String id) {
         return importBillService.getImportBill(id);
     }
 
