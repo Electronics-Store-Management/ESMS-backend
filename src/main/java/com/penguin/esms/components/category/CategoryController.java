@@ -34,7 +34,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody CategoryEntity categoryEntity) {
+    public ResponseEntity<?> post(CategoryEntity categoryEntity) {
         return ResponseEntity.ok(categoryService.postCategory(categoryEntity));
     }
     @PutMapping(path = "{id}")
