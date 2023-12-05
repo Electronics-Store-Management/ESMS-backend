@@ -1,6 +1,5 @@
 package com.penguin.esms.components.staff;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.entity.BaseEntity;
@@ -17,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -41,6 +41,7 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String citizenId;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private Date lastOnline = null;
 
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = {"staff"})
