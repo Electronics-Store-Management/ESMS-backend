@@ -1,10 +1,13 @@
 package com.penguin.esms.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import com.penguin.esms.components.staff.StaffEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -32,12 +35,13 @@ public abstract class BaseEntity {
     private Date modifiedDate;
 
     @CreatedBy
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="created_by")
+    @JsonIgnoreProperties({"createdBy", "modifiedBy"})
     private StaffEntity createdBy;
 
     @LastModifiedBy
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="modified_by")
     private StaffEntity modifiedBy;
 
