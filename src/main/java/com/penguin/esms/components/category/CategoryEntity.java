@@ -9,6 +9,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +24,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class CategoryEntity extends BaseEntity {
+
     private String name;
     @JsonIgnoreProperties(value = {"category"})
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<ProductEntity> products;
 
