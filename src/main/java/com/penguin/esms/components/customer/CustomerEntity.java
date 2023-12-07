@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class CustomerEntity extends BaseEntity {
     private String name;
     @Column(unique=true)
@@ -26,9 +29,11 @@ public class CustomerEntity extends BaseEntity {
     //sai ne
     @JsonIgnoreProperties(value = {"warrantyBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @NotAudited
     private List<WarrantyBillEntity> warrantyBills;
 
     @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @NotAudited
     private List<SaleBillEntity> saleBills;
 }
