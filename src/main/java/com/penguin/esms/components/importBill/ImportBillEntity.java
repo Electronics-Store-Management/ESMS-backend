@@ -10,6 +10,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.Date;
 import java.util.List;
@@ -19,12 +21,14 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class ImportBillEntity extends NoteEntity {
     private String staffId;
     private String supplierId;
     private String paymentMethod;
 
     @JsonIgnoreProperties(value = {"import_bill"})
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "importBill")
     private List<ImportProductEntity> importProducts;
 }
