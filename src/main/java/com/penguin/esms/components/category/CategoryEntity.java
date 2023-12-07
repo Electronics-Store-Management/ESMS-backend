@@ -24,9 +24,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Audited
-public class CategoryEntity extends BaseEntity {
 
+public class CategoryEntity extends BaseEntity {
+    @Audited
     private String name;
     @JsonIgnoreProperties(value = {"category"})
     @NotAudited
