@@ -16,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Audited
 public class ProductEntity extends BaseEntity {
     @Column(unique = true)
     @NotNull
@@ -35,6 +38,7 @@ public class ProductEntity extends BaseEntity {
     @JsonIgnoreProperties(value = {"products"})
     private CategoryEntity category;
     @ManyToMany
+    @NotAudited
     @JsonIgnoreProperties(value = {"products"})
     private List<SupplierEntity> suppliers;
     private String unit;
@@ -45,12 +49,15 @@ public class ProductEntity extends BaseEntity {
     private String photoURL;
 
     @JsonIgnoreProperties(value = {"importProducts"})
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<ImportProductEntity> importProducts;
     @JsonIgnoreProperties(value = {"saleProducts"})
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<SaleProductEntity> saleProducts;
     @JsonIgnoreProperties(value = {"warrantyProducts"})
+    @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<WarrantyProductEntity> warrantyProducts;
 
