@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface CategoryRepo extends JpaRepository<CategoryEntity, String> {
     Optional<CategoryEntity> findByName(String name);
     @Query(value = """
-        select new com.penguin.esms.components.category.response.FoundCategoryItem(c.id, c.name, c.modifiedDate, c.modifiedBy)\s
+        select new com.penguin.esms.components.category.response.FoundCategoryItem(c.id, c.name)\s
         from CategoryEntity c\s
         where LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))\s
         """)

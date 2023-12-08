@@ -19,6 +19,4 @@ import java.util.Date;
 public class FoundCategoryItem {
     private String id;
     private String name;
-    private Date modifiedDate;
-    private StaffEntity modifiedBy;
 }

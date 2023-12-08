@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ImportBillRepo extends JpaRepository<ImportBillEntity, String> {
     Optional<ImportBillEntity> findById(String id);
-    List<ImportBillEntity> findByCreatedDate(Date createdDate);
+//    List<ImportBillEntity> findByCreatedDate(Date createdDate);
 
 }

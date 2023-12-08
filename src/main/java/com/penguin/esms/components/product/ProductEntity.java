@@ -34,7 +34,7 @@ public class ProductEntity extends BaseEntity {
     @NotNull
     private String name;
     @ManyToOne
-    @NotAudited
+//    @NotAudited
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties(value = {"products"})
     private CategoryEntity category;
