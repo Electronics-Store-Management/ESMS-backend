@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.Date;
 import java.util.List;
@@ -18,12 +20,14 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class SaleBillEntity extends NoteEntity {
     private String staffId;
 //    private String customerId;
     private String paymentMethod;
     private Date saleDate;
     private Float discount;
+    @NotAudited
     @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleBill")
     private List<SaleProductEntity> saleProducts;
