@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("staff")
@@ -38,12 +39,22 @@ public class StaffController {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         return ResponseEntity.ok(staff);
     }
+    @GetMapping("resigned")
+    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
+    public List<StaffEntity> getAllResigned(@RequestParam(defaultValue = "") String name) {
+        return staffService.findResigned(name);
 
+    }
+    @GetMapping
+    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
+    public List<StaffEntity> getAll(@RequestParam(defaultValue = "") String name) {
+        return staffService.findByName(name);
+
+    }
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> getStaffById(@PathVariable String id) {
-        if (staffRepository.findById(id).isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(staffRepository.findById(id));
+    public StaffEntity getStaffById(@PathVariable String id) {
+        return staffService.getOne(id);
     }
 
     @PutMapping(path = "{id}")

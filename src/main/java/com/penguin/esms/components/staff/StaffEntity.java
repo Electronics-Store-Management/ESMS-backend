@@ -1,4 +1,5 @@
 package com.penguin.esms.components.staff;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.penguin.esms.components.permission.PermissionEntity;
 import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.entity.BaseEntity;
@@ -36,13 +37,15 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     @Email(message = "Invalid email address format")
     private String email;
     @Column(unique = true)
-    @Size.List({
-            @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
-    })
+//    @Size.List({
+//            @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
+//    })
+    @Pattern(regexp = "^(\\d{9}|\\d{12})$", message = "Citizen ID must be 9 or 12 digits")
     private String citizenId;
     @Enumerated(EnumType.STRING)
     private Role role;
     @NotAudited
+    @JsonIgnore
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PermissionEntity> permissions = new ArrayList<>();
 
