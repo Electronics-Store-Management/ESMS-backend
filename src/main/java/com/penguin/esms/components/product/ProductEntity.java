@@ -40,6 +40,7 @@ public class ProductEntity extends BaseEntity {
     private CategoryEntity category;
     @ManyToMany
     @NotAudited
+    @JsonIgnore
     @JsonIgnoreProperties(value = {"products"})
     private List<SupplierEntity> suppliers;
     private String unit;
@@ -51,14 +52,17 @@ public class ProductEntity extends BaseEntity {
 
     @JsonIgnoreProperties(value = {"importProducts"})
     @NotAudited
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<ImportProductEntity> importProducts;
     @JsonIgnoreProperties(value = {"saleProducts"})
     @NotAudited
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<SaleProductEntity> saleProducts;
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     @NotAudited
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<WarrantyProductEntity> warrantyProducts;
 
