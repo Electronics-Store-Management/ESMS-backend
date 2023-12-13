@@ -1,5 +1,6 @@
 package com.penguin.esms.components.supplier;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.entity.BaseEntity;
@@ -28,5 +29,6 @@ public class SupplierEntity extends NoteEntity {
     @NotAudited
     @JsonIgnoreProperties(value = {"suppliers"})
     @ManyToMany(mappedBy = "suppliers")
+    @JsonIgnore
     private List<ProductEntity> products;
 }
