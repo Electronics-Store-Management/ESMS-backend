@@ -1,7 +1,9 @@
 package com.penguin.esms.components.category;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
@@ -30,6 +32,7 @@ public class CategoryEntity extends BaseEntity {
     private String name;
     @JsonIgnoreProperties(value = {"category"})
     @NotAudited
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<ProductEntity> products;
 

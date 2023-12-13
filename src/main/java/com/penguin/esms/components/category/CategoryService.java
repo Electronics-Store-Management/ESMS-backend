@@ -30,6 +30,7 @@ public class CategoryService {
         if (categoryRepo.findByName(categoryEntity.getName()).isPresent())
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Category existed");
+        categoryEntity.setIsStopped(false);
         return categoryRepo.save(categoryEntity);
     }
 
@@ -38,22 +39,28 @@ public class CategoryService {
         if (categoryEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Category not existed");
-        else {
-            CategoryEntity category = categoryEntityOptional.get();
-            mapper.updateCategoryFromDto(categoryDTO, category);
-            return categoryRepo.save(category);
-        }
+        if (categoryEntityOptional.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category has been discontinued ");
+        CategoryEntity category = categoryEntityOptional.get();
+        mapper.updateCategoryFromDto(categoryDTO, category);
+        return categoryRepo.save(category);
+
     }
     public void deleteCategory(String id) {
-        if (categoryRepo.findById(id).isEmpty())
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+        if (categoryEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Category not existed");
-        categoryRepo.deleteById(id);
+        categoryEntityOptional.get().setIsStopped(true);
+        categoryRepo.save(categoryEntityOptional.get());
     }
-    public List<FoundCategoryItem> getCategory(String name) {
-        return categoryRepo.findByRelevantName(name);
+    public List<CategoryEntity> getCategory(String name) {
+        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
     }
-
+    public List<CategoryEntity> getDiscontinuedCategory(String name) {
+        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
+    }
     public CategoryEntity getCategoryById(String id) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
         if (categoryEntityOptional.isEmpty())
