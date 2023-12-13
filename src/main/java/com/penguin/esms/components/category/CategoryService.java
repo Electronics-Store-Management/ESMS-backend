@@ -2,7 +2,9 @@ package com.penguin.esms.components.category;
 
 import com.penguin.esms.components.category.response.FoundCategoryItem;
 import com.penguin.esms.components.permission.PermissionEntity;
+import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.entity.Error;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +29,14 @@ public class CategoryService {
     private final DTOtoEntityMapper mapper;
 
     public CategoryEntity postCategory(CategoryEntity categoryEntity) {
-        if (categoryRepo.findByName(categoryEntity.getName()).isPresent())
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());
+        if (categoryEntityOptional.isPresent()) {
+            if (categoryEntityOptional.get().getIsStopped() == true)
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, new Error("Category has been discontinued ").toString());
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Category existed");
+                    HttpStatus.BAD_REQUEST, new Error("Category existed").toString());
+        }
         categoryEntity.setIsStopped(false);
         return categoryRepo.save(categoryEntity);
     }

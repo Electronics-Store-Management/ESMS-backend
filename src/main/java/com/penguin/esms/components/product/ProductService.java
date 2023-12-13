@@ -39,41 +39,48 @@ public class ProductService {
             if (optionalCategory.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
             }
-            if (optionalCategory.get().getIsStopped()==true)
+            if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Category has been discontinued ");
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
         }
         return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
     }
+
     public List<ProductEntity> findDiscontinuedRelatedCategory(String name, String categoryName) {
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
             if (optionalCategory.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
             }
-            if (optionalCategory.get().getIsStopped()==true)
+            if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Category has been discontinued ");
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), true);
         }
-        return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name,true);
+        return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
+
     public ProductEntity getProductById(String productId) {
         Optional<ProductEntity> product = productRepo.findById(productId);
         if (product.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Product not found").toString());
         }
-        if (product.get().getIsStopped()==true)
+        if (product.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Product has been discontinued ");
         return product.get();
     }
 
     public ProductEntity add(ProductDTO productDTO) {
-        if (productRepo.findByName(productDTO.getName()).isPresent())
+        Optional<ProductEntity> productOpt = productRepo.findByName(productDTO.getName());
+        if (productOpt.isPresent()) {
+            if (productOpt.get().getIsStopped() == true)
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, new Error("Product has been discontinued ").toString());
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
+        }
         ProductEntity product = updateFromDTO(productDTO, new ProductEntity());
         product.setIsStopped(false);
         return productRepo.save(product);
@@ -84,7 +91,7 @@ public class ProductService {
         if (productEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Product not existed");
-        if (productEntityOptional.get().getIsStopped()==true)
+        if (productEntityOptional.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Product has been discontinued ");
         ProductEntity product = updateFromDTO(productDTO, productEntityOptional.get());
@@ -113,7 +120,7 @@ public class ProductService {
             if (category.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
             }
-            if (category.get().getIsStopped()==true)
+            if (category.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Category has been discontinued ");
             product.setCategory(category.get());
@@ -124,7 +131,7 @@ public class ProductService {
             if (supplier.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier with ID: " + s + " not found.").toString());
             }
-            if (supplier.get().getIsStopped()==true)
+            if (supplier.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Supplier has been discontinued ");
             supplierEntities.add(supplier.get());
