@@ -22,9 +22,4 @@ public class SaleBillController {
     public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity) {
         return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity));
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> remove(@PathVariable String id) {
-        SaleBillEntity saleBill = saleBillService.removeSaleBill(id);
-        return ResponseEntity.ok().build();
-    }
 }

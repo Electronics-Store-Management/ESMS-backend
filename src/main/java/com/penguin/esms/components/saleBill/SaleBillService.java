@@ -25,12 +25,4 @@ public class SaleBillService {
     public SaleBillEntity postSaleBill(SaleBillEntity saleBillEntity) {
         return saleBillRepo.save(saleBillEntity);
     }
-    public SaleBillEntity removeSaleBill(String id) {
-        Optional<SaleBillEntity> saleBillEntityOptional = saleBillRepo.findById(id);
-        if (saleBillEntityOptional.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Sale bill not existed").toString());
-        saleBillRepo.deleteById(id);
-        return saleBillEntityOptional.get();
-    }
 }
