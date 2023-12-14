@@ -34,13 +34,4 @@ public class WarrantyBillService {
     public WarrantyBillEntity postWarrantyBill(WarrantyBillEntity warrantyBillEntity) {
         return warrantyBillRepo.save(warrantyBillEntity);
     }
-    public WarrantyBillEntity removeWarrantyBill(String id) {
-        Optional<WarrantyBillEntity> warrantyBill = warrantyBillRepo.findById(id);
-        if (warrantyBill.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Warranty bill not existed").toString());
-        warrantyBillRepo.deleteById(id);
-        return warrantyBill.get();
-    }
-
 }

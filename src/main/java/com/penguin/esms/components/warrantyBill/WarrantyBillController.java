@@ -23,9 +23,4 @@ public class WarrantyBillController {
     public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity) {
         return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity));
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> remove(@PathVariable String id) {
-        WarrantyBillEntity warrantyBill = warrantyBillService.removeWarrantyBill(id);
-        return ResponseEntity.ok().build();
-    }
 }
