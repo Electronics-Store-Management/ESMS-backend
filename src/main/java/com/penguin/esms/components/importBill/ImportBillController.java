@@ -32,9 +32,4 @@ public class ImportBillController {
     public ResponseEntity<?> post(@RequestBody ImportBillEntity importBillEntity) {
         return ResponseEntity.ok(importBillService.postImportBill(importBillEntity));
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> remove(@PathVariable String id) {
-        ImportBillEntity importBill = importBillService.removeImportBill(id);
-        return ResponseEntity.ok().build();
-    }
 }

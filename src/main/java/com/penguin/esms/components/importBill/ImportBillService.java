@@ -33,12 +33,4 @@ public class ImportBillService {
     public ImportBillEntity postImportBill(ImportBillEntity importBillEntity) {
         return importBillRepo.save(importBillEntity);
     }
-    public ImportBillEntity removeImportBill(String id) {
-        Optional<ImportBillEntity> importBillEntityOptional = importBillRepo.findById(id);
-        if (importBillEntityOptional.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Import bill not existed").toString());
-        importBillRepo.deleteById(id);
-        return importBillEntityOptional.get();
-    }
 }
