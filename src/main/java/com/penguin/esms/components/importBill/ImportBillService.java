@@ -25,7 +25,7 @@ public class ImportBillService {
     public ImportBillEntity getImportBill(String importBillId) {
         Optional<ImportBillEntity> importBill = importBillRepo.findById(importBillId);
         if (importBill.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Import bill not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Import bill not found").toString());
         }
         return importBill.get();
     }
