@@ -1,13 +1,16 @@
 package com.penguin.esms.components.saleBill;
 
 import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.Error;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -22,7 +25,9 @@ public class SaleBillService {
         return saleBill.get();
     }
 
-    public SaleBillEntity postSaleBill(SaleBillEntity saleBillEntity) {
+    public SaleBillEntity postSaleBill(SaleBillEntity saleBillEntity, Principal connectedUser) {
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        saleBillEntity.setStaffId(staff.getId());
         return saleBillRepo.save(saleBillEntity);
     }
 }
