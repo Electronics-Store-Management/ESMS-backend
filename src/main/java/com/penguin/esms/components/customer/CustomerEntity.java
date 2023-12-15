@@ -1,55 +1,39 @@
 package com.penguin.esms.components.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
+import java.util.List;
 
 @Entity
 @Table
+@Getter
+@Setter
+@RequiredArgsConstructor
+@Audited
 public class CustomerEntity extends BaseEntity {
-
     private String name;
+    @Column(unique=true)
     private String phone;
     private String address;
+    //sai ne
+    @JsonIgnoreProperties(value = {"warrantyBill"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @NotAudited
+    private List<WarrantyBillEntity> warrantyBills;
 
-    public CustomerEntity(String name, String phone, String address) {
-        this.name = name;
-        this.phone = phone;
-        this.address = address;
-    }
-
-    public CustomerEntity(){}
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
+    @JsonIgnoreProperties(value = {"saleBill"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @NotAudited
+    private List<SaleBillEntity> saleBills;
 }

@@ -23,8 +23,12 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<FoundCategoryItem> getALl(@RequestParam(defaultValue = "") String name) {
+    public List<CategoryEntity> getALl(@RequestParam(defaultValue = "") String name) {
         return categoryService.getCategory(name);
+    }
+    @GetMapping("discontinued")
+    public List<CategoryEntity> getALlDiscontinued(@RequestParam(defaultValue = "") String name) {
+        return categoryService.getDiscontinuedCategory(name);
     }
 
     @GetMapping("{id}")
@@ -38,7 +42,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.postCategory(categoryEntity));
     }
     @PutMapping(path = "{id}")
-    public CategoryEntity edit(@RequestBody CategoryDTO categoryDTO, @PathVariable String id) {
+    public CategoryEntity edit(CategoryDTO categoryDTO, @PathVariable String id) {
         return categoryService.editCategory(categoryDTO, id);
     }
 

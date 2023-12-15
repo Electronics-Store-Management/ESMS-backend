@@ -25,13 +25,16 @@ public class ProductController {
     private final AmazonS3Service amazonS3Service;
 
     @GetMapping
-    public List<ProductEntity> getAl(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String category) {
-        return service.findByName(name, category);
+    public List<ProductEntity> getAll(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String category) {
+        return service.findRelatedCategory(name, category);
     }
-
+    @GetMapping("discountinued")
+    public List<ProductEntity> getAllDiscountinued(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String category) {
+        return service.findDiscontinuedRelatedCategory(name,category);
+    }
     @GetMapping("{id}")
     public ProductEntity getProduct(@PathVariable String id) {
-        return service.getProduct(id);
+        return service.getProductById(id);
     }
 
     @PostMapping
@@ -49,11 +52,7 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
-        ProductEntity product = service.remove(id);
-//        if (product.getPhotoURL() != null)
-//        List<String> parsedURL = Arrays.stream(product.getPhotoURL().split("/")).toList();
-//        amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
-        return ResponseEntity.ok().build();
+    public void deleteProduct(@PathVariable String id) {
+        service.remove(id);
     }
 }

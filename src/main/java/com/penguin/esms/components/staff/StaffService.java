@@ -1,5 +1,7 @@
 package com.penguin.esms.components.staff;
 
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.entity.Error;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,11 +23,22 @@ public class StaffService {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
     }
 
+    public List<StaffEntity> findByName(String name) {
+        return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+    }
+
+    public List<StaffEntity> findResigned(String name) {
+        return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, true);
+    }
+  
     public StaffEntity getOne(String id) {
         Optional<StaffEntity> staff = staffRepository.findById(id);
         if (staff.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
         }
+        if (staff.get().getIsStopped() == true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
         return staff.get();
     }
 
@@ -36,16 +49,18 @@ public class StaffService {
     public StaffEntity update(StaffDTO staffDTO, String id) {
         if (staffRepository.findById(id).isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Staff not existed");
+                    HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
         StaffEntity staff = staffRepository.findById(id).get();
         mapper.updateStaffFromDto(staffDTO, staff);
         return staffRepository.save(staff);
     }
 
     public void remove(String id) {
-        if (staffRepository.findById(id).isEmpty())
+        Optional<StaffEntity> staff = staffRepository.findById(id);
+        if (staff.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Staff not existed");
-        staffRepository.deleteById(id);
+                    HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
+        staff.get().setIsStopped(true);
+        staffRepository.save(staff.get());
     }
 }

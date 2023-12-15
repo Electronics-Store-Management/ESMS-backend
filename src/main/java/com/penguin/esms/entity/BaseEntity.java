@@ -19,47 +19,31 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    private Boolean isStopped = false;
 
-    @Column(name = "createddate")
-    @CreatedDate
-    private Date createdDate;
+//    @Column(name = "createddate")
+//    @CreatedDate
+//    private Date createdDate;
 
-    @Column(name = "modifieddate")
-    @LastModifiedDate
-    private Date modifiedDate;
+//    @Column(name = "modifieddate")
+//    @LastModifiedDate
+//    private Date modifiedDate;
 
-    @CreatedBy
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="created_by")
-    @JsonIgnoreProperties({"createdBy", "modifiedBy"})
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    private StaffEntity createdBy;
+//    @CreatedBy
+//    @ManyToOne
+//    @JoinColumn(name="created_by")
+//    private StaffEntity createdBy;
+//
+//    @LastModifiedBy
+//    @ManyToOne
+//    @JoinColumn(name="modified_by")
+//    private StaffEntity modifiedBy;
 
-    @LastModifiedBy
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="modified_by")
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
-    @JsonIgnoreProperties({"createdBy", "modifiedBy"})
-    private StaffEntity modifiedBy;
 
-    @Override
-    public String toString() {
-        return "BaseEntity{" +
-                "id=" + id +
-                ", createdDate=" + createdDate +
-                ", modifiedDate=" + modifiedDate +
-                ", createdBy='" + createdBy + '\'' +
-                ", modifiedBy='" + modifiedBy + '\'' +
-                '}';
-    }
 }

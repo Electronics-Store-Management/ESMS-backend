@@ -1,55 +1,37 @@
 package com.penguin.esms.components.warrantyBill;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
+@Getter
+@Setter
+@RequiredArgsConstructor
+@Audited
 public class WarrantyBillEntity extends BaseEntity {
     private String staffId;
-    private String customerId;
-
+//    private String customerId;
     private Date warrantyDate;
+    @NotAudited
+    @JsonIgnoreProperties(value = {"warrantyProducts"})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "warrantyBill")
+    private List<WarrantyProductEntity> warrantyProducts;
+    @NotAudited
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties(value = {"warrantyBills"})
+    private CustomerEntity customer;
 
-    public WarrantyBillEntity(String staffId, String customerId, Date warrantyDate) {
-        this.staffId = staffId;
-        this.customerId = customerId;
-        this.warrantyDate = warrantyDate;
-    }
-
-    public String getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public Date getWarrantyDate() {
-        return warrantyDate;
-    }
-
-    public void setWarrantyDate(Date warrantyDate) {
-        this.warrantyDate = warrantyDate;
-    }
-
-    @Override
-    public String toString() {
-        return "WarrantyBillEntity{" +
-                "staffId='" + staffId + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", warrantyDate=" + warrantyDate +
-                '}';
-    }
 }

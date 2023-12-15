@@ -33,6 +33,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = new StaffEntity(request.getName(), request.getPhone(), passwordEncoder.encode(request.getPassword()), request.getEmail(), request.getCitizenId(), request.getRole());
+        user.setIsStopped(false);
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);

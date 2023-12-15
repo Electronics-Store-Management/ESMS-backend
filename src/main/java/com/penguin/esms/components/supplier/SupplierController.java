@@ -31,10 +31,13 @@ public class SupplierController {
     private final PermissionRepo permissionRepo;
 
     @GetMapping
-    public List<SupplierEntity> getAl(@RequestParam(defaultValue = "") String name) {
+    public List<SupplierEntity> getAll(@RequestParam(defaultValue = "") String name) {
         return service.findByName(name);
     }
-
+    @GetMapping("termination")
+    public List<SupplierEntity> getAllTermination(@RequestParam(defaultValue = "") String name) {
+        return service.findTermination(name);
+    }
     @GetMapping("{id}")
     public SupplierEntity getOne(@PathVariable String id) {
         return service.getOne(id);
@@ -51,9 +54,8 @@ public class SupplierController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        SupplierEntity supplier = service.remove(id);
-        return ResponseEntity.ok().build();
+    public void delete(@PathVariable String id) {
+        service.remove(id);
     }
 
     @GetMapping("permission/{id}")
