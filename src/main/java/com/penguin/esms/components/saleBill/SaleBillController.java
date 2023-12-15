@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping(path = "sale")
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class SaleBillController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity) {
-        return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity));
+    public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity, Principal connectedUser) {
+        return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity, connectedUser));
     }
 }
