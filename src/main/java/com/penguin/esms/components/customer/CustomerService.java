@@ -30,43 +30,47 @@ public class CustomerService {
     public CustomerEntity getById(String id) {
         Optional<CustomerEntity> customer = customerRepo.findById(id);
         if (customer.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Customer not found").toString());
         }
+        if (customer.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         return customer.get();
     }
     public CustomerEntity getByPhone(String phone) {
         Optional<CustomerEntity> customer = customerRepo.findByPhone(phone);
         if (customer.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Customer not found").toString());
         }
+        if (customer.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         return customer.get();
     }
-    public Optional<CustomerEntity> findById(String customerId) {
-        return customerRepo.findById(customerId);
+    public List<CustomerEntity> getCustomer(String name) {
+        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
     }
-
-    public List<CustomerEntity> findByName(String name) {
-        return customerRepo.findByNameContainingIgnoreCase(name);
+    public List<CustomerEntity> getBannedCustomer(String name) {
+        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
-    public Optional<CustomerEntity> findByPhone(String phone) {
-        return customerRepo.findByPhone(phone);
-    }
-
-
     public CustomerEntity postCustomer(CustomerDTO customerDTO) {
         if (customerRepo.findByPhone(customerDTO.getPhone()).isPresent())
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, new Error("Customer existed").toString());
         CustomerEntity customer = updateFromDTO(customerDTO, new CustomerEntity());
+        customer.setIsStopped(false);
         return customerRepo.save(customer);
     }
-    public CustomerEntity removeCustomer(String id) {
+    public void removeCustomer(String id) {
         Optional<CustomerEntity> customer = customerRepo.findById(id);
         if (customer.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
-        customerRepo.deleteById(id);
-        return customer.get();
+        if (customer.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+        customer.get().setIsStopped(true);
+        customerRepo.save(customer.get());
     }
     private CustomerEntity updateFromDTO(CustomerDTO customerDTO, CustomerEntity customer) {
         mapper.updateCustomerFromDto(customerDTO, customer);
@@ -77,6 +81,9 @@ public class CustomerService {
         if (customer.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
+        if (customer.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());
                return customerRepo.save(customerEntity);
     }
