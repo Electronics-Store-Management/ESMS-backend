@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
 import com.penguin.esms.entity.BaseEntity;
@@ -25,6 +26,7 @@ import java.util.List;
 public class CustomerEntity extends BaseEntity {
     private String name;
     @Column(unique=true)
+    @PhoneNumberFormat(message = "Invalid phone number")
     private String phone;
     private String address;
     //sai ne
