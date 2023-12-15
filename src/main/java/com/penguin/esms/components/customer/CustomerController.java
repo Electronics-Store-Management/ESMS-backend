@@ -41,7 +41,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.postCustomer(customerDTO));
     }
     @PutMapping("{id}")
-    public ResponseEntity<?> put(@RequestParam MultipartFile photo, @Valid CustomerDTO customerDTO, @PathVariable String id) throws IOException {
+    public ResponseEntity<?> put(@RequestBody MultipartFile photo, @Valid CustomerDTO customerDTO, @PathVariable String id) throws IOException {
         return ResponseEntity.ok(customerService.update(customerDTO, id));
     }
     @DeleteMapping("{id}")
