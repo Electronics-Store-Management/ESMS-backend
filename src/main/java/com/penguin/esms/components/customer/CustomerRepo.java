@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepo extends JpaRepository<CustomerEntity,String> {
     Optional<CustomerEntity> findByName(String name);
-    List<CustomerEntity> findByNameContainingIgnoreCase(String name);
+    List<CustomerEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
     Optional<CustomerEntity> findById(String id);
     Optional<CustomerEntity> findByPhone(String phone);
 

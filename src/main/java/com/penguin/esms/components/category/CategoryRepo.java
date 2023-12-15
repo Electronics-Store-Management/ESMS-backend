@@ -15,15 +15,6 @@ import java.util.UUID;
 
 public interface CategoryRepo extends JpaRepository<CategoryEntity, String> {
     Optional<CategoryEntity> findByName(String name);
-//    @Query(value = """
-//        select new com.penguin.esms.components.category.response.FoundCategoryItem(c.id, c.name)\s
-//        from CategoryEntity c\s
-//        where LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))\s
-//        """)
-//    List<FoundCategoryItem> findByRelevantName(String name);
     List<CategoryEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
-
     Optional<CategoryEntity> findById(String id);
-
-
 }

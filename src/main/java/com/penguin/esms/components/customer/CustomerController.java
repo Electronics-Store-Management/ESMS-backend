@@ -21,7 +21,11 @@ public class CustomerController {
     private final CustomerService customerService;
     @GetMapping
     public List<CustomerEntity> getAll(@RequestParam(defaultValue = "") String name) {
-        return customerService.findByName(name);
+        return customerService.getCustomer(name);
+    }
+    @GetMapping("banned")
+    public List<CustomerEntity> getAllBanned(@RequestParam(defaultValue = "") String name) {
+        return customerService.getBannedCustomer(name);
     }
     @GetMapping("{id}")
     public CustomerEntity getById(@PathVariable String id) {
@@ -41,8 +45,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.update(customerDTO, id));
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<?> remove(@PathVariable String id) {
-        CustomerEntity customer = customerService.removeCustomer(id);
-        return ResponseEntity.ok().build();
+    public void remove(@PathVariable String id) {
+        customerService.removeCustomer(id);
     }
 }
