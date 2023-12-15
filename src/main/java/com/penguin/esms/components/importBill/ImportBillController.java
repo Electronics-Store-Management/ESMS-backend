@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class ImportBillController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody ImportBillEntity importBillEntity) {
-        return ResponseEntity.ok(importBillService.postImportBill(importBillEntity));
+    public ResponseEntity<?> post(@RequestBody ImportBillEntity importBillEntity, Principal connectedUser) {
+        return ResponseEntity.ok(importBillService.postImportBill(importBillEntity, connectedUser));
     }
 }
