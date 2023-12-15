@@ -42,10 +42,6 @@ public class StaffService {
         return staff.get();
     }
 
-    public List<StaffEntity> findByName(String name) {
-        return staffRepository.findByNameContainingIgnoreCase(name);
-    }
-
     public StaffEntity update(StaffDTO staffDTO, String id) {
         if (staffRepository.findById(id).isEmpty())
             throw new ResponseStatusException(

@@ -124,11 +124,11 @@ public class ProductService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
                 }
                 product.setCategory(category.get());
+                if (category.get().getIsStopped() == true)
+                    throw new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Category has been discontinued ");
+                product.setCategory(category.get());
             }
-            if (category.get().getIsStopped() == true)
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Category has been discontinued ");
-            product.setCategory(category.get());
         }
         List<SupplierEntity> supplierEntities = new ArrayList<>();
         productDTO.getSuppliers().forEach(s -> {
@@ -136,7 +136,7 @@ public class ProductService {
             if (supplier.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier with ID: " + s + " not found.").toString());
             }
-            if (supplier.get().getIsStopped() == true)
+            if (supplier.get().getIsStopped())
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Supplier has been discontinued ");
             supplierEntities.add(supplier.get());
