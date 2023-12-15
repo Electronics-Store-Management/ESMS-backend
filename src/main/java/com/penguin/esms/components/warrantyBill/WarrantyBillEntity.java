@@ -1,5 +1,6 @@
 package com.penguin.esms.components.warrantyBill;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
@@ -27,6 +28,7 @@ public class WarrantyBillEntity extends BaseEntity {
     @NotAudited
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "warrantyBill")
+    @JsonIgnore
     private List<WarrantyProductEntity> warrantyProducts;
     @NotAudited
     @ManyToOne
