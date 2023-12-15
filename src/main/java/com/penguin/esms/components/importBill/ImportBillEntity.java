@@ -1,5 +1,6 @@
 package com.penguin.esms.components.importBill;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.entity.NoteEntity;
@@ -29,6 +30,7 @@ public class ImportBillEntity extends NoteEntity {
 
     @JsonIgnoreProperties(value = {"import_bill"})
     @NotAudited
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "importBill")
     private List<ImportProductEntity> importProducts;
 }
