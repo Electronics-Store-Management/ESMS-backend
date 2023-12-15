@@ -1,5 +1,6 @@
 package com.penguin.esms.components.saleBill;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
@@ -28,6 +29,7 @@ public class SaleBillEntity extends NoteEntity {
     private Date saleDate;
     private Float discount;
     @NotAudited
+    @JsonIgnore
     @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleBill")
     private List<SaleProductEntity> saleProducts;
