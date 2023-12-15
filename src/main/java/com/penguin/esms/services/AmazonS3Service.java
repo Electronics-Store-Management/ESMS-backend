@@ -29,7 +29,6 @@ public class AmazonS3Service {
         return getObjectURL(filename);
     }
 
-
     public String updateFile(MultipartFile file, String filename) throws IOException {
         s3Service.putObject(AWS_BUCKET, filename, file);
         return getObjectURL(filename);

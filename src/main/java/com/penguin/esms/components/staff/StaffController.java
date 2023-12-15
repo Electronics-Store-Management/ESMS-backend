@@ -43,14 +43,14 @@ public class StaffController {
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public List<StaffEntity> getAllResigned(@RequestParam(defaultValue = "") String name) {
         return staffService.findResigned(name);
-
     }
+  
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public List<StaffEntity> getAll(@RequestParam(defaultValue = "") String name) {
         return staffService.findByName(name);
-
     }
+  
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public StaffEntity getStaffById(@PathVariable String id) {
@@ -66,9 +66,4 @@ public class StaffController {
     public void delete(@PathVariable String id) {
         staffService.remove(id);
     }
-
-//    @ExceptionHandler({ SQLException.class })
-//    public ResponseEntity<?> handleSQLException(SQLException e) {
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request body not found");
-//    }
 }

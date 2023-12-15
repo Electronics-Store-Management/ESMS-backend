@@ -30,6 +30,7 @@ public class StaffService {
     public List<StaffEntity> findResigned(String name) {
         return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
+  
     public StaffEntity getOne(String id) {
         Optional<StaffEntity> staff = staffRepository.findById(id);
         if (staff.isEmpty()) {
@@ -39,6 +40,10 @@ public class StaffService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
         return staff.get();
+    }
+
+    public List<StaffEntity> findByName(String name) {
+        return staffRepository.findByNameContainingIgnoreCase(name);
     }
 
     public StaffEntity update(StaffDTO staffDTO, String id) {

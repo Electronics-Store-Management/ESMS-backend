@@ -1,10 +1,13 @@
 package com.penguin.esms.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import com.penguin.esms.components.staff.StaffEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;

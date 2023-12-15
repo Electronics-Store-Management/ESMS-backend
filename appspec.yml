@@ -4,16 +4,22 @@ files:
   - source: /
     destination: /var/server/
 permissions:
-  - object: /home/ubuntu/
+  - object: /home/ec2-user/
+    owner: root
+    group: root
+    mode: 777
+  - object: /var/server
     owner: root
     group: root
     mode: 777
 file_exists_behavior: OVERWRITE
 hooks:
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/install_dependencies
       timeout: 300
       runas: root
+
+  ApplicationStart:
     - location: scripts/start_server
       runas: root
   ApplicationStop:

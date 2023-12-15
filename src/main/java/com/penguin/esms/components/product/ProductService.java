@@ -116,9 +116,14 @@ public class ProductService {
     private ProductEntity updateFromDTO(ProductDTO productDTO, ProductEntity product) {
         mapper.updateProductFromDto(productDTO, product);
         if (productDTO.getCategoryId() != null) {
-            Optional<CategoryEntity> category = categoryRepo.findById(productDTO.getCategoryId());
-            if (category.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
+            if (productDTO.getCategoryId().isEmpty()) {
+                product.setCategory(null);
+            } else {
+                Optional<CategoryEntity> category = categoryRepo.findById(productDTO.getCategoryId());
+                if (category.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
+                }
+                product.setCategory(category.get());
             }
             if (category.get().getIsStopped() == true)
                 throw new ResponseStatusException(

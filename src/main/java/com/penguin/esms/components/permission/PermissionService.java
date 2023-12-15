@@ -27,8 +27,8 @@ public class PermissionService {
     }
 
     public void remove(String permissionId) {
-//        Optional<PermissionEntity> permission = permissionRepo.findByPermissionTypeAndEntityTypeAndEntityIdAndStaffId(permissionRequest.getPermissionType().name(), permissionRequest.getEntityType().name(), permissionRequest.getEntityId(), staffId);
-//        permission.ifPresent(permissionRepo::delete);
+        Optional<PermissionEntity> permission = permissionRepo.findById(permissionId);
+        permission.ifPresent(permissionRepo::delete);
         permissionRepo.findById(permissionId);
     }
 }

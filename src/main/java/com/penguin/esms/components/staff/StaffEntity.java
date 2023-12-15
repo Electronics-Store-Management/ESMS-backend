@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -25,6 +26,7 @@ import java.util.List;
 @Entity
 @Table
 @Audited
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class StaffEntity extends BaseEntity implements UserDetails {
     @Pattern(regexp = "^[a-z0-9A-Z_àáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ ]*$", message = "Name should not contain special characters")
     @NotNull
@@ -44,9 +46,11 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String citizenId;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private Date lastOnline = null;
     @NotAudited
     @JsonIgnore
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = {"staff"})
     private List<PermissionEntity> permissions = new ArrayList<>();
 
     public StaffEntity() {}
