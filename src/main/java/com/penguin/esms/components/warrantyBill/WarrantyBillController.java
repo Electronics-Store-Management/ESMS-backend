@@ -8,19 +8,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping(path = "warranty")
 @RequiredArgsConstructor
 public class WarrantyBillController {
     private final WarrantyBillService warrantyBillService;
-
     @GetMapping("{id}")
     public WarrantyBillEntity get(@PathVariable String id) {
         return warrantyBillService.getWarrantyBill(id);
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity) {
-        return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity));
+    public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
+        return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity,connectedUser));
     }
 }
