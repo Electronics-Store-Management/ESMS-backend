@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "sale")
@@ -23,5 +24,9 @@ public class SaleBillController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity, Principal connectedUser) {
         return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity, connectedUser));
+    }
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return saleBillService.getRevisions(id);
     }
 }
