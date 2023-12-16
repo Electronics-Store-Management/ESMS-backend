@@ -46,6 +46,7 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     private String citizenId;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @NotAudited
     private Date lastOnline = null;
     @NotAudited
     @JsonIgnore
