@@ -8,10 +8,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 public class CustomerDTO {
     private String name;
     private String phone;
     private String address;
+
+    public CustomerDTO(String name, String phone, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+    }
 }
