@@ -1,16 +1,17 @@
 package com.penguin.esms.components.category;
 
-import com.penguin.esms.components.category.response.FoundCategoryItem;
-import com.penguin.esms.components.permission.PermissionEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,16 +19,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class CategoryService {
+    private final EntityManager entityManager;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final CategoryRepo categoryRepo;
     private final DTOtoEntityMapper mapper;
-
     public CategoryEntity postCategory(CategoryEntity categoryEntity) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());
         if (categoryEntityOptional.isPresent()) {
@@ -46,9 +47,6 @@ public class CategoryService {
         if (categoryEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Category not existed");
-        if (categoryEntityOptional.get().getIsStopped()==true)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Category has been discontinued ");
         CategoryEntity category = categoryEntityOptional.get();
         mapper.updateCategoryFromDto(categoryDTO, category);
         return categoryRepo.save(category);
@@ -76,5 +74,32 @@ public class CategoryService {
         else {
             return categoryEntityOptional.get();
         }
+    }
+
+    public List<?> getRevisionsForCategory(String id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(CategoryEntity.class, true, true)
+                .add(AuditEntity.id().eq(id))
+                .addProjection(AuditEntity.property("id"))
+                .addProjection(AuditEntity.property("name"))
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.revisionType())
+                .addOrder(AuditEntity.revisionNumber().desc());
+
+        List<AuditEnversInfo> categoryAudit = new ArrayList<AuditEnversInfo>();
+        List<Object[]> objects = query.getResultList();
+        for(int i=0; i< objects.size();i++){
+            Object[] objArray = objects.get(i);
+            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[2]);
+            if (auditEnversInfoOptional.isPresent()) {
+                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                CategoryEntity category = new CategoryEntity(id, (String) objArray[1]);
+                auditEnversInfo.setRevision(category);
+                categoryAudit.add(auditEnversInfo);
+            }
+        }
+        return categoryAudit;
     }
 }
