@@ -30,7 +30,6 @@ public class WarrantyBillEntity extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "warrantyBill")
     @JsonIgnore
     private List<WarrantyProductEntity> warrantyProducts;
-    @NotAudited
     @ManyToOne
     @JoinColumn(name = "customer_id")
     @JsonIgnoreProperties(value = {"warrantyBills"})
