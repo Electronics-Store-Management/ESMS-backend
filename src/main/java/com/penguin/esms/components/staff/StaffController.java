@@ -44,7 +44,10 @@ public class StaffController {
     public List<StaffEntity> getAllResigned(@RequestParam(defaultValue = "") String name) {
         return staffService.findResigned(name);
     }
-  
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return staffService.getRevisionsForStaff(id);
+    }
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public List<StaffEntity> getAll(@RequestParam(defaultValue = "") String name) {
