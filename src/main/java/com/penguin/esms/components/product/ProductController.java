@@ -36,7 +36,10 @@ public class ProductController {
     public ProductEntity getProduct(@PathVariable String id) {
         return service.getProductById(id);
     }
-
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return service.getRevisionsForProduct(id);
+    }
     @PostMapping
     public ResponseEntity<?> postProduct(@RequestParam @Nullable MultipartFile photo, @Valid ProductDTO productDTO) throws IOException {
         if (photo != null) {

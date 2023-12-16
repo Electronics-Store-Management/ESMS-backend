@@ -6,11 +6,18 @@ import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
 import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import com.penguin.esms.services.AmazonS3Service;
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +39,8 @@ public class ProductService {
     private final SupplierRepo supplierRepo;
     private final DTOtoEntityMapper mapper;
     private final AmazonS3Service amazonS3Service;
+    private final EntityManager entityManager;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
 
     public List<ProductEntity> findRelatedCategory(String name, String categoryName) {
         if (categoryName != null && !categoryName.isEmpty()) {
@@ -143,5 +152,39 @@ public class ProductService {
         });
         product.setSuppliers(supplierEntities);
         return product;
+    }
+
+    public List<?> getRevisionsForProduct(String id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(ProductEntity.class, true, true)
+                .add(AuditEntity.id().eq(id))
+                .addProjection(AuditEntity.property("id"))
+                .addProjection(AuditEntity.property("name"))
+                .addProjection(AuditEntity.property("category_id"))
+                .addProjection(AuditEntity.property("unit"))
+                .addProjection(AuditEntity.property("price"))
+                .addProjection(AuditEntity.property("quantity"))
+                .addProjection(AuditEntity.property("warrantyPeriod"))
+                .addProjection(AuditEntity.property("isAvailable"))
+                .addProjection(AuditEntity.property("photoURL"))
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.revisionType())
+                .addOrder(AuditEntity.revisionNumber().desc());
+
+        List<AuditEnversInfo> productAudit = new ArrayList<AuditEnversInfo>();
+        List<Object[]> objects = query.getResultList();
+        for(int i=0; i< objects.size();i++){
+            Object[] objArray = objects.get(i);
+            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
+            if (auditEnversInfoOptional.isPresent()) {
+                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+                auditEnversInfo.setRevision(product);
+                productAudit.add(auditEnversInfo);
+            }
+        }
+        return productAudit;
     }
 }
