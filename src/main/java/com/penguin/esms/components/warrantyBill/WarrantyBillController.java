@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "warranty")
@@ -23,5 +24,9 @@ public class WarrantyBillController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
         return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity,connectedUser));
+    }
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return warrantyBillService.getRevisions(id);
     }
 }
