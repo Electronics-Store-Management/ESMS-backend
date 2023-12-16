@@ -19,4 +19,9 @@ public class WarrantyBillDTO {
     private Date warrantyDate;
     private List<String> warrantyProducts = new ArrayList<>();
 
+    public WarrantyBillDTO(String staffId, String customerId, Date warrantyDate) {
+        this.staffId = staffId;
+        this.customerId = customerId;
+        this.warrantyDate = warrantyDate;
+    }
 }
