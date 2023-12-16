@@ -65,4 +65,8 @@ public class SupplierController {
         List<PermissionEntity> permissions = permissionRepo.findByEntityTypeAndEntityIdAndStaffId(EntityType.PRODUCT, id, staff.getId());
         return ResponseEntity.ok(new ItemPermission(permissions));
     }
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return service.getRevisions(id);
+    }
 }

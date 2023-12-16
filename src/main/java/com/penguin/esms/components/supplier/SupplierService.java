@@ -1,21 +1,33 @@
 package com.penguin.esms.components.supplier;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
 import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class SupplierService {
+    private final EntityManager entityManager;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final SupplierRepo supplierRepo;
     private final DTOtoEntityMapper mapper;
 
@@ -76,5 +88,34 @@ public class SupplierService {
         }
         supplierEntityOptional.get().setIsStopped(true);
         supplierRepo.save(supplierEntityOptional.get());
+    }
+
+    public List<?> getRevisions(String id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(SupplierEntity.class, true, true)
+                .add(AuditEntity.id().eq(id))
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.property("name"))
+                .addProjection(AuditEntity.property("phone"))
+                .addProjection(AuditEntity.property("email"))
+                .addProjection(AuditEntity.property("address"))
+                .addProjection(AuditEntity.revisionType())
+                .addOrder(AuditEntity.revisionNumber().desc());
+
+        List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
+        List<Object[]> objects = query.getResultList();
+        for(int i=0; i< objects.size();i++){
+            Object[] objArray = objects.get(i);
+            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
+            if (auditEnversInfoOptional.isPresent()) {
+                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                SupplierDTO dto = new SupplierDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3], (String) objArray[4]);
+                auditEnversInfo.setRevision(dto);
+                audit.add(auditEnversInfo);
+            }
+        }
+        return audit;
     }
 }
