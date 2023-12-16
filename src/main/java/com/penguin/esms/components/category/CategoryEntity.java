@@ -8,6 +8,7 @@ import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,15 +27,19 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-
+@Audited
 public class CategoryEntity extends BaseEntity {
-    @Audited
     private String name;
     @JsonIgnoreProperties(value = {"category"})
     @NotAudited
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<ProductEntity> products;
+
+    public CategoryEntity(String id , String name) {
+        this.setId(id);
+        this.name = name;
+    }
 
     @Override
     public String toString() {
