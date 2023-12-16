@@ -8,16 +8,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class StaffDTO {
+    private String id;
+
     @Pattern(regexp = "^[a-z0-9A-Z_àáãạảăắằẳẵặâấầẩẫậèéẹẻẽêềếểễệđìíĩỉịòóõọỏôốồổỗộơớờởỡợùúũụủưứừửữựỳỵỷỹýÀÁÃẠẢĂẮẰẲẴẶÂẤẦẨẪẬÈÉẸẺẼÊỀẾỂỄỆĐÌÍĨỈỊÒÓÕỌỎÔỐỒỔỖỘƠỚỜỞỠỢÙÚŨỤỦƯỨỪỬỮỰỲỴỶỸÝ ]*$", message = "Name should not contain special characters")
     @NotNull
     private String name;
@@ -32,4 +30,13 @@ public class StaffDTO {
     })
     private String citizenId;
     private Role role;
+
+    public StaffDTO(String id, String name, String phone, String email, String citizenId, Role role) {
+        this.setId(id);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.citizenId = citizenId;
+        this.role = role;
+    }
 }
