@@ -16,6 +16,13 @@ public class ImportBillDTO {
     private String staffId;
     private String supplierId;
     private String paymentMethod;
+
+    public ImportBillDTO(String staffId, String supplierId, String paymentMethod) {
+        this.staffId = staffId;
+        this.supplierId = supplierId;
+        this.paymentMethod = paymentMethod;
+    }
+
     private List<String> importProducts = new ArrayList<>();
 
 }
