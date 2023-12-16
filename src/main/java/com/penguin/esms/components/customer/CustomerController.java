@@ -48,4 +48,9 @@ public class CustomerController {
     public void remove(@PathVariable String id) {
         customerService.removeCustomer(id);
     }
+
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return customerService.getRevisions(id);
+    }
 }
