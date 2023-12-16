@@ -33,4 +33,9 @@ public class ImportBillController {
     public ResponseEntity<?> post(@RequestBody ImportBillEntity importBillEntity, Principal connectedUser) {
         return ResponseEntity.ok(importBillService.postImportBill(importBillEntity, connectedUser));
     }
+
+    @GetMapping("history/{id}")
+    public List<?> getALlHistory(@PathVariable String id) {
+        return importBillService.getRevisions(id);
+    }
 }
