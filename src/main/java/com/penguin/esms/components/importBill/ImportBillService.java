@@ -72,8 +72,6 @@ public class ImportBillService {
                 audit.add(auditEnversInfo);
             }
         }
-        System.out.println(audit);
-
         return audit;
     }
 
@@ -102,7 +100,12 @@ public class ImportBillService {
                 audit.add(auditEnversInfo);
             }
         }
-        System.out.println(audit);
-        return audit;
+        List<AuditEnversInfo> auditReturn = new ArrayList<AuditEnversInfo>();
+        for(int i=0; i< audit.size();i++){
+            if (audit.get(i).getTimestamp() > start.getTime() && audit.get(i).getTimestamp() < end.getTime() ) {
+                auditReturn.add(audit.get(i));
+            }
+        }
+        return auditReturn;
     }
 }
