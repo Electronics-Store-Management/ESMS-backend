@@ -29,6 +29,10 @@ public class ImportBillController {
     public List<?> get(@PathVariable String id) {
         return importBillService.getRevisions(id);
     }
+    @GetMapping()
+    public List<?> get() {
+        return importBillService.getAll();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
