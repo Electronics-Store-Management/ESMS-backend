@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,9 +24,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImportBillController {
     private final ImportBillService importBillService;
+
+//    @RequestMapping(method = RequestMethod.GET, path = "revision")
+//    public List<?> gethihi(@RequestParam String start, String end) {
+//        return importBillService.getAllRevisions(new Date(start), new Date(end));
+//    }
+
     @GetMapping("{id}")
-    public ImportBillEntity get(@PathVariable String id) {
-        return importBillService.getImportBill(id);
+    public List<?> get(@PathVariable String id) {
+        importBillService.getAllRevisions(new Date(), new Date());
+        return importBillService.getRevisions(id);
     }
 
     @PostMapping
@@ -34,8 +42,8 @@ public class ImportBillController {
         return ResponseEntity.ok(importBillService.postImportBill(importBillEntity, connectedUser));
     }
 
-    @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
-        return importBillService.getRevisions(id);
+    @GetMapping("history")
+    public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        return ResponseEntity.ok(importBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }
