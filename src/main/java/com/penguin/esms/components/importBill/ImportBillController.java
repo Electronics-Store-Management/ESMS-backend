@@ -25,11 +25,6 @@ import java.util.List;
 public class ImportBillController {
     private final ImportBillService importBillService;
 
-//    @RequestMapping(method = RequestMethod.GET, path = "revision")
-//    public List<?> gethihi(@RequestParam String start, String end) {
-//        return importBillService.getAllRevisions(new Date(start), new Date(end));
-//    }
-
     @GetMapping("{id}")
     public List<?> get(@PathVariable String id) {
         importBillService.getAllRevisions(new Date(), new Date());
