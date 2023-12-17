@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface ImportProductRepo extends JpaRepository<ImportProductEntity, String> {
     Optional<ImportProductEntity> findById(String id);
     Optional<ImportProductEntity> findByImportBillId(String importBillId);
-
 }
