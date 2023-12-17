@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WarrantyBillDTO {
+    private String id;
     private String staffId;
     private String customerId;
     private Date warrantyDate;
@@ -23,5 +24,12 @@ public class WarrantyBillDTO {
         this.staffId = staffId;
         this.customerId = customerId;
         this.warrantyDate = warrantyDate;
+    }
+
+    public WarrantyBillDTO(String staffId, String customerId, Date warrantyDate, String id) {
+        this.staffId = staffId;
+        this.customerId = customerId;
+        this.warrantyDate = warrantyDate;
+        this.setId(id);
     }
 }

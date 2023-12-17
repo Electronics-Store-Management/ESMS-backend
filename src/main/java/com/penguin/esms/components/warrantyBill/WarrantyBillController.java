@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -16,17 +17,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarrantyBillController {
     private final WarrantyBillService warrantyBillService;
-    @GetMapping("{id}")
-    public WarrantyBillEntity get(@PathVariable String id) {
-        return warrantyBillService.getWarrantyBill(id);
-    }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
         return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity,connectedUser));
     }
-    @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+
+    @GetMapping("{id}")
+    public List<?> get(@PathVariable String id) {
         return warrantyBillService.getRevisions(id);
+    }
+
+    @GetMapping("history")
+    public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        return ResponseEntity.ok(warrantyBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }
