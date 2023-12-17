@@ -1,6 +1,7 @@
 package com.penguin.esms.envers;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.Role;
@@ -8,12 +9,14 @@ import com.penguin.esms.components.staff.StaffDTO;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.dto.AuditEnverInfoDTO;
 import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
@@ -60,15 +63,29 @@ public class AuditEnverInfoService {
         typeEntity.add("com.penguin.esms.components.importBill.ImportBillEntity");
         typeEntity.add("com.penguin.esms.components.saleBill.SaleBillEntity");
         typeEntity.add("com.penguin.esms.components.warrantyBill.WarrantyBillEntity");
-        for (String i : typeEntity){
-            Class<?> type = Class.forName(i);
+        for (String t : typeEntity){
+            Class<?> type = Class.forName(t);
             AuditQuery query = auditReader.createQuery()
                     .forRevisionsOfEntity(type, true, true)
                     .add(AuditEntity.revisionNumber().in((Collection) audit.stream().map(auditEnversInfo -> auditEnversInfo.getId()).collect(Collectors.toList())))
                     .addProjection(AuditEntity.revisionNumber())
+                    .addProjection(AuditEntity.property("id"))
                     .addProjection(AuditEntity.revisionType())
                     .addOrder(AuditEntity.revisionNumber().desc());
-            auditByStaff.addAll(query.getResultList());
+
+//            auditByStaff.addAll(query.getResultList());
+            List<Object[]> objects = query.getResultList();
+            for(int i=0; i< objects.size();i++){
+                Object[] objArray = objects.get(i);
+                Optional<AuditEnversInfo> auditEnversInfoOptional = repo.findById((int) objArray[0]);
+                if (auditEnversInfoOptional.isPresent()) {
+                    AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                    AuditEnverInfoDTO dto = new AuditEnverInfoDTO((String) objArray[1], t, (RevisionType) objArray[2], (Integer) objArray[0]);
+                    dto.setName(t);
+                    auditEnversInfo.setRevision(dto);
+                    auditByStaff.add(auditEnversInfo);
+                }
+            }
         }
         return auditByStaff;
     }
