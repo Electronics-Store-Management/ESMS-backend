@@ -27,7 +27,10 @@ public class WarrantyBillController {
     public List<?> get(@PathVariable String id) {
         return warrantyBillService.getRevisions(id);
     }
-
+    @GetMapping()
+    public List<?> get() {
+        return warrantyBillService.getAll();
+    }
     @GetMapping("history")
     public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
         return ResponseEntity.ok(warrantyBillService.getAllRevisions(new Date(start), new Date(end)));
