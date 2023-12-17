@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Audited
 public class ImportProductEntity extends BaseEntity {
     private Integer quantity;
     private Long price;
