@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SaleBillDTO {
     private String staffId;
+    private String id;
+
     private String customerId;
     private String paymentMethod;
     private Date saleDate;
@@ -26,4 +28,13 @@ public class SaleBillDTO {
         this.paymentMethod = paymentMethod;
         this.discount = discount;
     }
+
+    public SaleBillDTO(String staffId, String customerId, String paymentMethod, Float discount,String id ) {
+        this.staffId = staffId;
+        this.customerId = customerId;
+        this.paymentMethod = paymentMethod;
+        this.discount = discount;
+        this.setId(id);
+    }
+
 }
