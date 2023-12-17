@@ -72,6 +72,37 @@ public class ImportBillService {
                 audit.add(auditEnversInfo);
             }
         }
+        System.out.println(audit);
+
+        return audit;
+    }
+
+    public List<?> getAllRevisions(Date start, Date end) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(ImportBillEntity.class, true, true)
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.property("staffId"))
+                .addProjection(AuditEntity.property("supplierId"))
+                .addProjection(AuditEntity.property("paymentMethod"))
+                .addProjection(AuditEntity.property("id"))
+                .addProjection(AuditEntity.revisionType())
+                .addOrder(AuditEntity.revisionNumber().desc());
+
+        List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
+        List<Object[]> objects = query.getResultList();
+        for(int i=0; i< objects.size();i++){
+            Object[] objArray = objects.get(i);
+            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
+            if (auditEnversInfoOptional.isPresent()) {
+                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                ImportBillDTO dto = new ImportBillDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3], (String) objArray[4]);
+                auditEnversInfo.setRevision(dto);
+                audit.add(auditEnversInfo);
+            }
+        }
+        System.out.println(audit);
         return audit;
     }
 }
