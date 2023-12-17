@@ -1,8 +1,14 @@
 package com.penguin.esms.components.importBill;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
+import com.penguin.esms.components.importProduct.ImportProductRepo;
+import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
 import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.supplier.SupplierEntity;
@@ -11,6 +17,7 @@ import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -33,6 +40,10 @@ public class ImportBillService {
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final ImportBillRepo importBillRepo;
+    private final ProductRepo productRepo;
+    private final DTOtoEntityMapper mapper;
+    private final ImportProductRepo importProductRepo;
+
     public ImportBillEntity getImportBill(String importBillId) {
         Optional<ImportBillEntity> importBill = importBillRepo.findById(importBillId);
         if (importBill.isEmpty()) {
@@ -40,13 +51,33 @@ public class ImportBillService {
         }
         return importBill.get();
     }
-
-    public ImportBillEntity postImportBill(ImportBillEntity importBillEntity, Principal connectedUser) {
+    public ImportBillEntity postImportBill(ImportBillDTO importBillDTO, Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        importBillEntity.setStaffId(staff.getId());
-        return importBillRepo.save(importBillEntity);
+        importBillDTO.setStaffId(staff.getId());
+        List<ImportProductDTO> importPrts = importBillDTO.getImportProducts();
+        ImportBillEntity impot = updateFromDTO(importBillDTO, new ImportBillEntity());
+        importBillRepo.save(impot);
+        for (ImportProductDTO t : importPrts){
+            ImportProductEntity impotPrt = updateFromDTO(t, new ImportProductEntity());
+            Optional<ProductEntity> product = productRepo.findById(t.getProductId());
+            impotPrt.setProduct(product.get());
+            impotPrt.setImportBill(impot);
+            importProductRepo.save(impotPrt);
+            List<ImportProductEntity> importProducts = impot.getImportProducts();
+            importProducts.add(impotPrt);
+            impot.setImportProducts(importProducts);
+        }
+        importBillRepo.save(impot);
+        return impot;
     }
-
+    private ImportBillEntity updateFromDTO(ImportBillDTO importBillDTO, ImportBillEntity impot) {
+        mapper.updateImportBillFromDto(importBillDTO, impot);
+        return impot;
+    }
+    private ImportProductEntity updateFromDTO(ImportProductDTO dto, ImportProductEntity entity) {
+        mapper.updateImportProductFromDto(dto, entity);
+        return entity;
+    }
     public List<?> getRevisions(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 

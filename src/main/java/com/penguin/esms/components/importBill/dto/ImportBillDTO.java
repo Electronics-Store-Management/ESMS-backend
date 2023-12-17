@@ -1,5 +1,6 @@
 package com.penguin.esms.components.importBill.dto;
 
+import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ImportBillDTO {
     private String id;
-
     private String staffId;
     private String supplierId;
     private String paymentMethod;
+    private List<ImportProductDTO> importProducts = new ArrayList<>();
 
     public ImportBillDTO(String staffId, String supplierId, String paymentMethod) {
         this.staffId = staffId;
@@ -31,7 +32,5 @@ public class ImportBillDTO {
         this.supplierId = supplierId;
         this.paymentMethod = paymentMethod;
     }
-
-    private List<String> importProducts = new ArrayList<>();
 
 }

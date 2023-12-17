@@ -7,6 +7,7 @@ import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,11 +19,10 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ImportProductEntity extends BaseEntity {
     private Integer quantity;
-    private Integer index;
     private Long price;
-    private String unit;
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnoreProperties(value = {"importProducts"})
