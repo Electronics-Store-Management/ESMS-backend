@@ -4,6 +4,10 @@ import com.penguin.esms.components.category.CategoryDTO;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.dto.CustomerDTO;
+import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
+import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffDTO;
@@ -29,6 +33,10 @@ public interface DTOtoEntityMapper {
     void updateSupplierFromDto(SupplierDTO dto, @MappingTarget SupplierEntity entity);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateCustomerFromDto(CustomerDTO dto, @MappingTarget CustomerEntity entity);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateImportBillFromDto(ImportBillDTO dto, @MappingTarget ImportBillEntity entity);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateImportProductFromDto(ImportProductDTO dto, @MappingTarget ImportProductEntity entity);
     default List<SupplierEntity> map(List<String> value) {
         return value.stream().map(v -> new SupplierEntity()).toList();
     }

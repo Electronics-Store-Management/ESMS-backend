@@ -1,6 +1,7 @@
 package com.penguin.esms.components.importBill;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.importBill.dto.ImportBillDTO;
 import com.penguin.esms.components.permission.dto.PermissionRequest;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.product.dto.ProductDTO;
@@ -36,8 +37,8 @@ public class ImportBillController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody ImportBillEntity importBillEntity, Principal connectedUser) {
-        return ResponseEntity.ok(importBillService.postImportBill(importBillEntity, connectedUser));
+    public ResponseEntity<?> post(@RequestBody ImportBillDTO importBillDTO, Principal connectedUser) {
+        return ResponseEntity.ok(importBillService.postImportBill(importBillDTO, connectedUser));
     }
 
     @GetMapping("history")
