@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,18 +16,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleBillController {
     private final SaleBillService saleBillService;
-    @GetMapping("{id}")
-    public SaleBillEntity get(@PathVariable String id) {
-        return saleBillService.getSaleBill(id);
-    }
+//    @GetMapping("{id}")
+//    public SaleBillEntity get(@PathVariable String id) {
+//        return saleBillService.getSaleBill(id);
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity, Principal connectedUser) {
         return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity, connectedUser));
     }
-    @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+
+    @GetMapping("{id}")
+    public List<?> get(@PathVariable String id) {
         return saleBillService.getRevisions(id);
+    }
+    @GetMapping("history")
+    public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        return ResponseEntity.ok(saleBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }
