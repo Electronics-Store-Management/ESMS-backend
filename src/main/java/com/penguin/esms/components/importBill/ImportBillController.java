@@ -27,7 +27,6 @@ public class ImportBillController {
 
     @GetMapping("{id}")
     public List<?> get(@PathVariable String id) {
-        importBillService.getAllRevisions(new Date(), new Date());
         return importBillService.getRevisions(id);
     }
 
