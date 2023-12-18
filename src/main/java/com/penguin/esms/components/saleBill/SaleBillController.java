@@ -1,7 +1,10 @@
 package com.penguin.esms.components.saleBill;
 
 import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "sale")
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class SaleBillController {
     private final SaleBillService saleBillService;
 //    @GetMapping("{id}")
@@ -23,8 +28,8 @@ public class SaleBillController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody SaleBillEntity saleBillEntity, Principal connectedUser) {
-        return ResponseEntity.ok(saleBillService.postSaleBill(saleBillEntity, connectedUser));
+    public ResponseEntity<?> post(@RequestBody SaleBillDTO dto, Principal connectedUser) {
+        return ResponseEntity.ok(saleBillService.post(dto, connectedUser));
     }
 
     @GetMapping("{id}")
