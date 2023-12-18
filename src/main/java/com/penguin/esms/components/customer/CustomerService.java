@@ -43,64 +43,70 @@ public class CustomerService {
         if (customer.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Customer not found").toString());
         }
-        if (customer.get().getIsStopped()==true)
+        if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         return customer.get();
     }
+
     public CustomerEntity getByPhone(String phone) {
         Optional<CustomerEntity> customer = customerRepo.findByPhone(phone);
         if (customer.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Customer not found").toString());
         }
-        if (customer.get().getIsStopped()==true)
+        if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         return customer.get();
     }
+
     public List<CustomerEntity> getCustomer(String name) {
         return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
     }
+
     public List<CustomerEntity> getBannedCustomer(String name) {
         return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
-    public CustomerEntity postCustomer(CustomerDTO customerDTO) {
-        Optional<CustomerEntity> customerOp = customerRepo.findByPhone(customerDTO.getPhone());
-        if (customerOp.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
-        if (customerOp.get().getIsStopped()==true)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
-        CustomerEntity customer = updateFromDTO(customerDTO, new CustomerEntity());
+
+    public CustomerEntity postCustomer(CustomerDTO dto) {
+        Optional<CustomerEntity> customerOp = customerRepo.findByPhone(dto.getPhone());
+        if (customerOp.isPresent())
+            if (customerOp.get().getIsStopped() == true)
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+        CustomerEntity customer = updateFromDTO(dto, new CustomerEntity());
+//        CustomerEntity customer = dto;
         customer.setIsStopped(false);
         return customerRepo.save(customer);
     }
+
     public void removeCustomer(String id) {
         Optional<CustomerEntity> customer = customerRepo.findById(id);
         if (customer.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
-        if (customer.get().getIsStopped()==true)
+        if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         customer.get().setIsStopped(true);
         customerRepo.save(customer.get());
     }
+
     private CustomerEntity updateFromDTO(CustomerDTO customerDTO, CustomerEntity customer) {
         mapper.updateCustomerFromDto(customerDTO, customer);
         return customer;
     }
+
     public CustomerEntity update(CustomerDTO customerDTO, String id) throws IOException {
         Optional<CustomerEntity> customer = customerRepo.findById(id);
         if (customer.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
-        if (customer.get().getIsStopped()==true)
+        if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());
-               return customerRepo.save(customerEntity);
+        return customerRepo.save(customerEntity);
     }
 
     public List<?> getRevisions(String id) {
@@ -118,12 +124,12 @@ public class CustomerService {
 
         List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
         List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
+        for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                CustomerDTO dto = new CustomerDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+                CustomerDTO dto = new CustomerDTO((String) objArray[1], (String) objArray[2], (String) objArray[3]);
                 auditEnversInfo.setRevision(dto);
                 audit.add(auditEnversInfo);
             }
