@@ -52,4 +52,11 @@ public class ImportProductService {
         }
         return importProduct.get();
     }
+    public ImportProductEntity getImportBill(String importBillId) {
+        Optional<ImportProductEntity> importProduct = importProductRepo.findById(importBillId);
+        if (importProduct.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        return importProduct.get();
+    }
 }

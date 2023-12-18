@@ -98,8 +98,11 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillDTO dto = new ImportBillDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
-                auditEnversInfo.setRevision(dto);
+                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+                List<ImportProductEntity> importProducts = new ArrayList<>();
+                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+                entity.setImportProducts(importProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
@@ -125,8 +128,11 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillDTO dto = new ImportBillDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
-                auditEnversInfo.setRevision(dto);
+                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+                List<ImportProductEntity> importProducts = new ArrayList<>();
+                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+                entity.setImportProducts(importProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
@@ -153,8 +159,11 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillDTO dto = new ImportBillDTO((String) objArray[1],  (String) objArray[2], (String) objArray[3], (String) objArray[4]);
-                auditEnversInfo.setRevision(dto);
+                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+                List<ImportProductEntity> importProducts = new ArrayList<>();
+                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+                entity.setImportProducts(importProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }

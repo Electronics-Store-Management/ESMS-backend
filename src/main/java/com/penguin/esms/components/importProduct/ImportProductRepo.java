@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface ImportProductRepo extends JpaRepository<ImportProductEntity, String> {
     Optional<ImportProductEntity> findById(String id);
+    Optional<ImportProductEntity> findByImportBillId(String importBillId);
 }
