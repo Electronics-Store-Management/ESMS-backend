@@ -5,6 +5,7 @@ import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.entity.BaseEntity;
+import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,7 +21,7 @@ import org.hibernate.envers.Audited;
 @Setter
 @RequiredArgsConstructor
 @Audited
-public class SaleProductEntity extends BaseEntity {
+public class SaleProductEntity extends NoteEntity {
     private Integer quantity;
     private Long price;
     @ManyToOne

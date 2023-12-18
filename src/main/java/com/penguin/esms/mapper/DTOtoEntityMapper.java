@@ -49,10 +49,10 @@ public interface DTOtoEntityMapper {
     void updateSaleBillFromDto(SaleBillDTO dto, @MappingTarget SaleBillEntity entity);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateSaleProductFromDto(SaleProductDTO dto, @MappingTarget SaleProductEntity entity);
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    void updateWarrantyBillFromDto(WarrantyBillDTO dto, @MappingTarget WarrantyBillEntity entity);
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    void updateWarrantyProductFromDto(WarrantyProductDTO dto, @MappingTarget WarrantyProductEntity entity);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateWarrantyBillFromDto(WarrantyBillDTO dto, @MappingTarget WarrantyBillEntity entity);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateWarrantyProductFromDto(WarrantyProductDTO dto, @MappingTarget WarrantyProductEntity entity);
     default List<SupplierEntity> map(List<String> value) {
         return value.stream().map(v -> new SupplierEntity()).toList();
     }

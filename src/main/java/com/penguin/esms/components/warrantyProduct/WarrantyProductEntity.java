@@ -1,5 +1,6 @@
 package com.penguin.esms.components.warrantyProduct;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.product.ProductEntity;
@@ -13,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import java.util.Date;
 @Entity
@@ -20,6 +22,7 @@ import java.util.Date;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class WarrantyProductEntity extends NoteEntity {
     private String staffId;
     private Integer quantity;
@@ -29,6 +32,7 @@ public class WarrantyProductEntity extends NoteEntity {
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     private ProductEntity product;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "warrantyBill_id")
     @JsonIgnoreProperties(value = {"warrantyProducts"})
     private WarrantyBillEntity warrantyBill;

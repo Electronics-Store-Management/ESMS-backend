@@ -23,8 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Audited
 public class SaleBillEntity extends NoteEntity {
-//    @Transient
-//    private String customerId;
     private String staffId;
     private String paymentMethod;
     private Float discount;

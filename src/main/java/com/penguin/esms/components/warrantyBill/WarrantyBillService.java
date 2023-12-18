@@ -1,16 +1,32 @@
 package com.penguin.esms.components.warrantyBill;
 
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
+import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
+import com.penguin.esms.components.saleProduct.SaleProductEntity;
+import com.penguin.esms.components.saleProduct.SaleProductRepo;
+import com.penguin.esms.components.saleProduct.dto.SaleProductDTO;
 import com.penguin.esms.components.staff.Role;
 import com.penguin.esms.components.staff.StaffDTO;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductRepo;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductService;
+import com.penguin.esms.components.warrantyProduct.dto.WarrantyProductDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -32,27 +48,62 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class WarrantyBillService {
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final WarrantyBillRepo warrantyBillRepo;
+    private final WarrantyProductRepo warrantyProductRepo;
+    private final DTOtoEntityMapper mapper;
+    private final ProductRepo productRepo;
+    private final CustomerRepo customerRepo;
     public Boolean checkWarranty(Date buyDate, Period periodTime){
         if (Period.between(LocalDate.now(), buyDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).getMonths() > periodTime.getMonths())
             return false;
         return true;
     }
-    public WarrantyBillEntity getWarrantyBill(String warrantyBillId) {
-        Optional<WarrantyBillEntity> warrantyBill = warrantyBillRepo.findById(warrantyBillId);
-        if (warrantyBill.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Warranty bill not found").toString());
+//    public WarrantyBillEntity getWarrantyBill(String warrantyBillId) {
+//        Optional<WarrantyBillEntity> warrantyBill = warrantyBillRepo.findById(warrantyBillId);
+//        if (warrantyBill.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Warranty bill not found").toString());
+//        }
+//        return warrantyBill.get();
+//    }
+//    public WarrantyBillEntity postWarrantyBill(WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
+//        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+//        warrantyBillEntity.setStaffId(staff.getId());
+//        return warrantyBillRepo.save(warrantyBillEntity);
+//    }
+    public WarrantyBillEntity postWarrantyBill(WarrantyBillDTO dto, Principal connectedUser) {
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        dto.setStaffId(staff.getId());
+        List<WarrantyProductDTO> warrantyProducts = dto.getWarrantyProducts();
+        CustomerEntity customer = customerRepo.findById(dto.getCustomerId()).get();
+        WarrantyBillEntity warranty = updateFromDTO(dto, new WarrantyBillEntity());
+        warranty.setCustomer(customer);
+        warrantyBillRepo.save(warranty);
+        for (WarrantyProductDTO t : warrantyProducts) {
+            WarrantyProductEntity warrantyProduct = updateFromDTO(t, new WarrantyProductEntity());
+            Optional<ProductEntity> product = productRepo.findById(t.getProductId());
+            warrantyProduct.setProduct(product.get());
+            warrantyProduct.setWarrantyBill(warranty);
+            warrantyProductRepo.save(warrantyProduct);
+            List<WarrantyProductEntity> warrantyPrts = warranty.getWarrantyProducts();
+            warrantyPrts.add(warrantyProduct);
+            warranty.setWarrantyProducts(warrantyPrts);
         }
-        return warrantyBill.get();
+        warrantyBillRepo.save(warranty);
+        return warranty;
+    }
+    private WarrantyBillEntity updateFromDTO(WarrantyBillDTO dto, WarrantyBillEntity entity) {
+        mapper.updateWarrantyBillFromDto(dto, entity);
+        return entity;
     }
 
-    public WarrantyBillEntity postWarrantyBill(WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
-        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        warrantyBillEntity.setStaffId(staff.getId());
-        return warrantyBillRepo.save(warrantyBillEntity);
+    private WarrantyProductEntity updateFromDTO(WarrantyProductDTO dto, WarrantyProductEntity entity) {
+        mapper.updateWarrantyProductFromDto(dto, entity);
+        return entity;
     }
     public List<?> getRevisions(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -64,6 +115,7 @@ public class WarrantyBillService {
                 .addProjection(AuditEntity.property("staffId"))
                 .addProjection(AuditEntity.property("customer_id"))
                 .addProjection(AuditEntity.property("warrantyDate"))
+                .addProjection(AuditEntity.property("id"))
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
@@ -74,8 +126,14 @@ public class WarrantyBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                WarrantyBillDTO dto = new WarrantyBillDTO((String) objArray[1],  (String) objArray[2], (Date) objArray[3]);
-                auditEnversInfo.setRevision(dto);
+                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
+                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
+                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
+                if (warrantyProductEntityOptional.isPresent()) {
+                    warrantyProducts.add(warrantyProductEntityOptional.get());
+                }
+                entity.setWarrantyProducts(warrantyProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
@@ -91,6 +149,7 @@ public class WarrantyBillService {
                 .addProjection(AuditEntity.property("staffId"))
                 .addProjection(AuditEntity.property("customer_id"))
                 .addProjection(AuditEntity.property("warrantyDate"))
+                .addProjection(AuditEntity.property("id"))
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
@@ -101,8 +160,14 @@ public class WarrantyBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                WarrantyBillDTO dto = new WarrantyBillDTO((String) objArray[1],  (String) objArray[2], (Date) objArray[3]);
-                auditEnversInfo.setRevision(dto);
+                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
+                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
+                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
+                if (warrantyProductEntityOptional.isPresent()) {
+                    warrantyProducts.add(warrantyProductEntityOptional.get());
+                }
+                entity.setWarrantyProducts(warrantyProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
@@ -129,8 +194,14 @@ public class WarrantyBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                WarrantyBillDTO dto = new WarrantyBillDTO((String) objArray[1],  (String) objArray[2], (Date) objArray[3], (String) objArray[4]);
-                auditEnversInfo.setRevision(dto);
+                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
+                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
+                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
+                if (warrantyProductEntityOptional.isPresent()) {
+                    warrantyProducts.add(warrantyProductEntityOptional.get());
+                }
+                entity.setWarrantyProducts(warrantyProducts);
+                auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
