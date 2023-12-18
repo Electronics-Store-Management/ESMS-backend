@@ -65,9 +65,13 @@ public class CustomerService {
         return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
     public CustomerEntity postCustomer(CustomerDTO customerDTO) {
-        if (customerRepo.findByPhone(customerDTO.getPhone()).isPresent())
+        Optional<CustomerEntity> customerOp = customerRepo.findByPhone(customerDTO.getPhone());
+        if (customerOp.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, new Error("Customer existed").toString());
+                    HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
+        if (customerOp.get().getIsStopped()==true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         CustomerEntity customer = updateFromDTO(customerDTO, new CustomerEntity());
         customer.setIsStopped(false);
         return customerRepo.save(customer);
