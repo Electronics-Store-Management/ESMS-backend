@@ -32,13 +32,13 @@ public class CustomerEntity extends BaseEntity {
     //sai ne
     @JsonIgnoreProperties(value = {"warrantyBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    @NotAudited
+//    @NotAudited
     @JsonIgnore
     private List<WarrantyBillEntity> warrantyBills;
 
     @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-    @NotAudited
+//    @NotAudited
     @JsonIgnore
     private List<SaleBillEntity> saleBills;
 }
