@@ -1,6 +1,7 @@
 package com.penguin.esms.components.saleBill.dto;
 
 import com.penguin.esms.components.saleProduct.SaleProductEntity;
+import com.penguin.esms.components.saleProduct.dto.SaleProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +16,10 @@ import java.util.List;
 public class SaleBillDTO {
     private String staffId;
     private String id;
-
     private String customerId;
     private String paymentMethod;
-    private Date saleDate;
     private Float discount;
-    private List<String> saleProducts;
+    private List<SaleProductDTO> saleProducts;
 
     public SaleBillDTO(String staffId, String customerId, String paymentMethod, Float discount) {
         this.staffId = staffId;

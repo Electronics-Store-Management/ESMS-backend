@@ -24,12 +24,8 @@ import java.util.List;
 @Audited
 public class SaleBillEntity extends NoteEntity {
     private String staffId;
-//    private String customerId;
     private String paymentMethod;
-    private Date saleDate;
     private Float discount;
-    @NotAudited
-    @JsonIgnore
     @JsonIgnoreProperties(value = {"saleBill"})
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleBill")
     private List<SaleProductEntity> saleProducts;
@@ -37,4 +33,18 @@ public class SaleBillEntity extends NoteEntity {
     @JoinColumn(name = "customer_id")
     @JsonIgnoreProperties(value = {"saleBills"})
     private CustomerEntity customer;
+
+    public SaleBillEntity(String staffId, String paymentMethod, Float discount) {
+        this.staffId = staffId;
+        this.paymentMethod = paymentMethod;
+        this.discount =discount;
+    }
+
+    public SaleBillEntity(String id, String staffId, String paymentMethod, Float discount) {
+        this.setId(id);
+        this.staffId = staffId;
+        this.paymentMethod = paymentMethod;
+        this.discount =discount;
+
+    }
 }

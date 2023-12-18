@@ -1,11 +1,17 @@
 package com.penguin.esms.components.saleProduct.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class SaleProductDTO {
     private String productId;
-    private String saleBillId;
     private Integer quantity;
-    private Integer index;
     private Long price;
-    private String unit;
 
 }

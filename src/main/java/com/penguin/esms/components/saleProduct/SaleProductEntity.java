@@ -12,17 +12,17 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Audited
 public class SaleProductEntity extends BaseEntity {
     private Integer quantity;
-    private Integer index;
     private Long price;
-    private String unit;
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnoreProperties(value = {"saleProducts"})
