@@ -23,6 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Audited
 public class SaleBillEntity extends NoteEntity {
+    @Transient
+    private String customerId;
     private String staffId;
     private String paymentMethod;
     private Float discount;
@@ -39,12 +41,17 @@ public class SaleBillEntity extends NoteEntity {
         this.paymentMethod = paymentMethod;
         this.discount =discount;
     }
-
-    public SaleBillEntity(String id, String staffId, String paymentMethod, Float discount) {
-        this.setId(id);
+    public SaleBillEntity(String staffId, String customerId, String paymentMethod, Float discount) {
         this.staffId = staffId;
+        this.customerId = customerId;
         this.paymentMethod = paymentMethod;
-        this.discount =discount;
-
+        this.discount = discount;
+    }
+    public SaleBillEntity(String staffId, String customerId, String paymentMethod, Float discount,String id ) {
+        this.staffId = staffId;
+        this.customerId = customerId;
+        this.paymentMethod = paymentMethod;
+        this.discount = discount;
+        this.setId(id);
     }
 }
