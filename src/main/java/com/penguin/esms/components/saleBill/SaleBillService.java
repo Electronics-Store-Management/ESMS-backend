@@ -52,8 +52,7 @@ public class SaleBillService {
     private final SaleProductRepo saleProductRepo;
     private final DTOtoEntityMapper mapper;
     private final ProductRepo productRepo;
-
-
+    private final CustomerRepo customerRepo;
 
 
     public SaleBillEntity getSaleBill(String saleBillId) {
@@ -68,9 +67,11 @@ public class SaleBillService {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         saleBillDTO.setStaffId(staff.getId());
         List<SaleProductDTO> salePrts = saleBillDTO.getSaleProducts();
+        CustomerEntity customer = customerRepo.findById(saleBillDTO.getCustomerId()).get();
         SaleBillEntity sale = updateFromDTO(saleBillDTO, new SaleBillEntity());
+        sale.setCustomer(customer);
         saleBillRepo.save(sale);
-        for (SaleProductDTO t : salePrts){
+        for (SaleProductDTO t : salePrts) {
             SaleProductEntity salePrt = updateFromDTO(t, new SaleProductEntity());
             Optional<ProductEntity> product = productRepo.findById(t.getProductId());
             salePrt.setProduct(product.get());
@@ -88,6 +89,7 @@ public class SaleBillService {
         mapper.updateSaleBillFromDto(saleBillDTO, sale);
         return sale;
     }
+
     private SaleProductEntity updateFromDTO(SaleProductDTO dto, SaleProductEntity entity) {
         mapper.updateSaleProductFromDto(dto, entity);
         return entity;
@@ -109,14 +111,17 @@ public class SaleBillService {
 
         List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
         List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
+        for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                SaleBillEntity entity = new SaleBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3], (Float) objArray[4]);
+                SaleBillEntity entity = new SaleBillEntity((String) objArray[1], (CustomerEntity) objArray[2], (String) objArray[3], (Float) objArray[4]);
+
                 List<SaleProductEntity> saleProducts = new ArrayList<>();
-                saleProducts.add(saleProductRepo.findBySaleBillId(entity.getId()).get());
+                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
+                if (saleProductEntityOptional.isPresent())
+                    saleProducts.add(saleProductRepo.findBySaleBillId(entity.getId()).get());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -124,6 +129,7 @@ public class SaleBillService {
         }
         return audit;
     }
+
     public List<?> getAll() {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -134,19 +140,26 @@ public class SaleBillService {
                 .addProjection(AuditEntity.property("customer_id"))
                 .addProjection(AuditEntity.property("paymentMethod"))
                 .addProjection(AuditEntity.property("discount"))
+                .addProjection(AuditEntity.property("id"))
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
         List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
         List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
+        for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                SaleBillEntity entity = new SaleBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3], (Float) objArray[4]);
+//                SaleBillEntity entity = new SaleBillEntity((String) objArray[1], (CustomerEntity) objArray[2], (String) objArray[3], (Float) objArray[4], (String) objArray[5]);
+                SaleBillEntity entity = saleBillRepo.findById((String) objArray[5]).get();
+
                 List<SaleProductEntity> saleProducts = new ArrayList<>();
-                saleProducts.add(saleProductRepo.findBySaleBillId(entity.getId()).get());
+                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
+                if (saleProductEntityOptional.isPresent()) {
+//                    System.out.println("no co ne di cho");
+                    saleProducts.add(saleProductEntityOptional.get());
+                }
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -154,6 +167,7 @@ public class SaleBillService {
         }
         return audit;
     }
+
     public List<?> getAllRevisions(Date start, Date end) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -170,22 +184,24 @@ public class SaleBillService {
 
         List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
         List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
+        for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                SaleBillEntity entity = new SaleBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3], (Float) objArray[4], (String) objArray[5]);
+                SaleBillEntity entity = new SaleBillEntity((String) objArray[1], (CustomerEntity) objArray[2], (String) objArray[3], (Float) objArray[4], (String) objArray[5]);
+                System.out.println(entity);
                 List<SaleProductEntity> saleProducts = new ArrayList<>();
-                saleProducts.add(saleProductRepo.findBySaleBillId(entity.getId()).get());
+                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
+                saleProducts.add(saleProductEntityOptional.get());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
             }
         }
         List<AuditEnversInfo> auditReturn = new ArrayList<AuditEnversInfo>();
-        for(int i=0; i< audit.size();i++){
-            if (audit.get(i).getTimestamp() > start.getTime() && audit.get(i).getTimestamp() < end.getTime() ) {
+        for (int i = 0; i < audit.size(); i++) {
+            if (audit.get(i).getTimestamp() > start.getTime() && audit.get(i).getTimestamp() < end.getTime()) {
                 auditReturn.add(audit.get(i));
             }
         }
