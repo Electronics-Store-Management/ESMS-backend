@@ -1,5 +1,6 @@
 package com.penguin.esms.components.warrantyBill.dto;
 
+import com.penguin.esms.components.warrantyProduct.dto.WarrantyProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class WarrantyBillDTO {
     private String staffId;
     private String customerId;
     private Date warrantyDate;
-    private List<String> warrantyProducts = new ArrayList<>();
+    private List<WarrantyProductDTO> warrantyProducts = new ArrayList<>();
 
     public WarrantyBillDTO(String staffId, String customerId, Date warrantyDate) {
         this.staffId = staffId;

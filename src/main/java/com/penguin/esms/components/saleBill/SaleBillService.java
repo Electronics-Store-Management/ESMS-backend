@@ -22,7 +22,9 @@ import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -41,6 +43,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class SaleBillService {
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
