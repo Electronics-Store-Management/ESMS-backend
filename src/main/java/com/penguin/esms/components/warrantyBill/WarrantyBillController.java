@@ -2,6 +2,7 @@ package com.penguin.esms.components.warrantyBill;
 
 import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.importBill.ImportBillService;
+import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class WarrantyBillController {
     private final WarrantyBillService warrantyBillService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
-        return ResponseEntity.ok(warrantyBillService.postWarrantyBill(warrantyBillEntity,connectedUser));
+    public ResponseEntity<?> post(@RequestBody WarrantyBillDTO dto, Principal connectedUser) {
+        return ResponseEntity.ok(warrantyBillService.postWarrantyBill(dto,connectedUser));
     }
 
     @GetMapping("{id}")

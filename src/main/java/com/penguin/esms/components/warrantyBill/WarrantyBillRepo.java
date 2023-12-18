@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface WarrantyBillRepo  extends JpaRepository<WarrantyBillEntity, String> {
     Optional<WarrantyBillEntity> findById(String id);
-//    List<WarrantyBillEntity> findByCreatedDate(Date createdDate);
 }
