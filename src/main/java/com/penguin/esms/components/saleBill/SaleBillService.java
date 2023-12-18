@@ -1,14 +1,26 @@
 package com.penguin.esms.components.saleBill;
 
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.customer.CustomerService;
+import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
+import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
+import com.penguin.esms.components.saleProduct.SaleProductEntity;
+import com.penguin.esms.components.saleProduct.SaleProductRepo;
+import com.penguin.esms.components.saleProduct.dto.SaleProductDTO;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -33,6 +45,13 @@ public class SaleBillService {
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final SaleBillRepo saleBillRepo;
+    private final SaleProductRepo saleProductRepo;
+    private final DTOtoEntityMapper mapper;
+    private final ProductRepo productRepo;
+
+
+
+
     public SaleBillEntity getSaleBill(String saleBillId) {
         Optional<SaleBillEntity> saleBill = saleBillRepo.findById(saleBillId);
         if (saleBill.isEmpty()) {
@@ -41,10 +60,33 @@ public class SaleBillService {
         return saleBill.get();
     }
 
-    public SaleBillEntity postSaleBill(SaleBillEntity saleBillEntity, Principal connectedUser) {
+    public SaleBillEntity post(SaleBillDTO saleBillDTO, Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        saleBillEntity.setStaffId(staff.getId());
-        return saleBillRepo.save(saleBillEntity);
+        saleBillDTO.setStaffId(staff.getId());
+        List<SaleProductDTO> salePrts = saleBillDTO.getSaleProducts();
+        SaleBillEntity sale = updateFromDTO(saleBillDTO, new SaleBillEntity());
+        saleBillRepo.save(sale);
+        for (SaleProductDTO t : salePrts){
+            SaleProductEntity salePrt = updateFromDTO(t, new SaleProductEntity());
+            Optional<ProductEntity> product = productRepo.findById(t.getProductId());
+            salePrt.setProduct(product.get());
+            salePrt.setSaleBill(sale);
+            saleProductRepo.save(salePrt);
+            List<SaleProductEntity> saleProducts = sale.getSaleProducts();
+            saleProducts.add(salePrt);
+            sale.setSaleProducts(saleProducts);
+        }
+        saleBillRepo.save(sale);
+        return sale;
+    }
+
+    private SaleBillEntity updateFromDTO(SaleBillDTO saleBillDTO, SaleBillEntity sale) {
+        mapper.updateSaleBillFromDto(saleBillDTO, sale);
+        return sale;
+    }
+    private SaleProductEntity updateFromDTO(SaleProductDTO dto, SaleProductEntity entity) {
+        mapper.updateSaleProductFromDto(dto, entity);
+        return entity;
     }
 
     public List<?> getRevisions(String id) {
