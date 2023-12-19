@@ -1,5 +1,8 @@
 package com.penguin.esms.components.statistic;
 
+import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.importBill.ImportBillService;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.SaleBillRepo;
 import com.penguin.esms.components.saleBill.SaleBillService;
@@ -26,6 +29,8 @@ import java.util.Optional;
 public class StatisticService {
     private final StatisticRepository repo;
     private final SaleBillService saleBillService;
+    private final ImportBillService importBillService;
+
     private final SaleProductService saleProductService;
     private final SaleBillRepo saleBillRepo;
     private final SaleProductRepo saleProductRepo;
@@ -47,6 +52,20 @@ public class StatisticService {
                 }
         }
         return revenue;
+    }
+
+    public Long costByPeriod(Date start, Date end) {
+        Long cost = 0l;
+        List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) importBillService.getAllRevisions(start,end);
+        for (AuditEnversInfo i : auditEnversInfoList) {
+            ImportBillEntity importBill = (ImportBillEntity) i.getRevision();
+            for (ImportProductEntity t : (List<ImportProductEntity>) importBill.getImportProducts()) {
+                try {
+                    cost += t.getPrice();
+                } catch (NullPointerException e) {}
+            }
+        }
+        return cost;
     }
 
 }
