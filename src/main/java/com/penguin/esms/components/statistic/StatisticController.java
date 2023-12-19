@@ -28,12 +28,9 @@ public class StatisticController {
 
     @GetMapping("revenue")
     public ResponseEntity<?> getRevenueByPeriod(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
-        Optional<StatisticEntity> statistic = repo.findByName("revenueByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end));
-        if (statistic.isEmpty()) {
-            return ResponseEntity.ok(service.revenueByPeriod(new Date(start), new Date(end)));
-        }
-        return ResponseEntity.ok(statistic.get());
+        return ResponseEntity.ok(service.getRevenuePeriod(new Date(start), new Date(end)));
     }
+
     @GetMapping("category")
     public ResponseEntity<?> getRevenueByCategory(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
         Optional<StatisticEntity> statistic = repo.findByName("getRevenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end));
@@ -44,18 +41,11 @@ public class StatisticController {
     }
     @GetMapping("revenue/date")
     public ResponseEntity<?> getRevenueByDate(@RequestParam long date) throws JsonProcessingException {
-        Optional<StatisticEntity> statistic = repo.findByName("getRevenueByDate" + TimeUtils.getDay(date));
-        if (statistic.isEmpty()) {
-            return ResponseEntity.ok(service.revenueByDate(date));
-        }
-        return ResponseEntity.ok(statistic.get());
+        return ResponseEntity.ok(service.getRevenueDate(new Date(date)));
     }
+
     @GetMapping("cost")
     public ResponseEntity<?> getCostByPeriod(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
-        Optional<StatisticEntity> statistic = repo.findByName("getCostByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end));
-        if (statistic.isEmpty()) {
-            return ResponseEntity.ok(service.costByPeriod(new Date(start), new Date(end)));
-        }
-        return ResponseEntity.ok(statistic.get());
+        return ResponseEntity.ok(service.getCostPeriod(new Date(start), new Date(end)));
     }
 }

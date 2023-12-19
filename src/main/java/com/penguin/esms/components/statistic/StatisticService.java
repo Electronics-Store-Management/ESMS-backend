@@ -1,6 +1,7 @@
 package com.penguin.esms.components.statistic;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.importBill.ImportBillEntity;
@@ -33,7 +34,7 @@ public class StatisticService {
     public StatisticEntity add(String name, Object object) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = objectMapper.writeValueAsString(object);
-        StatisticEntity entity = new StatisticEntity(name, jsonString, new Date());
+        StatisticEntity entity = new StatisticEntity(name, jsonString, new Date(), TimeUtils.getDay(new Date()));
         return repo.save(entity);
     }
 
@@ -41,10 +42,39 @@ public class StatisticService {
         return repo.findByName(name).get();
     }
 
+    public StatisticDTO getRevenuePeriod(Date start, Date end) throws JsonProcessingException {
+        StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
+        Map<String, StatisticDTO> map = new HashMap<>();
+        for (Long i = TimeUtils.getDay(start); i < TimeUtils.getDay(end); i++) {
+            Optional<StatisticEntity> statisticEntityOptional = repo.findByName("revenueByPeriod" + (i - 1) + i);
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                StatisticDTO statistic = objectMapper.readValue(statisticEntityOptional.get().getData(), StatisticDTO.class);
+                dto.setQuantity(dto.getQuantity() + statistic.getQuantity());
+                dto.setRevenue(dto.getRevenue() + statistic.getRevenue());
+            }catch (NoSuchElementException s){}
 
+        }
+        return dto;
+    }
 
+    public StatisticDTO getRevenueDate(Date date) throws JsonProcessingException {
+        Long i = TimeUtils.getDay(date);
+        StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
+        Map<String, StatisticDTO> map = new HashMap<>();
+        Optional<StatisticEntity> statisticEntityOptional = repo.findByName("revenueByDate" + i);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            StatisticDTO statistic = objectMapper.readValue(statisticEntityOptional.get().getData(), StatisticDTO.class);
+            dto.setQuantity(dto.getQuantity() + statistic.getQuantity());
+            dto.setRevenue(dto.getRevenue() + statistic.getRevenue());
+        } catch (NoSuchElementException s) {
+        }
+
+        return dto;
+    }
     public StatisticDTO revenueByPeriod(Date start, Date end) throws JsonProcessingException {
-        StatisticDTO dto = new StatisticDTO(null, 0l,0);
+        StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
         Map<String, StatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
@@ -88,44 +118,37 @@ public class StatisticService {
         return Arrays.asList(map.entrySet().toArray());
     }
 
-    public Long revenueByDate(Long date) throws JsonProcessingException {
-        Long revenue = 0l;
-        Integer quantity = 0;
-        List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAll();
-        for (AuditEnversInfo i : auditEnversInfoList) {
-            if (TimeUtils.getDay(i.getTimestamp()) == TimeUtils.getDay(date)) {
-                SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
-                for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
-                    try {
-                        quantity += t.getQuantity();
-                        revenue += t.getPrice() * t.getQuantity();
-                    } catch (NullPointerException e) {
-                    }
-                }
-            }
-        }
-        add("revenueByDate" + TimeUtils.getDay(date), revenue);
-        return revenue;
-    }
-
-    public Long costByPeriod(Date start, Date end) throws JsonProcessingException {
-        Long cost = 0l;
-        Integer quantity = 0;
+    public StatisticDTO costByPeriod(Date start, Date end) throws JsonProcessingException {
+        StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
+        Map<String, StatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) importBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
             ImportBillEntity importBill = (ImportBillEntity) i.getRevision();
             for (ImportProductEntity t : (List<ImportProductEntity>) importBill.getImportProducts()) {
                 try {
-                    quantity += t.getQuantity();
-                    cost += t.getPrice() * t.getQuantity();
+                    dto.setQuantity(dto.getQuantity() + t.getQuantity());
+                    dto.setCost(dto.getCost() + t.getPrice() * t.getQuantity());
                 } catch (NullPointerException e) {
                 }
             }
         }
-        add("costByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), cost);
-        return cost;
+        add("costByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), dto);
+        return dto;
     }
 
-
-
+    public StatisticDTO getCostPeriod(Date start, Date end) throws JsonProcessingException {
+        StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
+        Map<String, StatisticDTO> map = new HashMap<>();
+        for (Long i = TimeUtils.getDay(start); i < TimeUtils.getDay(end); i++) {
+            Optional<StatisticEntity> statisticEntityOptional = repo.findByName("costByPeriod" + (i - 1) + i);
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                StatisticDTO statistic = objectMapper.readValue(statisticEntityOptional.get().getData(), StatisticDTO.class);
+                dto.setQuantity(dto.getQuantity() + statistic.getQuantity());
+                dto.setRevenue(dto.getCost() + statistic.getCost());
+            } catch (NoSuchElementException s) {
+            }
+        }
+        return dto;
+    }
 }
