@@ -3,28 +3,20 @@ package com.penguin.esms.components.statistic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.category.CategoryService;
 import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.importBill.ImportBillService;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
-import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.SaleBillRepo;
 import com.penguin.esms.components.saleBill.SaleBillService;
 import com.penguin.esms.components.saleProduct.SaleProductEntity;
 import com.penguin.esms.components.saleProduct.SaleProductRepo;
 import com.penguin.esms.components.saleProduct.SaleProductService;
-import com.penguin.esms.components.statistic.dto.CategoryStatisticDTO;
-import com.penguin.esms.components.supplier.SupplierEntity;
-import com.penguin.esms.components.supplier.dto.SupplierDTO;
-import com.penguin.esms.entity.Error;
+import com.penguin.esms.components.statistic.dto.StatisticDTO;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.history.Revision;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -49,27 +41,29 @@ public class StatisticService {
         return repo.findByName(name).get();
     }
 
-    public Long revenueByPeriod(Date start, Date end) throws JsonProcessingException {
-        Long revenue = 0l;
-        Integer quantity = 0;
+
+
+    public StatisticDTO revenueByPeriod(Date start, Date end) throws JsonProcessingException {
+        StatisticDTO dto = new StatisticDTO(null, 0l,0);
+        Map<String, StatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
             SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
             for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
                 try {
-                    quantity += t.getQuantity();
-                    revenue += t.getPrice() * t.getQuantity();
+                    dto.setQuantity(dto.getQuantity() + t.getQuantity());
+                    dto.setRevenue(dto.getRevenue() + t.getPrice() * t.getQuantity());
                 } catch (NullPointerException e) {
                 }
             }
         }
-        add("revenueByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), revenue);
-        return revenue;
+        add("revenueByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), dto);
+        return dto;
     }
 
     public List<?> revenueByCategory(Date start, Date end) throws JsonProcessingException {
-        CategoryStatisticDTO dto = new CategoryStatisticDTO();
-        Map<String, CategoryStatisticDTO> map = new HashMap<>();
+        StatisticDTO dto = new StatisticDTO();
+        Map<String, StatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
             SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
@@ -78,7 +72,7 @@ public class StatisticService {
                     CategoryEntity category = t.getProduct().getCategory();
                     dto = map.get(category.getName());
                     if (dto == null) {
-                        dto = new CategoryStatisticDTO();
+                        dto = new StatisticDTO();
                         dto.setName(category.getName());
                         dto.setRevenue(0L);
                         dto.setQuantity(0);
@@ -131,5 +125,7 @@ public class StatisticService {
         add("costByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), cost);
         return cost;
     }
+
+
 
 }
