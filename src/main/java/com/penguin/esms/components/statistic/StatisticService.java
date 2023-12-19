@@ -91,7 +91,7 @@ public class StatisticService {
         Integer quantity = 0;
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAll();
         for (AuditEnversInfo i : auditEnversInfoList) {
-            if (i.getTimestamp() == date) {
+            if (i.getTimestamp()/86400000 == date/86400000) {
                 SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
                 for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
                     try {
