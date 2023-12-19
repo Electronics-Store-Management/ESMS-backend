@@ -1,5 +1,7 @@
 package com.penguin.esms.components.statistic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryService;
 import com.penguin.esms.components.importBill.ImportBillEntity;
@@ -17,6 +19,7 @@ import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.history.Revision;
 import org.springframework.http.HttpStatus;
@@ -35,8 +38,10 @@ public class StatisticService {
     private final SaleBillRepo saleBillRepo;
     private final SaleProductRepo saleProductRepo;
 
-    public StatisticEntity add(StatisticEntity entity) {
-        entity.setStatisticDate(new Date());
+    public StatisticEntity add(String name, Object object) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = objectMapper.writeValueAsString(object);
+        StatisticEntity entity = new StatisticEntity(name, jsonString, new Date());
         return repo.save(entity);
     }
 
@@ -44,7 +49,7 @@ public class StatisticService {
         return repo.findByName(name).get();
     }
 
-    public Long revenueByPeriod(Date start, Date end) {
+    public Long revenueByPeriod(Date start, Date end) throws JsonProcessingException {
         Long revenue = 0l;
         Integer quantity = 0;
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
@@ -58,10 +63,11 @@ public class StatisticService {
                 }
             }
         }
+        add("revenueByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), revenue);
         return revenue;
     }
 
-    public List<?> revenueByCategory(Date start, Date end) {
+    public List<?> revenueByCategory(Date start, Date end) throws JsonProcessingException {
         CategoryStatisticDTO dto = new CategoryStatisticDTO();
         Map<String, CategoryStatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
@@ -84,14 +90,16 @@ public class StatisticService {
                 }
             }
         }
+        add("revenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end), Arrays.asList(map.entrySet().toArray()));
         return Arrays.asList(map.entrySet().toArray());
     }
-    public Long revenueByDate(Long date) {
+
+    public Long revenueByDate(Long date) throws JsonProcessingException {
         Long revenue = 0l;
         Integer quantity = 0;
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAll();
         for (AuditEnversInfo i : auditEnversInfoList) {
-            if (i.getTimestamp()/86400000 == date/86400000) {
+            if (TimeUtils.getDay(i.getTimestamp()) == TimeUtils.getDay(date)) {
                 SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
                 for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
                     try {
@@ -102,10 +110,11 @@ public class StatisticService {
                 }
             }
         }
+        add("revenueByDate" + TimeUtils.getDay(date), revenue);
         return revenue;
     }
 
-    public Long costByPeriod(Date start, Date end) {
+    public Long costByPeriod(Date start, Date end) throws JsonProcessingException {
         Long cost = 0l;
         Integer quantity = 0;
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) importBillService.getAllRevisions(start, end);
@@ -119,6 +128,7 @@ public class StatisticService {
                 }
             }
         }
+        add("costByPeriod" + TimeUtils.getDay(start) + TimeUtils.getDay(end), cost);
         return cost;
     }
 
