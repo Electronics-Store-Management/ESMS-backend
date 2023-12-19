@@ -9,9 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryStatisticDTO {
+public class StatisticDTO {
     private String name;
     private Long revenue;
+    private Long cost;
+
     private Integer quantity;
 
 }

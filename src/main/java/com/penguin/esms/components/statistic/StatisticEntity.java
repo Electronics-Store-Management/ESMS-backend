@@ -20,5 +20,6 @@ import java.util.Date;
 public class StatisticEntity extends BaseEntity {
     private String name;
     private String data;
-    private Date statisticDate;
+    private Date date;
+    private Long day;
 }
