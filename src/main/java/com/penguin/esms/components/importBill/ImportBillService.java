@@ -88,6 +88,7 @@ public class ImportBillService {
                 .addProjection(AuditEntity.property("staffId"))
                 .addProjection(AuditEntity.property("supplierId"))
                 .addProjection(AuditEntity.property("paymentMethod"))
+                .addProjection(AuditEntity.property("id"))
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
@@ -98,9 +99,8 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
-                List<ImportProductEntity> importProducts = new ArrayList<>();
-                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();
+                List<ImportProductEntity> importProducts = importProductRepo.findByImportBillId(entity.getId());
                 entity.setImportProducts(importProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -118,6 +118,7 @@ public class ImportBillService {
                 .addProjection(AuditEntity.property("staffId"))
                 .addProjection(AuditEntity.property("supplierId"))
                 .addProjection(AuditEntity.property("paymentMethod"))
+                .addProjection(AuditEntity.property("id"))
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
@@ -128,9 +129,8 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
-                List<ImportProductEntity> importProducts = new ArrayList<>();
-                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();
+                List<ImportProductEntity> importProducts = importProductRepo.findByImportBillId(entity.getId());
                 entity.setImportProducts(importProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -159,9 +159,9 @@ public class ImportBillService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
-                List<ImportProductEntity> importProducts = new ArrayList<>();
-                importProducts.add(importProductRepo.findByImportBillId(entity.getId()).get());
+//                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();
+                List<ImportProductEntity> importProducts = importProductRepo.findByImportBillId(entity.getId());
                 entity.setImportProducts(importProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);

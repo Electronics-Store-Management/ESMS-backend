@@ -117,11 +117,7 @@ public class SaleBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 SaleBillEntity entity = saleBillRepo.findById((String) objArray[5]).get();
-                List<SaleProductEntity> saleProducts = new ArrayList<>();
-                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
-                if (saleProductEntityOptional.isPresent()) {
-                    saleProducts.add(saleProductEntityOptional.get());
-                }
+                List<SaleProductEntity> saleProducts =  saleProductRepo.findBySaleBillId(entity.getId());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -152,11 +148,7 @@ public class SaleBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 SaleBillEntity entity = saleBillRepo.findById((String) objArray[5]).get();
-                List<SaleProductEntity> saleProducts = new ArrayList<>();
-                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
-                if (saleProductEntityOptional.isPresent()) {
-                    saleProducts.add(saleProductEntityOptional.get());
-                }
+                List<SaleProductEntity> saleProducts = saleProductRepo.findBySaleBillId(entity.getId());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -187,11 +179,7 @@ public class SaleBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 SaleBillEntity entity = saleBillRepo.findById((String) objArray[5]).get();
-                List<SaleProductEntity> saleProducts = new ArrayList<>();
-                Optional<SaleProductEntity> saleProductEntityOptional = saleProductRepo.findBySaleBillId(entity.getId());
-                if (saleProductEntityOptional.isPresent()) {
-                    saleProducts.add(saleProductEntityOptional.get());
-                }
+                List<SaleProductEntity> saleProducts =  saleProductRepo.findBySaleBillId(entity.getId());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
