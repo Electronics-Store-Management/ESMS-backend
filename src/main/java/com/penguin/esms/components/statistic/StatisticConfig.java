@@ -29,18 +29,28 @@ public class StatisticConfig {
     @Async
     @Scheduled(cron = "10 0 * * * ? ", zone = "Asia/Ho_Chi_Minh")
     public void scheduledRevenueByPeriod() throws JsonProcessingException {
-        Long previousDateTime = TimeUtils.getDay(new Date()) - 1 + 7 / 24;
-        Date previousDateStart = new Date(previousDateTime * 86400000);
-        Date previousDateEnd = new Date((previousDateTime + 1) * 86400000);
+        Double previousDateTime = ((double) (TimeUtils.getDay(new Date()) - 1)) - 7.0 / 24;
+        Date previousDateStart = new Date((long) (previousDateTime * 86400000));
+        Date previousDateEnd = new Date((long) ((previousDateTime + 1) * 86400000));
         service.revenueByPeriod(previousDateStart, previousDateEnd);
     }
 
     @Async
     @Scheduled(cron = "10 0 * * * ? ", zone = "Asia/Ho_Chi_Minh")
     public void scheduledRevenueByCategory() throws JsonProcessingException {
-        Long previousDateTime = TimeUtils.getDay(new Date()) - 1 + 7 / 24;
-        Date previousDateStart = new Date(previousDateTime * 86400000);
-        Date previousDateEnd = new Date((previousDateTime + 1) * 86400000);
+        Double previousDateTime = ((double) (TimeUtils.getDay(new Date()) - 1)) - 7.0 / 24;
+        Date previousDateStart = new Date((long) (previousDateTime * 86400000));
+        Date previousDateEnd = new Date((long) ((previousDateTime + 1) * 86400000));
         service.revenueByCategory(previousDateStart, previousDateEnd);
     }
+
+    @Async
+    @Scheduled(cron = "10 0 * * * ? ", zone = "Asia/Ho_Chi_Minh")
+    public void scheduledCostByPeriod() throws JsonProcessingException {
+        Double previousDateTime = ((double) (TimeUtils.getDay(new Date()) - 1)) - 7.0 / 24;
+        Date previousDateStart = new Date((long) (previousDateTime * 86400000));
+        Date previousDateEnd = new Date((long) ((previousDateTime + 1) * 86400000));
+        service.costByPeriod(previousDateStart, previousDateEnd);
+    }
+
 }
