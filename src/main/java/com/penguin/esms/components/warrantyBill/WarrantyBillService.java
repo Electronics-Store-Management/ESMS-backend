@@ -127,11 +127,7 @@ public class WarrantyBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
-                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
-                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
-                if (warrantyProductEntityOptional.isPresent()) {
-                    warrantyProducts.add(warrantyProductEntityOptional.get());
-                }
+                List<WarrantyProductEntity> warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());
                 entity.setWarrantyProducts(warrantyProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -161,11 +157,7 @@ public class WarrantyBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
-                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
-                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
-                if (warrantyProductEntityOptional.isPresent()) {
-                    warrantyProducts.add(warrantyProductEntityOptional.get());
-                }
+                List<WarrantyProductEntity> warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());
                 entity.setWarrantyProducts(warrantyProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
@@ -195,11 +187,7 @@ public class WarrantyBillService {
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                 WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();
-                List<WarrantyProductEntity> warrantyProducts = new ArrayList<>();
-                Optional<WarrantyProductEntity> warrantyProductEntityOptional = warrantyProductRepo.findByWarrantyBillId(entity.getId());
-                if (warrantyProductEntityOptional.isPresent()) {
-                    warrantyProducts.add(warrantyProductEntityOptional.get());
-                }
+                List<WarrantyProductEntity> warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());
                 entity.setWarrantyProducts(warrantyProducts);
                 auditEnversInfo.setRevision(entity);
                 audit.add(auditEnversInfo);
