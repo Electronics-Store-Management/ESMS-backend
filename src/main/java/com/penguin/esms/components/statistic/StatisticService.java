@@ -48,8 +48,26 @@ public class StatisticService {
         for (AuditEnversInfo i : auditEnversInfoList) {
             SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
             for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
-                    revenue += t.getPrice();
+                try {
+                    revenue += t.getPrice()*t.getQuantity();
+                } catch (NullPointerException e) {}
                 }
+        }
+        return revenue;
+    }
+
+    public Long revenueByDate(Long date) {
+        Long revenue = 0l;
+        List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAll();
+        for (AuditEnversInfo i : auditEnversInfoList) {
+            if(i.getTimestamp()==date){
+                SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
+                for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
+                    try {
+                        revenue += t.getPrice()*t.getQuantity();
+                    } catch (NullPointerException e) {}
+                }
+            }
         }
         return revenue;
     }
@@ -61,7 +79,7 @@ public class StatisticService {
             ImportBillEntity importBill = (ImportBillEntity) i.getRevision();
             for (ImportProductEntity t : (List<ImportProductEntity>) importBill.getImportProducts()) {
                 try {
-                    cost += t.getPrice();
+                    cost += t.getPrice()*t.getQuantity();
                 } catch (NullPointerException e) {}
             }
         }

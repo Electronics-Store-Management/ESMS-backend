@@ -22,7 +22,10 @@ public class StatisticController {
     public ResponseEntity<?> getRevenueByPeriod(@RequestParam long start, @RequestParam long end) {
         return ResponseEntity.ok(service.revenueByPeriod(new Date(start), new Date(end)));
     }
-
+    @GetMapping("revenue/date")
+    public ResponseEntity<?> getRevenueByDate(@RequestParam long date) {
+        return ResponseEntity.ok(service.revenueByDate(date));
+    }
     @GetMapping("cost")
     public ResponseEntity<?> getCostByPeriod(@RequestParam long start, @RequestParam long end) {
         return ResponseEntity.ok(service.costByPeriod(new Date(start), new Date(end)));
