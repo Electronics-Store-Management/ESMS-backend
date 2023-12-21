@@ -20,7 +20,6 @@ import java.util.Optional;
 @Setter
 @RequiredArgsConstructor
 public class SaleProductService {
-
     private final SaleProductRepo repo;
     private final ProductRepo productRepo;
     private final SaleBillRepo saleRepo;

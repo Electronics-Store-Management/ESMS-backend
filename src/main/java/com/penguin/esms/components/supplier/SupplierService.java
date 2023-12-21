@@ -9,6 +9,8 @@ import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SupplierService {
+    @PersistenceContext
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final SupplierRepo supplierRepo;
@@ -90,6 +93,7 @@ public class SupplierService {
         supplierRepo.save(supplierEntityOptional.get());
     }
 
+    @Transactional
     public List<?> getRevisions(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -116,6 +120,7 @@ public class SupplierService {
                 audit.add(auditEnversInfo);
             }
         }
+        entityManager.close();
         return audit;
     }
 }

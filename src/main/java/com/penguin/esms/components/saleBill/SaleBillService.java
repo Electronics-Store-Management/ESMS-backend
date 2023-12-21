@@ -22,6 +22,8 @@ import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -46,6 +48,7 @@ import java.util.Optional;
 @Getter
 @Setter
 public class SaleBillService {
+    @PersistenceContext
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final SaleBillRepo saleBillRepo;
@@ -93,7 +96,7 @@ public class SaleBillService {
         mapper.updateSaleProductFromDto(dto, entity);
         return entity;
     }
-
+    @Transactional
     public List<?> getRevisions(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -123,9 +126,10 @@ public class SaleBillService {
                 audit.add(auditEnversInfo);
             }
         }
+        entityManager.close();
         return audit;
     }
-
+    @Transactional
     public List<?> getAll() {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -154,9 +158,10 @@ public class SaleBillService {
                 audit.add(auditEnversInfo);
             }
         }
+        entityManager.close();
         return audit;
     }
-
+    @Transactional
     public List<?> getAllRevisions(Date start, Date end) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -191,6 +196,7 @@ public class SaleBillService {
                 auditReturn.add(audit.get(i));
             }
         }
+        entityManager.close();
         return auditReturn;
     }
 }

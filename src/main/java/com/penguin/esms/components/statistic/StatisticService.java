@@ -1,5 +1,6 @@
 package com.penguin.esms.components.statistic;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,8 @@ import com.penguin.esms.components.statistic.dto.StatisticDTO;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -73,6 +76,15 @@ public class StatisticService {
 
         return dto;
     }
+//    @Bean
+//    @Scheduled(cron = "39 1 * * * * ", zone = "Asia/Ho_Chi_Minh")
+//    public void scheduledRevenueByPeriod() throws JsonProcessingException {
+//        System.out.println("loz que");
+//        Double previousDateTime = ((double) (TimeUtils.getDay(new Date()) - 1)) - 7.0 / 24;
+//        Date previousDateStart = new Date((long) (previousDateTime * 86400000));
+//        Date previousDateEnd = new Date((long) ((previousDateTime + 1) * 86400000));
+//        revenueByPeriod(previousDateStart, previousDateEnd);
+//    }
     public StatisticDTO revenueByPeriod(Date start, Date end) throws JsonProcessingException {
         StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
         Map<String, StatisticDTO> map = new HashMap<>();

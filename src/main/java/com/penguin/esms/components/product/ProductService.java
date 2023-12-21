@@ -11,6 +11,8 @@ import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import com.penguin.esms.services.AmazonS3Service;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -39,6 +41,7 @@ public class ProductService {
     private final SupplierRepo supplierRepo;
     private final DTOtoEntityMapper mapper;
     private final AmazonS3Service amazonS3Service;
+    @PersistenceContext
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
 
@@ -153,7 +156,7 @@ public class ProductService {
         product.setSuppliers(supplierEntities);
         return product;
     }
-
+    @Transactional
     public List<?> getRevisionsForProduct(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -185,6 +188,7 @@ public class ProductService {
                 productAudit.add(auditEnversInfo);
             }
         }
+        entityManager.close();
         return productAudit;
     }
 }
