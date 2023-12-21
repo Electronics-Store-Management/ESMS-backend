@@ -5,6 +5,8 @@ import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @Setter
 @RequiredArgsConstructor
 public class CategoryService {
+    @PersistenceContext
     private final EntityManager entityManager;
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final CategoryRepo categoryRepo;
@@ -75,7 +78,7 @@ public class CategoryService {
             return categoryEntityOptional.get();
         }
     }
-
+    @Transactional
     public List<?> getRevisionsForCategory(String id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
@@ -100,6 +103,7 @@ public class CategoryService {
                 categoryAudit.add(auditEnversInfo);
             }
         }
+        entityManager.close();
         return categoryAudit;
     }
 }
