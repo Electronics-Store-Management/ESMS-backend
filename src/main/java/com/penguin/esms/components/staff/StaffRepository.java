@@ -14,4 +14,5 @@ public interface StaffRepository extends JpaRepository<StaffEntity, String> {
     Optional<StaffEntity> findByName(String name);
     public List<StaffEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
     Optional<StaffEntity> findById(String id);
+    Optional<StaffEntity> findByCitizenId(String citizenId);
 }
