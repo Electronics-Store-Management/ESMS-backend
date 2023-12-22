@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,7 +34,11 @@ public class StaffController {
     public ResponseEntity<?> createStaff(@Valid @RequestBody NewStaffRequest newStaff) {
         return  ResponseEntity.ok(staffRepository.save(new StaffEntity(newStaff.getName(), newStaff.getPhone(), newStaff.getPassword(), newStaff.getEmail(), newStaff.getCitizenId(), newStaff.getRole())));
     }
-
+    @PostMapping("register")
+    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
+    public ResponseEntity<?> postStaff(@RequestBody StaffDTO dto) {
+        return  ResponseEntity.ok(staffService.addStaff(dto));
+    }
     @GetMapping("profile")
     public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
@@ -61,8 +66,8 @@ public class StaffController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<?>  edit(@RequestBody StaffDTO staffDTO, @PathVariable String id) {
-        return ResponseEntity.ok(staffService.update(staffDTO, id));
+    public ResponseEntity<?>  edit(@RequestBody StaffDTO dto, @PathVariable String id) throws IOException {
+        return ResponseEntity.ok(staffService.update(dto, id));
     }
 
     @DeleteMapping(path = "{id}")
