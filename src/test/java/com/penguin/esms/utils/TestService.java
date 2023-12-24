@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 
@@ -35,13 +36,25 @@ public class TestService {
         this.objectMapper = objectMapper;
     }
 
+    private final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private final String NUMBER_CHARACTERS = "0123456789";
+    private final SecureRandom secureRandom = new SecureRandom();
+    public String generateRandomString(String characters, int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            char randomChar = characters.charAt(secureRandom.nextInt(characters.length()));
+            sb.append(randomChar);
+        }
+        return sb.toString();
+    }
+
     public AuthenticationResponse getAuthenticationInfo() throws Exception {
         StaffEntity staffEntity = new StaffEntity();
-        staffEntity.setName("Nguyen Hoang Hy");
-        staffEntity.setPhone("0000011112");
+        staffEntity.setName("Hoang Zanggg");
+        staffEntity.setPhone("0" + generateRandomString(NUMBER_CHARACTERS, 9));
         staffEntity.setPassword("123456");
-        staffEntity.setEmail("hoanghyyy@gmail.com");
-        staffEntity.setCitizenId("052203000411");
+        staffEntity.setEmail("zang" + generateRandomString(NUMBER_CHARACTERS, 3) + "@gmail.com");
+        staffEntity.setCitizenId(generateRandomString(NUMBER_CHARACTERS, 12));
         staffEntity.setRole(Role.ADMIN);
 
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();

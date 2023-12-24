@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -86,19 +87,30 @@ class UpdateCategoryTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        categoryRepo.deleteAll();
-        staffRepository.deleteAll();
+        // Sử dụng CompletableFuture để đảm bảo rằng cả hai tác vụ xoá đã hoàn thành trước khi tiếp tục
+//        CompletableFuture<Void> deleteTask1 = CompletableFuture.runAsync(() -> categoryRepo.deleteById(this.category.getId()));
+//        CompletableFuture<Void> deleteTask2 = CompletableFuture.runAsync(() -> staffRepository.deleteById(this.authenticationResponse.getId()));
+//
+//        CompletableFuture.allOf(deleteTask1, deleteTask2).join(); // Chờ đến khi cả hai tác vụ xoá hoàn thành
 
         CategoryEntity category = new CategoryEntity();
         category.setName("This is a category");
-        this.category = categoryRepo.save(category);
 
-        authenticationResponse = testService.getAuthenticationInfo();
+        CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.category = categoryRepo.save(category);
+            try {
+                authenticationResponse = testService.getAuthenticationInfo();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity.join();
     }
 
     @AfterAll
     public void cleanup() {
-        categoryRepo.deleteAll();
-        staffRepository.deleteAll();
+        categoryRepo.deleteById(this.category.getId());
+        staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

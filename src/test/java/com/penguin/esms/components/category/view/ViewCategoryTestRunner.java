@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,19 +84,25 @@ class ViewCategoryTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        categoryRepo.deleteAll();
-        staffRepository.deleteAll();
 
         CategoryEntity category = new CategoryEntity();
-        category.setName("This is category");
-        this.category = categoryRepo.save(category);
+        category.setName("This is update category");
 
-        authenticationResponse = testService.getAuthenticationInfo();
+        CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.category = categoryRepo.save(category);
+            try {
+                authenticationResponse = testService.getAuthenticationInfo();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity.join();
     }
 
     @AfterAll
     public void cleanup() {
-        categoryRepo.deleteAll();
-        staffRepository.deleteAll();
+        categoryRepo.deleteById(this.category.getId());
+        staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }
