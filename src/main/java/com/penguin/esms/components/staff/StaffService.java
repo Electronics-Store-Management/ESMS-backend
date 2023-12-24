@@ -1,5 +1,6 @@
 package com.penguin.esms.components.staff;
 
+import com.google.api.services.gmail.Gmail;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.product.ProductEntity;
@@ -9,6 +10,7 @@ import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import com.penguin.esms.services.EmailRequestService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -17,6 +19,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,35 +38,65 @@ public class StaffService {
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final StaffRepository staffRepository;
     private final DTOtoEntityMapper mapper;
+    private final PasswordEncoder passwordEncoder;
+
 
     public void getStaffProfile(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
     }
 
-    public StaffEntity addStaff(StaffDTO dto) {
+    public StaffEntity addStaff(StaffDTO dto) throws Exception {
         Optional<StaffEntity> optional = staffRepository.findByCitizenId(dto.getCitizenId());
-        if (optional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
+        if (optional.isPresent()) {
+            if (optional.get().getIsStopped() == true)
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Staff has been existed").toString());
         }
-        if (optional.get().getIsStopped() == true)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
         StaffEntity staff = updateFromDTO(dto, new StaffEntity());
         staff.setIsStopped(false);
-        optional.get().setPassword(random());
-//        cc : send pass do email
-//        optionsal.setPass(pass)
+        staff.setPassword(passwordEncoder.encode(random()));
+        System.out.println(staff.getEmail());
+        new EmailRequestService().sendMail("ESMS Account email verification needed", staff.getEmail(), String.format("""
+                Hi %s,
+                Welcome to ESMS. 
+                Here is your password to login ESMS system :
+                             %s   
+                Best regard,
+                ESMS
+                """, staff.getName(), staff.getPassword()));
         return staffRepository.save(staff);
     }
 
-    public void changePassword(String oldPassword, String newPassword, String staffId){
-        Optional<StaffEntity> optional = staffRepository.findById(staffId);
+    public void changePassword(String oldPassword, String newPassword, Principal connectedUser) throws Exception {
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        Optional<StaffEntity> optional = staffRepository.findById(staff.getId());
+        if (optional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Staff has not been existed").toString());
+        }
         try {
-            if (optional.get().getPassword().equals(oldPassword)){
-                optional.get().setPassword(newPassword);
-            }
-        } catch(NullPointerException s){}
+            if (optional.get().getIsStopped() == true)
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
+        } catch (NullPointerException e) {
+        }
+        if (!passwordEncoder.matches(oldPassword, optional.get().getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, new Error("Password not true").toString());
+        }
+        optional.get().setPassword(passwordEncoder.encode(newPassword));
+
+        new EmailRequestService().sendMail("ESMS Account email verification needed", optional.get().getEmail(), String.format("""
+                Hi %s,
+                Welcome to ESMS. 
+                Here is your new password to login ESMS system :
+                             %s   
+                Best regard,
+                ESMS
+                """, optional.get().getName(), optional.get().getPassword()));
+        staffRepository.save(optional.get());
     }
+
     private StaffEntity updateFromDTO(StaffDTO dto, StaffEntity staff) {
         mapper.updateStaffFromDto(dto, staff);
         return staff;
@@ -88,7 +121,7 @@ public class StaffService {
     public List<StaffEntity> findResigned(String name) {
         return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }
-  
+
     public StaffEntity getOne(String id) {
         Optional<StaffEntity> staff = staffRepository.findById(id);
         if (staff.isEmpty()) {
@@ -136,12 +169,12 @@ public class StaffService {
 
         List<AuditEnversInfo> staffAudit = new ArrayList<AuditEnversInfo>();
         List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
+        for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                StaffDTO staff = new StaffDTO(id, (String) objArray[2],  (String) objArray[3], (String) objArray[4], (String) objArray[5], (Role) objArray[6]);
+                StaffDTO staff = new StaffDTO(id, (String) objArray[2], (String) objArray[3], (String) objArray[4], (String) objArray[5], (Role) objArray[6]);
                 auditEnversInfo.setRevision(staff);
                 staffAudit.add(auditEnversInfo);
             }
