@@ -29,14 +29,14 @@ public class StaffController {
     private final StaffRepository staffRepository;
     private final StaffService staffService;
 
+//    @PostMapping("")
+//    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
+//    public ResponseEntity<?> createStaff(@Valid @RequestBody NewStaffRequest newStaff) {
+//        return  ResponseEntity.ok(staffRepository.save(new StaffEntity(newStaff.getName(), newStaff.getPhone(), newStaff.getPassword(), newStaff.getEmail(), newStaff.getCitizenId(), newStaff.getRole())));
+//    }
     @PostMapping("")
     @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> createStaff(@Valid @RequestBody NewStaffRequest newStaff) {
-        return  ResponseEntity.ok(staffRepository.save(new StaffEntity(newStaff.getName(), newStaff.getPhone(), newStaff.getPassword(), newStaff.getEmail(), newStaff.getCitizenId(), newStaff.getRole())));
-    }
-    @PostMapping("register")
-    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> postStaff(@RequestBody StaffDTO dto) {
+    public ResponseEntity<?> postStaff(@RequestBody StaffDTO dto) throws Exception {
         return  ResponseEntity.ok(staffService.addStaff(dto));
     }
     @GetMapping("profile")
@@ -68,6 +68,10 @@ public class StaffController {
     @PutMapping(path = "{id}")
     public ResponseEntity<?>  edit(@RequestBody StaffDTO dto, @PathVariable String id) throws IOException {
         return ResponseEntity.ok(staffService.update(dto, id));
+    }
+    @PutMapping(path = "changePassword")
+    public void changePass(@RequestParam String oldPassword, @RequestParam String newPassword, Principal connectedUser) throws Exception {
+        staffService.changePassword(oldPassword, newPassword, connectedUser);
     }
 
     @DeleteMapping(path = "{id}")

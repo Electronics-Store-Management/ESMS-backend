@@ -19,7 +19,9 @@ import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.ListLabelsResponse;
 import com.google.api.services.gmail.model.Message;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -38,10 +40,11 @@ import static javax.mail.Message.RecipientType.TO;
 
 /* class to demonstrate use of Gmail list labels API */
 @Service
+@Getter
+@Setter
 @RequiredArgsConstructor
 public class EmailRequestService {
     private final Gmail service;
-    private static final String TEST_EMAIL = "bt.hoanggiang@mail.com";
     private static final String APPLICATION_NAME = "ESMS";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -75,12 +78,12 @@ public class EmailRequestService {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public void sendMail(String subject, String message) throws Exception {
+    public void sendMail(String subject, String receiver, String message) throws Exception {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage email = new MimeMessage(session);
-        email.setFrom(new InternetAddress(TEST_EMAIL));
-        email.addRecipient(TO, new InternetAddress(TEST_EMAIL));
+        email.setFrom(new InternetAddress(receiver));
+        email.addRecipient(TO, new InternetAddress(receiver));
         email.setSubject(subject);
         email.setText(message);
 
@@ -105,10 +108,10 @@ public class EmailRequestService {
         }
     }
 
-    @Bean
+//    @Bean
     public static String main(String[] args) throws Exception {
         System.out.println("may co chay khong thi bao");
-        new EmailRequestService().sendMail("A new message", """
+        new EmailRequestService().sendMail("A new message","bt.hoanggiang@mail.com", """
                 Hello,
                                 
                 Hello bit.
