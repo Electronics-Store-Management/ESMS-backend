@@ -49,11 +49,11 @@ public class ProductService {
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
             if (optionalCategory.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("category not found").toString());
             }
             if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Category has been discontinued ");
+                        HttpStatus.BAD_REQUEST, "Category has been discontinued ");
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
         }
         return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
@@ -67,7 +67,7 @@ public class ProductService {
             }
             if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Category has been discontinued ");
+                        HttpStatus.BAD_REQUEST, "Category has been discontinued ");
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), true);
         }
         return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
@@ -80,7 +80,7 @@ public class ProductService {
         }
         if (product.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Product has been discontinued ");
+                    HttpStatus.BAD_REQUEST, "Product has been discontinued ");
         return product.get();
     }
 
@@ -89,7 +89,7 @@ public class ProductService {
         if (productOpt.isPresent()) {
             if (productOpt.get().getIsStopped() == true)
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Product has been discontinued ").toString());
+                        HttpStatus.BAD_REQUEST, new Error("Product has been discontinued ").toString());
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
         }
@@ -105,7 +105,7 @@ public class ProductService {
                     HttpStatus.NOT_FOUND, "Product not existed");
         if (productEntityOptional.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Product has been discontinued ");
+                    HttpStatus.BAD_REQUEST, "Product has been discontinued ");
         ProductEntity product = updateFromDTO(productDTO, productEntityOptional.get());
         if (photo != null) {
             List<String> parsedURL = Arrays.stream(product.getPhotoURL().split("/")).toList();
@@ -121,6 +121,9 @@ public class ProductService {
         if (productEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Product not existed").toString());
+        if (productEntityOptional.get().getIsStopped().equals(true))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, new Error("Product has been discontinued").toString());
         productEntityOptional.get().setIsStopped(true);
         productRepo.save(productEntityOptional.get());
     }
@@ -158,6 +161,10 @@ public class ProductService {
     }
     @Transactional
     public List<?> getRevisionsForProduct(String id) {
+        Optional<ProductEntity> productEntityOptional = productRepo.findById(id);
+        if (productEntityOptional.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Product not existed");
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()
