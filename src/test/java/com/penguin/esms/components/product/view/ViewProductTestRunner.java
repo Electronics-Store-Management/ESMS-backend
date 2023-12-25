@@ -3,8 +3,12 @@ package com.penguin.esms.components.product.view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
@@ -41,56 +45,59 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCustomerTestRunner {
-
+class ViewProductTestRunner {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
-
+    private ProductRepo productRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private TestService testService;
-
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
+    private ProductEntity product;
+    private CategoryEntity category;
+
 
 
     @Autowired
-    public ViewCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewProductTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, ProductRepo productRepo,CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.productRepo = productRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
+        this.categoryRepo = categoryRepo;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\view\\test-cases.csv", new ArrayList<>(List.of("name", "categoryName","unit", "price", "quantity","photoURL")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldViewCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer?name=" + testCase.getInput().get("name"))
+    public void shouldViewProduct(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product?name=" + testCase.getInput().get("name")+"&category=" +testCase.getInput().get("categoryName"))
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
-                .andExpect(jsonPath("$").isArray())
                 .andDo(print()).andReturn();
     }
 
     @BeforeAll
     public void setup() throws Exception {
-        CustomerEntity cutomerr = new CustomerEntity();
-        cutomerr.setName("This is customer");
-
+        ProductEntity entity = new ProductEntity();
+        entity.setName("This is producttt");
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName("categorii");
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.customer = customerRepo.save(cutomerr);
+            this.product = productRepo.save(entity);
+            this.category= categoryRepo.save(categoryEntity);
+
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -103,7 +110,8 @@ class ViewCustomerTestRunner {
 
     @AfterAll
     public void cleanup() {
-        customerRepo.deleteById(this.customer.getId());
+        productRepo.deleteById(this.product.getId());
+        categoryRepo.deleteById(this.category.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

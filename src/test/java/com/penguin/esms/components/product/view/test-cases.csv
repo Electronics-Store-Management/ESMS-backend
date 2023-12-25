@@ -1,5 +1,7 @@
-name,length,status
-c,1,200
-z,0,200
-i,2,200
-customer_,0,200
+name,categoryName,unit,price,quantity,photoURL,status
+producttt,categorii,,,,,200
+producttt,dang,,,,,404
+giangggssssg,categori,be,99,20,esgfygsiufh32812,404
+,behh,99,20,esgfygsiufh32812,,404
+,,be,99,20,esgfygsiufh32812,404
+

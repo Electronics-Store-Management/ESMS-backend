@@ -56,9 +56,13 @@ public class ProductService {
                         HttpStatus.BAD_REQUEST, "Category has been discontinued ");
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
         }
+        Optional<ProductEntity> productEntityOptional = productRepo.findByName(name);
+        if (productEntityOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("product not found").toString());
+        }
         return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
-    }
 
+    }
     public List<ProductEntity> findDiscontinuedRelatedCategory(String name, String categoryName) {
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
