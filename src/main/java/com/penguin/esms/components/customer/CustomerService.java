@@ -45,7 +45,7 @@ public class CustomerService {
         }
         if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         return customer.get();
     }
 
@@ -56,7 +56,7 @@ public class CustomerService {
         }
         if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         return customer.get();
     }
 
@@ -73,7 +73,7 @@ public class CustomerService {
         if (customerOp.isPresent())
             if (customerOp.get().getIsStopped() == true)
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+                        HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         CustomerEntity customer = updateFromDTO(dto, new CustomerEntity());
 //        CustomerEntity customer = dto;
         customer.setIsStopped(false);
@@ -87,7 +87,7 @@ public class CustomerService {
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
         if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         customer.get().setIsStopped(true);
         customerRepo.save(customer.get());
     }
@@ -104,7 +104,7 @@ public class CustomerService {
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
         if (customer.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());
         return customerRepo.save(customerEntity);
     }

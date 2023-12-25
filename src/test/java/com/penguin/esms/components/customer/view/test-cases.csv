@@ -1,4 +1,5 @@
 name,length,status
 c,1,200
 z,0,200
-category_,0,200
+i,2,200
+customer_,0,200

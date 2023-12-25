@@ -1,7 +1,3 @@
-name,status
-category,200
-A long long name that contains too much character,200
-a,200
-Category container special character like this *&(&)(*Q&$#,200
-____,200
-,400
+name,phone,address,status
+giang,0,12,400
+giang,0971241268,12,200

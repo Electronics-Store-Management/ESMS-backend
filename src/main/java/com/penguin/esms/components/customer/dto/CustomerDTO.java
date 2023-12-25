@@ -2,6 +2,7 @@ package com.penguin.esms.components.customer.dto;
 
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
+import com.penguin.esms.components.staff.validators.PhoneNumberFormat;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CustomerDTO {
     private String name;
+    @PhoneNumberFormat(message = "Invalid phone number")
     private String phone;
     private String address;
     private List<WarrantyBillDTO> warrantyBills;

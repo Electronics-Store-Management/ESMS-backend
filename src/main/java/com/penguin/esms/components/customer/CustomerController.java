@@ -31,8 +31,8 @@ public class CustomerController {
     public CustomerEntity getById(@PathVariable String id) {
         return customerService.getById(id);
     }
-    @GetMapping("phone/{phone}")
-    public CustomerEntity getByPhone(@PathVariable String phone) {
+    @GetMapping("phone")
+    public CustomerEntity getByPhone(@RequestParam(defaultValue = "") String phone) {
         return customerService.getByPhone(phone);
     }
     @PostMapping
