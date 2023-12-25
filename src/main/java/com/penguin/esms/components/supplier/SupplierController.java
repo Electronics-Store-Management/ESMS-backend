@@ -13,6 +13,7 @@ import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,8 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<?> post(@Valid SupplierDTO supplierDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> post(@RequestBody SupplierDTO supplierDTO) {
         return ResponseEntity.ok(service.add(supplierDTO));
     }
 
