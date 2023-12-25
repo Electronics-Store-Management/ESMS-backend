@@ -1,10 +1,12 @@
-package com.penguin.esms.components.customer.view;
+package com.penguin.esms.components.customer.update;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
@@ -16,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,12 +44,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCategoryTestRunner {
+class UpdateCustomerTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CategoryRepo categoryRepo;
+    private CustomerRepo customerRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -56,40 +59,42 @@ class ViewCategoryTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CategoryEntity category;
+    private CustomerEntity customer;
 
     @Autowired
-    public ViewCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public UpdateCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.categoryRepo = categoryRepo;
+        this.customerRepo = customerRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\update\\test-cases.csv", new ArrayList<>(List.of("name", "phone", "address")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldViewCategory(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/category?name=" + testCase.getInput().get("name"))
+    public void shouldUpdateCustomer(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/customer/" + customer.getId())
+                        .param("name", testCase.getInput().get("name"))
+                        .param("phone", testCase.getInput().get("phone"))
+                        .param("address", testCase.getInput().get("address"))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
-                .andExpect(jsonPath("$").isArray())
                 .andDo(print()).andReturn();
     }
 
     @BeforeAll
     public void setup() throws Exception {
-
-        CategoryEntity category = new CategoryEntity();
-        category.setName("This is update category");
+        CustomerEntity customer = new CustomerEntity();
+        customer.setName("This is a customer");
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.category = categoryRepo.save(category);
+            this.customer = customerRepo.save(customer);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -102,7 +107,7 @@ class ViewCategoryTestRunner {
 
     @AfterAll
     public void cleanup() {
-        categoryRepo.deleteById(this.category.getId());
+        customerRepo.deleteById(this.customer.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }
