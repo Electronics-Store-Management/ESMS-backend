@@ -25,9 +25,7 @@ public class StaffDTO {
     private String password;
     @Email(message = "Invalid email address format")
     private String email;
-    @Size.List({
-            @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
-    })
+    @Pattern(regexp = "^(\\d{9}|\\d{12})$", message = "Citizen ID must be 9 or 12 digits")
     private String citizenId;
     private Role role;
 

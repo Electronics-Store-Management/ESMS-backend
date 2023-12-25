@@ -1,0 +1,9 @@
+name,phone,email,citizenId,role,status
+giang,0972051208,zang@gmail.com,123456789,STAFF,200
+lm,01,h@gmail.com,123456789,ADMIN,400
+,0972051288,zang@gmail.com,123456789,STAFF,400
+giang,0972061208,zang,123456789,STAFF,400
+giang,0972061208,g@gmail.com,12345789,STAFF,400
+
+
+
