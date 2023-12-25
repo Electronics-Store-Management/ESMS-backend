@@ -3,6 +3,8 @@ package com.penguin.esms.components.staff.delete;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.staff.Role;
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -34,12 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DeleteSupplierTestRunner {
+class DeleteStaffTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private SupplierRepo supplierRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -47,24 +47,22 @@ class DeleteSupplierTestRunner {
 
     @Autowired
     private TestService testService;
+    private StaffEntity staff;
 
     private AuthenticationResponse authenticationResponse;
-    private SupplierEntity supplier;
-
     @Autowired
-    public DeleteSupplierTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
+    public DeleteStaffTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.supplierRepo = supplierRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
 
     @Test
-    public void shouldDeleteSupplier() throws Exception {
-        newSupplier();
-        mockMvc.perform(MockMvcRequestBuilders.delete("/supplier/" + supplier.getId())
+    public void shouldDeleteStaff() throws Exception {
+        newStaff();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/staff/" + staff.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -72,7 +70,7 @@ class DeleteSupplierTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                supplierRepo.deleteById(supplier.getId());
+                staffRepository.deleteById(staff.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -82,9 +80,9 @@ class DeleteSupplierTestRunner {
     }
 
     @Test
-    public void shouldNotDeleteSupplier() throws Exception {
-        newSupplier();
-        mockMvc.perform(MockMvcRequestBuilders.delete("/supplier/dfiu" + supplier.getId())
+    public void shouldNotDeleteStaff() throws Exception {
+        newStaff();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/staff/dfiu" + staff.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -92,7 +90,7 @@ class DeleteSupplierTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                supplierRepo.deleteById(supplier.getId());
+                staffRepository.deleteById(staff.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -103,8 +101,8 @@ class DeleteSupplierTestRunner {
 
     @Test
     public void shouldNotDeleteDisSupplier() throws Exception {
-        newDisSupplier();
-        mockMvc.perform(MockMvcRequestBuilders.delete("/supplier/" + supplier.getId())
+        newDisStaff();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/staff/" + staff.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -112,7 +110,7 @@ class DeleteSupplierTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                supplierRepo.deleteById(supplier.getId());
+                staffRepository.deleteById(staff.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -121,16 +119,16 @@ class DeleteSupplierTestRunner {
         setupEntity.join();
     }
 
-    public  void newSupplier() throws Exception{
-        SupplierEntity neew = new SupplierEntity();
-        neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
-        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
+    public  void newStaff() throws Exception{
+        StaffEntity entity = new StaffEntity();
+        entity.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        entity.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
+        entity.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        entity.setCitizenId(testService.generateRandomString(testService.NUMBER_CHARACTERS, 12));
+        entity.setRole(Role.valueOf("STAFF"));
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.supplier = supplierRepo.save(neew);
+                this.staff = staffRepository.save(entity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -139,17 +137,17 @@ class DeleteSupplierTestRunner {
         setupEntity.join();
     }
 
-    public  void newDisSupplier() throws Exception{
-        SupplierEntity neew = new SupplierEntity();
-        neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
-        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
-        neew.setIsStopped(true);
+    public  void newDisStaff() throws Exception{
+        StaffEntity entity = new StaffEntity();
+        entity.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        entity.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
+        entity.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        entity.setCitizenId(testService.generateRandomString(testService.NUMBER_CHARACTERS, 12));
+        entity.setRole(Role.valueOf("STAFF"));
+        entity.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.supplier = supplierRepo.save(neew);
+                this.staff = staffRepository.save(entity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

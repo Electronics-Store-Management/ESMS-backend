@@ -50,7 +50,7 @@ public class StaffService {
         }
         if (staff.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Staff has resigned").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Staff has resigned").toString());
         return staff.get();
     }
 
@@ -68,11 +68,18 @@ public class StaffService {
         if (staff.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
+        if (staff.get().getIsStopped() == true)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, new Error("Staff has resigned").toString());
         staff.get().setIsStopped(true);
         staffRepository.save(staff.get());
     }
 
     public List<?> getRevisionsForStaff(String id) {
+        Optional<StaffEntity> staffOp = staffRepository.findById(id);
+        if (staffOp.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Staff not existed").toString());
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()
