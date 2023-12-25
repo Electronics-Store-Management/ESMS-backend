@@ -3,6 +3,8 @@ package com.penguin.esms.components.staff.update;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.staff.Role;
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -41,12 +43,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UpdateSupplierTestRunner {
+class UpdateStaffTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private SupplierRepo supplierRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -56,30 +56,33 @@ class UpdateSupplierTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private SupplierEntity supplier;
+    private StaffEntity staff;
 
     @Autowired
-    public UpdateSupplierTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
+    public UpdateStaffTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.supplierRepo = supplierRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\supplier\\update\\test-cases.csv", new ArrayList<>(List.of("name","phone","email","address")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\staff\\update\\test-cases.csv", new ArrayList<>(List.of("name","phone","email","citizenId", "role")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldUpdateCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/supplier/" + supplier.getId())
-                        .param("name", testCase.getInput().get("name"))
-                        .param("phone", testCase.getInput().get("phone"))
-                        .param("email", testCase.getInput().get("email"))
-                        .param("address", testCase.getInput().get("address"))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void shouldUpdateStaff(TestCase testCase) throws Exception {
+        StaffEntity staffEntity = new StaffEntity();
+        staffEntity.setName(testCase.getInput().get("name"));
+        staffEntity.setPhone(testCase.getInput().get("phone"));
+        staffEntity.setEmail(testCase.getInput().get("email"));
+        staffEntity.setCitizenId(testCase.getInput().get("citizenId"));
+        staffEntity.setRole(Role.valueOf(testCase.getInput().get("role")));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/staff/" + staff.getId())
+                        .content(objectMapper.writeValueAsString(staffEntity))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
@@ -88,11 +91,11 @@ class UpdateSupplierTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        SupplierEntity entity = new SupplierEntity();
-        entity.setName("This is a supplier");
+        StaffEntity entity = new StaffEntity();
+        entity.setName("staff");
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.supplier = supplierRepo.save(entity);
+            this.staff = staffRepository.save(entity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -105,7 +108,7 @@ class UpdateSupplierTestRunner {
 
     @AfterAll
     public void cleanup() {
-        supplierRepo.deleteById(this.supplier.getId());
+        staffRepository.deleteById(this.staff.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

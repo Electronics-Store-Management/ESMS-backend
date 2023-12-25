@@ -3,6 +3,7 @@ package com.penguin.esms.components.staff.view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -41,13 +42,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewSupplierTestRunner {
+class ViewStaffTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private SupplierRepo supplierRepo;
-
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -57,26 +55,25 @@ class ViewSupplierTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private SupplierEntity supplier;
+    private StaffEntity staff;
 
 
     @Autowired
-    public ViewSupplierTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewStaffTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.supplierRepo = supplierRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\supplier\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\staff\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
     public void shouldViewCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/supplier?name=" + testCase.getInput().get("name"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/staff?name=" + testCase.getInput().get("name"))
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
@@ -86,11 +83,11 @@ class ViewSupplierTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        SupplierEntity entity = new SupplierEntity();
-        entity.setName("This is a supplier");
+        StaffEntity entity = new StaffEntity();
+        entity.setName("staff");
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.supplier = supplierRepo.save(entity);
+            this.staff = staffRepository.save(entity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -98,13 +95,12 @@ class ViewSupplierTestRunner {
             }
         });
 
-
         setupEntity.join();
     }
 
     @AfterAll
     public void cleanup() {
-        supplierRepo.deleteById(this.supplier.getId());
+        staffRepository.deleteById(this.staff.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

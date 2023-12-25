@@ -1,7 +1,7 @@
-name,phone,email,address,status
-liiem,0972051208,hlen@gmail.com,129,200
-,01,hlen@gmail.com,129,400
-supplier,0972051208,hlen@gmail.com,129,200
+name,phone,email,citizenId,role,status
+staff,0972051208,hlen@gmail.com,123456780,STAFF,200
+,01,hlen@gmail.com,12345,STAFF,400
+st,0972051208,hlen@gmail.com,123456789101,STAFF,200
 
 
 
