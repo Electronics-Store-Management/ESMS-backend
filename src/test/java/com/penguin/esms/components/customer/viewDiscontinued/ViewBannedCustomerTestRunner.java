@@ -1,26 +1,33 @@
-package com.penguin.esms.components.customer.viewHistory;
+package com.penguin.esms.components.customer.viewDiscontinued;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.staff.StaffRepository;
+import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
+import com.penguin.esms.utils.TestUtils;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -34,12 +41,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCategoryByIdTestRunner {
+class ViewBannedCustomerTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CategoryRepo categoryRepo;
+    private CustomerRepo customerRepo;
+
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -49,60 +57,40 @@ class ViewCategoryByIdTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CategoryEntity category;
+    private CustomerEntity customer;
+
 
     @Autowired
-    public ViewCategoryByIdTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewBannedCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.categoryRepo = categoryRepo;
+        this.customerRepo = customerRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
-    @Test
-    public void shouldViewCategoryHistoryById() throws Exception {
-        CategoryEntity newCategory = new CategoryEntity();
-        newCategory.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        this.category = categoryRepo.save(newCategory);
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/history/" + category.getId())
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                )
-                .andExpect(status().is(200))
-                .andDo(print()).andReturn();
+    public static List<TestCase> testData() throws IOException {
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
     }
 
-    @Test
-    public void shouldNotViewCategoryHistoryById() throws Exception {
-        CategoryEntity newCategory = new CategoryEntity();
-        newCategory.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        this.category = categoryRepo.save(newCategory);
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/history/dfiuyt347" + category.getId())
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ParameterizedTest
+    @MethodSource("testData")
+    public void shouldViewBannedCustomer(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/customer?name=" + testCase.getInput().get("name"))
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
-                .andExpect(status().is(404))
-                .andDo(print()).andReturn();
-    }
-
-    @Test
-    public void shouldViewDiscontinuedCategoryHistoryById() throws Exception {
-        CategoryEntity newCategory = new CategoryEntity();
-        newCategory.setIsStopped(true);
-        newCategory.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        this.category = categoryRepo.save(newCategory);
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/history/" + category.getId())
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                )
-                .andExpect(status().is(200))
+                .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
+                .andExpect(jsonPath("$").isArray())
                 .andDo(print()).andReturn();
     }
 
     @BeforeAll
     public void setup() throws Exception {
+        CustomerEntity cutomerr = new CustomerEntity();
+        cutomerr.setName("This is customer");
+        cutomerr.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.customer = customerRepo.save(cutomerr);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -115,6 +103,7 @@ class ViewCategoryByIdTestRunner {
 
     @AfterAll
     public void cleanup() {
+        customerRepo.deleteById(this.customer.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

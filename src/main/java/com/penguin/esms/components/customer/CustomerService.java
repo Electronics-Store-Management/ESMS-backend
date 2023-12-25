@@ -110,6 +110,10 @@ public class CustomerService {
     }
 
     public List<?> getRevisions(String id) {
+        Optional<CustomerEntity> customer = customerRepo.findById(id);
+        if (customer.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()
