@@ -48,33 +48,39 @@ public class ProductService {
     public List<ProductEntity> findRelatedCategory(String name, String categoryName) {
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
-            if (optionalCategory.isEmpty()) {
+            if (optionalCategory.isEmpty())
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("category not found").toString());
-            }
             if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Category has been discontinued ");
+            Optional<ProductEntity> productEntityOptional = productRepo.findByName(name);
+            if (productEntityOptional.isEmpty())
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("product not found").toString());
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
+        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "null ");
         }
-        Optional<ProductEntity> productEntityOptional = productRepo.findByName(name);
-        if (productEntityOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("product not found").toString());
-        }
-        return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+        return null;
 
     }
     public List<ProductEntity> findDiscontinuedRelatedCategory(String name, String categoryName) {
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
-            if (optionalCategory.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("category not found").toString());
-            }
+            if (optionalCategory.isEmpty())
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("category not found").toString());
             if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Category has been discontinued ");
+            Optional<ProductEntity> productEntityOptional = productRepo.findByName(name);
+            if (productEntityOptional.isEmpty())
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("product not found").toString());
             return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), true);
+        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "null ");
         }
-        return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
+        return null;
     }
 
     public ProductEntity getProductById(String productId) {

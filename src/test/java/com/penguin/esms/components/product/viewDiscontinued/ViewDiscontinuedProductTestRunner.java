@@ -1,10 +1,12 @@
-package com.penguin.esms.components.product.viewByPhone;
+package com.penguin.esms.components.product.viewDiscontinued;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
-import com.penguin.esms.components.customer.CustomerEntity;
-import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
@@ -40,42 +42,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCustomerByPhoneTestRunner {
-
+class ViewDiscontinuedProductTestRunner {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
-
+    private ProductRepo productRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private TestService testService;
-
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
+    private ProductEntity product;
+    private ProductEntity product2;
+
+    private CategoryEntity category;
+    private CategoryEntity category2;
+
+
 
 
     @Autowired
-    public ViewCustomerByPhoneTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewDiscontinuedProductTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, ProductRepo productRepo, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.productRepo = productRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
+        this.categoryRepo = categoryRepo;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\viewByPhone\\test-cases.csv", new ArrayList<>(List.of("phone")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\viewDiscontinued\\test-cases.csv", new ArrayList<>(List.of("name", "categoryName")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldViewCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/phone?phone=" + testCase.getInput().get("phone"))
+    public void shouldViewDiscontinuedProduct(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/discountinued?name=" + testCase.getInput().get("name")+"&category=" +testCase.getInput().get("categoryName"))
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
@@ -84,11 +91,23 @@ class ViewCustomerByPhoneTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        CustomerEntity cutomerr = new CustomerEntity();
-        cutomerr.setPhone("0971241207");
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName("cariii");
+
+        ProductEntity entity = new ProductEntity();
+
+        CategoryEntity disCategoryEntity = new CategoryEntity();
+        disCategoryEntity.setName("diss");
+        disCategoryEntity.setIsStopped(true);
+        ProductEntity entity2 = new ProductEntity();
+        entity2.setIsStopped(true);
+        entity2.setName("ttttt");
+        entity2.setCategory(category2);
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.customer = customerRepo.save(cutomerr);
+            this.product2 = productRepo.save(entity2);
+            this.category= categoryRepo.save(categoryEntity);
+            this.category2=categoryRepo.save(disCategoryEntity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -97,11 +116,29 @@ class ViewCustomerByPhoneTestRunner {
         });
 
         setupEntity.join();
+
+        entity.setIsStopped(true);
+        entity.setName("produttt");
+        entity.setCategory(category);
+
+        CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
+            this.product = productRepo.save(entity);
+            try {
+                authenticationResponse = testService.getAuthenticationInfo();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity2.join();
     }
 
     @AfterAll
     public void cleanup() {
-        customerRepo.deleteById(this.customer.getId());
+        productRepo.deleteById(this.product.getId());
+        categoryRepo.deleteById(this.category.getId());
+        productRepo.deleteById(this.product2.getId());
+        categoryRepo.deleteById(this.category2.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

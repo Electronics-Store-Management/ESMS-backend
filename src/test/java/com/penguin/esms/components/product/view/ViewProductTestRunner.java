@@ -60,6 +60,9 @@ class ViewProductTestRunner {
     private TestService testService;
     private AuthenticationResponse authenticationResponse;
     private ProductEntity product;
+    private ProductEntity product2;
+    private CategoryEntity category2;
+
     private CategoryEntity category;
 
 
@@ -75,7 +78,7 @@ class ViewProductTestRunner {
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\view\\test-cases.csv", new ArrayList<>(List.of("name", "categoryName","unit", "price", "quantity","photoURL")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\view\\test-cases.csv", new ArrayList<>(List.of("name", "categoryName")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
@@ -90,14 +93,21 @@ class ViewProductTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        ProductEntity entity = new ProductEntity();
-        entity.setName("This is producttt");
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setName("categorii");
-        CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.product = productRepo.save(entity);
-            this.category= categoryRepo.save(categoryEntity);
+        categoryEntity.setName("cariii");
+        ProductEntity entity = new ProductEntity();
 
+        CategoryEntity disCategoryEntity = new CategoryEntity();
+        disCategoryEntity.setName("diss");
+        disCategoryEntity.setIsStopped(true);
+        ProductEntity entity2 = new ProductEntity();
+        entity2.setName("ttttt");
+        entity2.setCategory(category2);
+
+        CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.product2 = productRepo.save(entity2);
+            this.category= categoryRepo.save(categoryEntity);
+            this.category2=categoryRepo.save(disCategoryEntity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -106,12 +116,27 @@ class ViewProductTestRunner {
         });
 
         setupEntity.join();
+        entity.setName("produttt");
+        entity.setCategory(category);
+
+        CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
+            this.product = productRepo.save(entity);
+            try {
+                authenticationResponse = testService.getAuthenticationInfo();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity2.join();
     }
 
     @AfterAll
     public void cleanup() {
         productRepo.deleteById(this.product.getId());
         categoryRepo.deleteById(this.category.getId());
+        productRepo.deleteById(this.product2.getId());
+        categoryRepo.deleteById(this.category2.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }
