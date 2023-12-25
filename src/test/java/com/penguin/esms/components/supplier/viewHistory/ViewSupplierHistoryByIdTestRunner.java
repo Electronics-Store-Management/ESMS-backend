@@ -6,6 +6,8 @@ import com.penguin.esms.components.authentication.responses.AuthenticationRespon
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.staff.StaffRepository;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.SupplierRepo;
 import com.penguin.esms.utils.TestService;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
@@ -34,12 +36,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCustomerHistoryByIdTestRunner {
+class ViewSupplierHistoryByIdTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
+    private SupplierRepo supplierRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -49,20 +51,20 @@ class ViewCustomerHistoryByIdTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
+    private SupplierEntity supplier;
     @Autowired
-    public ViewCustomerHistoryByIdTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewSupplierHistoryByIdTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.supplierRepo = supplierRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     @Test
-    public void shouldGetCustomerById() throws Exception {
-        newCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/" + customer.getId())
+    public void shouldGetHisSupplierById() throws Exception {
+        newSupplierH();
+        mockMvc.perform(MockMvcRequestBuilders.get("/supplier/history/" + supplier.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -70,7 +72,7 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                supplierRepo.deleteById(supplier.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -80,9 +82,9 @@ class ViewCustomerHistoryByIdTestRunner {
     }
 
     @Test
-    public void shouldNotGetCustomerById() throws Exception {
-        newCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/dfiu" + customer.getId())
+    public void shouldNotGetHisSupplierById() throws Exception {
+        newSupplierH();
+        mockMvc.perform(MockMvcRequestBuilders.get("/supplier/history/dfiu" + supplier.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -90,7 +92,7 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                supplierRepo.deleteById(supplier.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -100,9 +102,9 @@ class ViewCustomerHistoryByIdTestRunner {
     }
 
     @Test
-    public void shouldNotGetBannedCustomerById() throws Exception {
-        newBannedCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/" + customer.getId())
+    public void shouldGetDisHisSupplierById() throws Exception {
+        newDisSupplierH();
+        mockMvc.perform(MockMvcRequestBuilders.get("/supplier/history/" + supplier.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -110,7 +112,7 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                supplierRepo.deleteById(supplier.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -118,14 +120,16 @@ class ViewCustomerHistoryByIdTestRunner {
 
         setupEntity.join();
     }
-    public  void newCustomer() throws Exception{
-        CustomerEntity newCustomer = new CustomerEntity();
-        newCustomer.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        newCustomer.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+    public  void newSupplierH() throws Exception{
+        SupplierEntity neew = new SupplierEntity();
+        neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
+        neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.customer = customerRepo.save(newCustomer);
+                this.supplier = supplierRepo.save(neew);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -134,15 +138,17 @@ class ViewCustomerHistoryByIdTestRunner {
         setupEntity.join();
     }
 
-    public  void newBannedCustomer() throws Exception{
-        CustomerEntity newCustomer = new CustomerEntity();
-        newCustomer.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        newCustomer.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setIsStopped(true);
+    public  void newDisSupplierH() throws Exception{
+        SupplierEntity neew = new SupplierEntity();
+        neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
+        neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
+        neew.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.customer = customerRepo.save(newCustomer);
+                this.supplier = supplierRepo.save(neew);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
