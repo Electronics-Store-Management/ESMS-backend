@@ -60,7 +60,7 @@ public class SupplierService {
         if (supplierEntityOptional.isPresent())
             if (supplierEntityOptional.get().getIsStopped() == true)
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Supplier has terminated cooperation ").toString());
+                        HttpStatus.BAD_REQUEST, new Error("Supplier has terminated cooperation ").toString());
         SupplierEntity supplier = updateFromDTO(dto, new SupplierEntity());
         supplier.setIsStopped(false);
         return supplierRepo.save(supplier);
@@ -88,7 +88,7 @@ public class SupplierService {
                     HttpStatus.NOT_FOUND, new Error("Supplier not found").toString());
         if (supplierEntityOptional.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Supplier has terminated cooperation ").toString());
+                    HttpStatus.BAD_REQUEST, new Error("Supplier has terminated cooperation ").toString());
         supplierEntityOptional.get().setIsStopped(true);
         supplierRepo.save(supplierEntityOptional.get());
     }

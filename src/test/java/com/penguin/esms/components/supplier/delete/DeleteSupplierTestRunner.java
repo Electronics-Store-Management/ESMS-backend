@@ -126,10 +126,10 @@ class DeleteSupplierTestRunner {
     public  void newSupplier() throws Exception{
         SupplierEntity neew = new SupplierEntity();
         neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
         neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
         neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
+//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
                 this.supplier = supplierRepo.save(neew);
@@ -144,10 +144,10 @@ class DeleteSupplierTestRunner {
     public  void newDisSupplier() throws Exception{
         SupplierEntity neew = new SupplierEntity();
         neew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
         neew.setEmail(testService.generateRandomString(testService.ALL_CHARACTERS, 9) + "@gmail.com");
+        neew.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
         neew.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
+//        neew.setNote(testService.generateRandomString(testService.ALL_CHARACTERS, 20));
         neew.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
