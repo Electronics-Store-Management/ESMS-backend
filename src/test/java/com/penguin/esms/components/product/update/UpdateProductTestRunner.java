@@ -5,6 +5,8 @@ import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
@@ -41,12 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UpdateCustomerTestRunner {
+class UpdateProductTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
+    private ProductRepo productRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -56,28 +58,30 @@ class UpdateCustomerTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
+    private ProductEntity product;
 
     @Autowired
-    public UpdateCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public UpdateProductTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, ProductRepo productRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.productRepo = productRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\update\\test-cases.csv", new ArrayList<>(List.of("name", "phone", "address")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\update\\test-cases.csv", new ArrayList<>(List.of("name", "unit", "price", "quantity","photoURL")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
     public void shouldUpdateCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/customer/" + customer.getId())
-                        .param("name", testCase.getInput().get("name"))
-                        .param("phone", testCase.getInput().get("phone"))
-                        .param("address", testCase.getInput().get("address"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/product/" + product.getId())
+                        .param("name", testCase.getInput().get("name").equals("") ? null : testCase.getInput().get("name"))
+                        .param("unit", testCase.getInput().get("unit"))
+                        .param("quantity", testCase.getInput().get("quantity"))
+                        .param("price", testCase.getInput().get("price"))
+                        .param("photoURL", testCase.getInput().get("photoURL"))
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -87,11 +91,11 @@ class UpdateCustomerTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
-        CustomerEntity customer = new CustomerEntity();
-        customer.setName("This is a customer");
+        ProductEntity entity = new ProductEntity();
+        entity.setName("This is a product");
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.customer = customerRepo.save(customer);
+            this.product = productRepo.save(entity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -104,7 +108,7 @@ class UpdateCustomerTestRunner {
 
     @AfterAll
     public void cleanup() {
-        customerRepo.deleteById(this.customer.getId());
+        productRepo.deleteById(this.product.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

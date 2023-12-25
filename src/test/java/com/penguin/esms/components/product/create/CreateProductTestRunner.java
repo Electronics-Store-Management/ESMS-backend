@@ -77,21 +77,12 @@ class CreateProductTestRunner {
     @ParameterizedTest
     @MethodSource("testData")
     public void shouldCreateProduct(TestCase testCase) throws Exception {
-//        ProductEntity product = new ProductEntity();
-//        product.setName(testCase.getInput().get("name"));
-//        product.setUnit(testCase.getInput().get("unit"));
-//        product.setQuantity(Integer.valueOf(testCase.getInput().get("quantity")));
-//        product.setPrice(Long.valueOf(testCase.getInput().get("price")));
-//        product.setPhotoURL(testCase.getInput().get("photoURL"));
-//
-
         mockMvc.perform(MockMvcRequestBuilders.post("/product")
                         .param("name", testCase.getInput().get("name").equals("") ? null : testCase.getInput().get("name"))
                         .param("unit", testCase.getInput().get("unit"))
                         .param("quantity", testCase.getInput().get("quantity"))
                         .param("price", testCase.getInput().get("price"))
                         .param("photoURL", testCase.getInput().get("photoURL"))
-
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
