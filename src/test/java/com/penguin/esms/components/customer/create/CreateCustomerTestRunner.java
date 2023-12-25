@@ -3,8 +3,12 @@ package com.penguin.esms.components.customer.create;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.staff.StaffRepository;
+import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
 import com.penguin.esms.utils.TestUtils;
@@ -46,7 +50,7 @@ class CreateCustomerTestRunner {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CategoryRepo categoryRepo;
+    private CustomerRepo customerRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -58,24 +62,29 @@ class CreateCustomerTestRunner {
     private AuthenticationResponse authenticationResponse;
 
     @Autowired
-    public CreateCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public CreateCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.categoryRepo = categoryRepo;
+        this.customerRepo = customerRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\create\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\create\\test-cases.csv", new ArrayList<>(List.of("name", "phone", "address")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldCreateCategory(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/category")
-                        .param("name", testCase.getInput().get("name"))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void shouldCreateCustomer(TestCase testCase) throws Exception {
+        CustomerEntity customer = new CustomerEntity();
+        customer.setName(testCase.getInput().get("name"));
+        customer.setPhone(testCase.getInput().get("phone"));
+        customer.setAddress(testCase.getInput().get("address"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/customer")
+                        .content(objectMapper.writeValueAsString(customer))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
