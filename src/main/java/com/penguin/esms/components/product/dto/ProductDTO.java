@@ -25,11 +25,11 @@ public class ProductDTO {
     private Long price;
     private Integer quantity = 0;
     private Integer warrantyPeriod;
-    private Boolean isAvailable;
+    private Boolean isStopped;
     private String photoURL;
     private List<String> suppliers = new ArrayList<>();
 
-    public ProductDTO(String id , String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL){
+    public ProductDTO(String id , String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isStopped, String photoURL){
         this.setId(id);
         this.name = name;
         this.categoryId = categoryId;
@@ -37,7 +37,7 @@ public class ProductDTO {
         this.price = price;
         this.quantity = quantity;
         this.warrantyPeriod = warrantyPeriod;
-        this.isAvailable = isAvailable;
+        this.isStopped = isStopped;
         this.photoURL = photoURL;
     }
 //    private List<String> saleProducts = new ArrayList<>();

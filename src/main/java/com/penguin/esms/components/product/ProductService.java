@@ -2,6 +2,8 @@ package com.penguin.esms.components.product;
 
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -163,7 +165,7 @@ public class ProductService {
             }
             if (supplier.get().getIsStopped())
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Supplier has been discontinued ");
+                        HttpStatus.NOT_FOUND, new Error("Supplier has been discontinued ").toString());
             supplierEntities.add(supplier.get());
         });
         product.setSuppliers(supplierEntities);
@@ -174,7 +176,7 @@ public class ProductService {
         Optional<ProductEntity> productEntityOptional = productRepo.findById(id);
         if (productEntityOptional.isEmpty())
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Product not existed");
+                    HttpStatus.NOT_FOUND, new Error("Product not existed").toString());
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()
@@ -187,7 +189,7 @@ public class ProductService {
                 .addProjection(AuditEntity.property("price"))
                 .addProjection(AuditEntity.property("quantity"))
                 .addProjection(AuditEntity.property("warrantyPeriod"))
-                .addProjection(AuditEntity.property("isAvailable"))
+                .addProjection(AuditEntity.property("isStopped"))
                 .addProjection(AuditEntity.property("photoURL"))
                 .addProjection(AuditEntity.revisionNumber())
                 .addProjection(AuditEntity.revisionType())
@@ -200,8 +202,11 @@ public class ProductService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
-                auditEnversInfo.setRevision(product);
+//                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+                ProductEntity entity = productRepo.findById((String) objArray[0]).get();
+//                List<ProductEntity> products = productRepo.findById(entity.getId());
+//                entity.setImportProducts(importProducts);
+                auditEnversInfo.setRevision(entity);
                 productAudit.add(auditEnversInfo);
             }
         }

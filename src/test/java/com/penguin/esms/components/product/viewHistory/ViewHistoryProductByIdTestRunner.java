@@ -3,8 +3,10 @@ package com.penguin.esms.components.product.viewHistory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
-import com.penguin.esms.components.customer.CustomerEntity;
-import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestService;
 import org.junit.jupiter.api.*;
@@ -34,12 +36,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCustomerHistoryByIdTestRunner {
+class ViewHistoryProductByIdTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
+    private ProductRepo productRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
+
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -49,20 +54,32 @@ class ViewCustomerHistoryByIdTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
+    private ProductEntity product;
+    private CategoryEntity category;
+
+
     @Autowired
-    public ViewCustomerHistoryByIdTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewHistoryProductByIdTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, ProductRepo productRepo,CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.productRepo = productRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
+        this.categoryRepo = categoryRepo;
     }
 
     @Test
-    public void shouldGetCustomerById() throws Exception {
-        newCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/" + customer.getId())
+    public void shouldGetHistoryProductById() throws Exception {
+        CompletableFuture<Void> setupEntity0 = CompletableFuture.runAsync(() -> {
+            try {
+                newHistoryProductV();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        setupEntity0.join();
+//        newHistoryProductV();
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/history/" + product.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -70,7 +87,9 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                productRepo.deleteById(product.getId());
+                categoryRepo.deleteById(category.getId());
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -80,9 +99,18 @@ class ViewCustomerHistoryByIdTestRunner {
     }
 
     @Test
-    public void shouldNotGetCustomerById() throws Exception {
-        newCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/dfiu" + customer.getId())
+    public void shouldNotGetHistoryProductById() throws Exception {
+        CompletableFuture<Void> setupEntity0 = CompletableFuture.runAsync(() -> {
+            try {
+                newHistoryProductV();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity0.join();
+//        newHistoryProductV();
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/history/dsdfd3fiu" + product.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -90,7 +118,8 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                productRepo.deleteById(product.getId());
+                categoryRepo.deleteById(category.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -100,9 +129,18 @@ class ViewCustomerHistoryByIdTestRunner {
     }
 
     @Test
-    public void shouldNotGetBannedCustomerById() throws Exception {
-        newBannedCustomer();
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer/history/" + customer.getId())
+    public void shouldGetDiscontinuedHistoryProductById() throws Exception {
+        CompletableFuture<Void> setupEntity0 = CompletableFuture.runAsync(() -> {
+            try {
+                newDiscontinuedHistoryProductV();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity0.join();
+//        newDiscontinuedHistoryProductV();
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/history/" + product.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
@@ -110,7 +148,9 @@ class ViewCustomerHistoryByIdTestRunner {
                 .andDo(print()).andReturn();
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                customerRepo.deleteById(customer.getId());
+                productRepo.deleteById(product.getId());
+
+                categoryRepo.deleteById(category.getId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -118,37 +158,67 @@ class ViewCustomerHistoryByIdTestRunner {
 
         setupEntity.join();
     }
-    public  void newCustomer() throws Exception{
-        CustomerEntity newCustomer = new CustomerEntity();
-        newCustomer.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        newCustomer.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+    public  void newHistoryProductV() throws Exception{
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName("giang");
+
+        ProductEntity neeew = new ProductEntity();
+        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        neeew.setQuantity(20);
+        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
+        neeew.setPrice(1000l);
+        neeew.setWarrantyPeriod(6);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.customer = customerRepo.save(newCustomer);
+                this.category = categoryRepo.save(categoryEntity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
 
         setupEntity.join();
+        neeew.setCategory(categoryEntity);
+        CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
+            try {
+                this.product = productRepo.save(neeew);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity2.join();
     }
 
-    public  void newBannedCustomer() throws Exception{
-        CustomerEntity newCustomer = new CustomerEntity();
-        newCustomer.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setPhone("0" + testService.generateRandomString(testService.ALL_CHARACTERS, 9));
-        newCustomer.setAddress(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        newCustomer.setIsStopped(true);
+    public  void newDiscontinuedHistoryProductV() throws Exception{
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName("giang");
+
+        ProductEntity neeew = new ProductEntity();
+        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
+        neeew.setQuantity(20);
+        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
+        neeew.setPrice(1000l);
+        neeew.setWarrantyPeriod(6);
+        neeew.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
-                this.customer = customerRepo.save(newCustomer);
+                this.category = categoryRepo.save(categoryEntity);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
 
         setupEntity.join();
+        neeew.setCategory(categoryEntity);
+        CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
+            try {
+                this.product = productRepo.save(neeew);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        setupEntity2.join();
     }
     @BeforeAll
     public void setup() throws Exception {
