@@ -3,7 +3,6 @@ package com.penguin.esms.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
-import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.staff.Role;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
@@ -16,8 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.security.SecureRandom;
-import java.util.Random;
-import java.util.random.RandomGenerator;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,11 +28,14 @@ public class TestService {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private StaffRepository staffRepository;
 
     @Autowired
-    TestService(MockMvc mockMvc, ObjectMapper objectMapper) {
+    TestService(MockMvc mockMvc, ObjectMapper objectMapper, StaffRepository staffRepository) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
+        this.staffRepository = staffRepository;
     }
 
     public final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -69,10 +71,36 @@ public class TestService {
                 .andDo(result -> {
                     String staffId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
                     String accessToken = JsonPath.read(result.getResponse().getContentAsString(), "$.access_token");
+                    String refreshToken = JsonPath.read(result.getResponse().getContentAsString(), "$.refresh_token");
                     authenticationResponse.setId(staffId);
                     authenticationResponse.setAccessToken(accessToken);
+                    authenticationResponse.setRefreshToken(refreshToken);
                 }).andReturn();
 
         return authenticationResponse;
+    }
+
+    public StaffEntity creatStaffEntity(String name, String phone, String email, String password, String citizendId, Role role) {
+        StaffEntity staff = new StaffEntity();
+        staff.setName(name);
+        staff.setPhone(phone);
+        staff.setPassword(password);
+        staff.setEmail(email);
+        staff.setCitizenId(citizendId);
+        staff.setRole(role);
+
+        AtomicReference<StaffEntity> result = null;
+
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            try {
+                result.set(staffRepository.save(staff));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        completableFuture.join();
+
+        return result.get();
     }
 }

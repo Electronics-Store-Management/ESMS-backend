@@ -1,0 +1,6 @@
+email,password,status
+hoanghyyy@gmail.com,123456,200
+hoanghyyyy@gmail.com,123456,403
+hoanghyyy@gmail.com,1234567,403
+,1234567,403
+hoanghyyy@gmail.com,,403
