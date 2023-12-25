@@ -1,4 +1,4 @@
-package com.penguin.esms.components.supplier.view;
+package com.penguin.esms.components.supplier.update;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
@@ -6,6 +6,8 @@ import com.penguin.esms.components.authentication.responses.AuthenticationRespon
 import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.customer.CustomerRepo;
 import com.penguin.esms.components.staff.StaffRepository;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.SupplierRepo;
 import com.penguin.esms.utils.TestCase;
 import com.penguin.esms.utils.TestService;
 import com.penguin.esms.utils.TestUtils;
@@ -16,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +30,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -41,13 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ViewCustomerTestRunner {
+class UpdateSupplierTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CustomerRepo customerRepo;
-
+    private SupplierRepo supplierRepo;
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
@@ -57,40 +58,43 @@ class ViewCustomerTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
-    private CustomerEntity customer;
-
+    private SupplierEntity supplier;
 
     @Autowired
-    public ViewCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CustomerRepo customerRepo, StaffRepository staffRepository, TestService testService) {
+    public UpdateSupplierTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, SupplierRepo supplierRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
-        this.customerRepo = customerRepo;
+        this.supplierRepo = supplierRepo;
         this.staffRepository = staffRepository;
         this.testService = testService;
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\customer\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\supplier\\update\\test-cases.csv", new ArrayList<>(List.of("name","phone","email","address")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldViewCustomer(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/customer?name=" + testCase.getInput().get("name"))
+    public void shouldUpdateCustomer(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/supplier/" + supplier.getId())
+                        .param("name", testCase.getInput().get("name"))
+                        .param("phone", testCase.getInput().get("phone"))
+                        .param("email", testCase.getInput().get("email"))
+                        .param("address", testCase.getInput().get("address"))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
-                .andExpect(jsonPath("$").isArray())
                 .andDo(print()).andReturn();
     }
 
     @BeforeAll
     public void setup() throws Exception {
-        CustomerEntity cutomerr = new CustomerEntity();
-        cutomerr.setName("This is customer");
+        SupplierEntity entity = new SupplierEntity();
+        entity.setName("This is a supplier");
 
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
-            this.customer = customerRepo.save(cutomerr);
+            this.supplier = supplierRepo.save(entity);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -103,7 +107,7 @@ class ViewCustomerTestRunner {
 
     @AfterAll
     public void cleanup() {
-        customerRepo.deleteById(this.customer.getId());
+        supplierRepo.deleteById(this.supplier.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

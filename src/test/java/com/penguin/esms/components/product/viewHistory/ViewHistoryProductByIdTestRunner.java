@@ -163,11 +163,7 @@ class ViewHistoryProductByIdTestRunner {
         categoryEntity.setName("giang");
 
         ProductEntity neeew = new ProductEntity();
-        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neeew.setQuantity(20);
-        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
-        neeew.setPrice(1000l);
-        neeew.setWarrantyPeriod(6);
+
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
                 this.category = categoryRepo.save(categoryEntity);
@@ -177,7 +173,14 @@ class ViewHistoryProductByIdTestRunner {
         });
 
         setupEntity.join();
+        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
         neeew.setCategory(categoryEntity);
+        neeew.setUnit("cai");
+        neeew.setPrice(1000l);
+        neeew.setQuantity(20);
+        neeew.setWarrantyPeriod(6);
+        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
+
         CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
             try {
                 this.product = productRepo.save(neeew);
@@ -194,12 +197,6 @@ class ViewHistoryProductByIdTestRunner {
         categoryEntity.setName("giang");
 
         ProductEntity neeew = new ProductEntity();
-        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
-        neeew.setQuantity(20);
-        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
-        neeew.setPrice(1000l);
-        neeew.setWarrantyPeriod(6);
-        neeew.setIsStopped(true);
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
             try {
                 this.category = categoryRepo.save(categoryEntity);
@@ -209,7 +206,14 @@ class ViewHistoryProductByIdTestRunner {
         });
 
         setupEntity.join();
+
+        neeew.setName(testService.generateRandomString(testService.ALL_CHARACTERS, 10));
         neeew.setCategory(categoryEntity);
+        neeew.setUnit("cai");
+        neeew.setPrice(1000l);
+        neeew.setQuantity(20);
+        neeew.setWarrantyPeriod(6);
+        neeew.setPhotoURL(testService.generateRandomString(testService.ALL_CHARACTERS, 15));
         CompletableFuture<Void> setupEntity2 = CompletableFuture.runAsync(() -> {
             try {
                 this.product = productRepo.save(neeew);

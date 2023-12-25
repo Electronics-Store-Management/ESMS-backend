@@ -1,4 +1,7 @@
-name,phone,address,status
-giang,0,12,400
-giang,0971241268,12,200
-customer1,,,400
+name,phone,email,address,status
+liiem,0972051208,hlen@gmail.com,129,200
+,01,hlen@gmail.com,129,400
+supplier,0972051208,hlen@gmail.com,129,200
+
+
+

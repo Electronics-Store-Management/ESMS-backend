@@ -51,7 +51,7 @@ public class SupplierService {
         }
         if (optionalSupplier.get().getIsStopped() == true)
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Supplier has terminated cooperation");
+                    HttpStatus.BAD_REQUEST, "Supplier has terminated cooperation");
         return optionalSupplier.get();
     }
 
@@ -95,6 +95,10 @@ public class SupplierService {
 
     @Transactional
     public List<?> getRevisions(String id) {
+        Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findById(id);
+        if (supplierEntityOptional.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Supplier not found").toString());
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()
