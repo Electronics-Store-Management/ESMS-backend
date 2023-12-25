@@ -9,6 +9,8 @@ import java.util.Optional;
 @Repository
 public interface SupplierRepo extends JpaRepository<SupplierEntity, String> {
     public Optional<SupplierEntity> findByName(String name);
+    public Optional<SupplierEntity> findByPhone(String phone);
+
 
     public List<SupplierEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
 }

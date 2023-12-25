@@ -75,7 +75,6 @@ public class CustomerService {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, new Error("Customer has been banned ").toString());
         CustomerEntity customer = updateFromDTO(dto, new CustomerEntity());
-//        CustomerEntity customer = dto;
         customer.setIsStopped(false);
         return customerRepo.save(customer);
     }

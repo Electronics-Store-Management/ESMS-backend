@@ -1,6 +1,8 @@
 package com.penguin.esms.components.supplier;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
 import com.penguin.esms.components.supplier.dto.SupplierDTO;
@@ -53,22 +55,21 @@ public class SupplierService {
         return optionalSupplier.get();
     }
 
-    public SupplierEntity add(SupplierDTO supplierDTO) {
-        Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findByName(supplierDTO.getName());
-        if (supplierEntityOptional.isPresent()) {
+    public SupplierEntity add(SupplierDTO dto) {
+        Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findByPhone(dto.getPhone());
+        if (supplierEntityOptional.isPresent())
             if (supplierEntityOptional.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, new Error("Supplier has terminated cooperation ").toString());
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, new Error("Supplier existed").toString());
-        }
-        SupplierEntity supplier = new SupplierEntity();
-        mapper.updateSupplierFromDto(supplierDTO, supplier);
-        supplier.setNote(supplierDTO.getNote());
+        SupplierEntity supplier = updateFromDTO(dto, new SupplierEntity());
         supplier.setIsStopped(false);
         return supplierRepo.save(supplier);
     }
 
+    private SupplierEntity updateFromDTO(SupplierDTO dto, SupplierEntity entity) {
+        mapper.updateSupplierFromDto(dto, entity);
+        return entity;
+    }
     public SupplierEntity update(SupplierDTO supplierDTO, String id) {
         Optional<SupplierEntity> optionalSupplier = supplierRepo.findById(id);
         if (optionalSupplier.isEmpty()) {
@@ -82,13 +83,12 @@ public class SupplierService {
 
     public void remove(String id) {
         Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findById(id);
-        if (supplierEntityOptional.isEmpty()) {
-            if (supplierEntityOptional.get().getIsStopped() == true)
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Supplier has terminated cooperation ").toString());
+        if (supplierEntityOptional.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Supplier not found").toString());
-        }
+        if (supplierEntityOptional.get().getIsStopped() == true)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, new Error("Supplier has terminated cooperation ").toString());
         supplierEntityOptional.get().setIsStopped(true);
         supplierRepo.save(supplierEntityOptional.get());
     }
