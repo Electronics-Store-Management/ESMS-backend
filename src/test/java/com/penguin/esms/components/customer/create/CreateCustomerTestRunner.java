@@ -1,4 +1,4 @@
-package com.penguin.esms.components.category.create;
+package com.penguin.esms.components.customer.create;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CreateCategoryTestRunner {
+class CreateCustomerTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,7 +58,7 @@ class CreateCategoryTestRunner {
     private AuthenticationResponse authenticationResponse;
 
     @Autowired
-    public CreateCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public CreateCustomerTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
         this.categoryRepo = categoryRepo;

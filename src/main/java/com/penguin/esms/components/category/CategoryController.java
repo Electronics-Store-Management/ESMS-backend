@@ -32,7 +32,7 @@ public class CategoryController {
     }
 
     @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+    public List<?> getHistory(@PathVariable String id) {
         return categoryService.getRevisionsForCategory(id);
     }
 

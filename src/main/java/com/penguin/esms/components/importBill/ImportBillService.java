@@ -47,13 +47,6 @@ public class ImportBillService {
     private final DTOtoEntityMapper mapper;
     private final ImportProductRepo importProductRepo;
 
-    public ImportBillEntity getImportBill(String importBillId) {
-        Optional<ImportBillEntity> importBill = importBillRepo.findById(importBillId);
-        if (importBill.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Import bill not found").toString());
-        }
-        return importBill.get();
-    }
     public ImportBillEntity postImportBill(ImportBillDTO importBillDTO, Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         importBillDTO.setStaffId(staff.getId());

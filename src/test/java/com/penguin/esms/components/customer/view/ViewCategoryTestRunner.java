@@ -1,8 +1,9 @@
-package com.penguin.esms.components.category.create;
+package com.penguin.esms.components.customer.view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
@@ -15,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CreateCategoryTestRunner {
+class ViewCategoryTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,9 +56,10 @@ class CreateCategoryTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
+    private CategoryEntity category;
 
     @Autowired
-    public CreateCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public ViewCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
         this.categoryRepo = categoryRepo;
@@ -67,25 +68,28 @@ class CreateCategoryTestRunner {
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\create\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\view\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("length", "status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldCreateCategory(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/category")
-                        .param("name", testCase.getInput().get("name"))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void shouldViewCategory(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/category?name=" + testCase.getInput().get("name"))
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
-                .andExpect(jsonPath("$.name").value(testCase.getInput().get("name")))
+                .andExpect(jsonPath("$").isArray())
                 .andDo(print()).andReturn();
     }
 
     @BeforeAll
     public void setup() throws Exception {
+
+        CategoryEntity category = new CategoryEntity();
+        category.setName("This is update category");
+
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.category = categoryRepo.save(category);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -94,10 +98,11 @@ class CreateCategoryTestRunner {
         });
 
         setupEntity.join();
-}
+    }
 
     @AfterAll
     public void cleanup() {
+        categoryRepo.deleteById(this.category.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

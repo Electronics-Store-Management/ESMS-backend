@@ -1,4 +1,4 @@
-package com.penguin.esms.components.category.create;
+package com.penguin.esms.components.product.create;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;

@@ -17,15 +17,4 @@ import java.util.List;
 @RestController
 @RequestMapping(path ="import_product")
 public class ImportProductController {
-    private final ImportProductService importProductService;
-//    @GetMapping
-//    public List<ImportProductEntity> getAll(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String product) {
-//        return importProductService.findByName(name, product);
-//    }
-
-    @GetMapping("{id}")
-    public ImportProductEntity getImportProduct(@PathVariable String id) {
-        return importProductService.getImportProduct(id);
-    }
-
 }

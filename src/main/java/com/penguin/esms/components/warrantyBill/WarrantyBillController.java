@@ -23,7 +23,6 @@ public class WarrantyBillController {
     public ResponseEntity<?> post(@RequestBody WarrantyBillDTO dto, Principal connectedUser) {
         return ResponseEntity.ok(warrantyBillService.postWarrantyBill(dto,connectedUser));
     }
-
     @GetMapping("{id}")
     public List<?> get(@PathVariable String id) {
         return warrantyBillService.getRevisions(id);

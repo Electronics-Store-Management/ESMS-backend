@@ -35,25 +35,8 @@ public class ImportProductService {
     private final ImportBillRepo importBillRepo;
     private final DTOtoEntityMapper mapper;
 
-//    public List<ImportProductEntity> findByName(String name, String productName) {
-//        if (productName != null && !productName.isEmpty()) {
-//            Optional<ProductEntity> optionalProduct = productRepo.findByName(productName);
-//            if (optionalProduct.isEmpty()) {
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("product not found").toString());
-//            }
-//            return importProductRepo.findByNameContainingIgnoreCaseAndProduct(name, optionalProduct.get());
-//        }
-//        return importProductRepo.findByNameContainingIgnoreCase(name);
-//    }
     public ImportProductEntity getImportProduct(String importProductId) {
         Optional<ImportProductEntity> importProduct = importProductRepo.findById(importProductId);
-        if (importProduct.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        }
-        return importProduct.get();
-    }
-    public ImportProductEntity getImportBill(String importBillId) {
-        Optional<ImportProductEntity> importProduct = importProductRepo.findById(importBillId);
         if (importProduct.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }

@@ -80,6 +80,10 @@ public class CategoryService {
     }
     @Transactional
     public List<?> getRevisionsForCategory(String id) {
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+        if (categoryEntityOptional.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category not existed");
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         AuditQuery query = auditReader.createQuery()

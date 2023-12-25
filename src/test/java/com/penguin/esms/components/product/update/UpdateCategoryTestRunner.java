@@ -1,8 +1,9 @@
-package com.penguin.esms.components.category.create;
+package com.penguin.esms.components.product.update;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
+import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.staff.StaffRepository;
 import com.penguin.esms.utils.TestCase;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CreateCategoryTestRunner {
+class UpdateCategoryTestRunner {
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,9 +57,10 @@ class CreateCategoryTestRunner {
     private TestService testService;
 
     private AuthenticationResponse authenticationResponse;
+    private CategoryEntity category;
 
     @Autowired
-    public CreateCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
+    public UpdateCategoryTestRunner(MockMvc mockMvc, ObjectMapper objectMapper, CategoryRepo categoryRepo, StaffRepository staffRepository, TestService testService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
         this.categoryRepo = categoryRepo;
@@ -67,13 +69,13 @@ class CreateCategoryTestRunner {
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\create\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\category\\update\\test-cases.csv", new ArrayList<>(List.of("name")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    public void shouldCreateCategory(TestCase testCase) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/category")
+    public void shouldUpdateCategory(TestCase testCase) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/category/" + category.getId())
                         .param("name", testCase.getInput().get("name"))
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
@@ -85,7 +87,17 @@ class CreateCategoryTestRunner {
 
     @BeforeAll
     public void setup() throws Exception {
+        // Sử dụng CompletableFuture để đảm bảo rằng cả hai tác vụ xoá đã hoàn thành trước khi tiếp tục
+//        CompletableFuture<Void> deleteTask1 = CompletableFuture.runAsync(() -> categoryRepo.deleteById(this.category.getId()));
+//        CompletableFuture<Void> deleteTask2 = CompletableFuture.runAsync(() -> staffRepository.deleteById(this.authenticationResponse.getId()));
+//
+//        CompletableFuture.allOf(deleteTask1, deleteTask2).join(); // Chờ đến khi cả hai tác vụ xoá hoàn thành
+
+        CategoryEntity category = new CategoryEntity();
+        category.setName("This is a category");
+
         CompletableFuture<Void> setupEntity = CompletableFuture.runAsync(() -> {
+            this.category = categoryRepo.save(category);
             try {
                 authenticationResponse = testService.getAuthenticationInfo();
             } catch (Exception e) {
@@ -94,10 +106,11 @@ class CreateCategoryTestRunner {
         });
 
         setupEntity.join();
-}
+    }
 
     @AfterAll
     public void cleanup() {
+        categoryRepo.deleteById(this.category.getId());
         staffRepository.deleteById(this.authenticationResponse.getId());
     }
 }

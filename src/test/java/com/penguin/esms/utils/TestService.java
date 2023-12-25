@@ -36,8 +36,8 @@ public class TestService {
         this.objectMapper = objectMapper;
     }
 
-    private final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private final String NUMBER_CHARACTERS = "0123456789";
+    public final String ALL_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    public final String NUMBER_CHARACTERS = "0123456789";
     private final SecureRandom secureRandom = new SecureRandom();
     public String generateRandomString(String characters, int length) {
         StringBuilder sb = new StringBuilder(length);
