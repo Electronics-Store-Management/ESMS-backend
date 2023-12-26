@@ -192,7 +192,7 @@ public class SaleBillService {
         }
 <span class="fc" id="L193">        List&lt;AuditEnversInfo&gt; auditReturn = new ArrayList&lt;AuditEnversInfo&gt;();</span>
 <span class="fc bfc" id="L194" title="All 2 branches covered.">        for (int i = 0; i &lt; audit.size(); i++) {</span>
-<span class="pc bpc" id="L195" title="1 of 4 branches missed.">            if (audit.get(i).getTimestamp() &gt; start.getTime() &amp;&amp; audit.get(i).getTimestamp() &lt; end.getTime()) {</span>
+<span class="pc bpc" id="L195" title="3 of 4 branches missed.">            if (audit.get(i).getTimestamp() &gt; start.getTime() &amp;&amp; audit.get(i).getTimestamp() &lt; end.getTime()) {</span>
 <span class="nc" id="L196">                auditReturn.add(audit.get(i));</span>
             }
         }

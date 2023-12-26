@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.customer</a> &gt; <span class="el_source">CustomerService.java</span></div><h1>CustomerService.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.customer;
 
-import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.customer.dto.CustomerDTO;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.product.dto.ProductDTO;
-import com.penguin.esms.components.saleBill.SaleBillEntity;
-import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
-import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
-import com.penguin.esms.mapper.DTOtoEntityMapperImpl;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -21,17 +13,15 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-<span class="fc" id="L34">@RequiredArgsConstructor</span>
+<span class="fc" id="L24">@RequiredArgsConstructor</span>
 public class CustomerService {
     private final CustomerRepo customerRepo;
     private final DTOtoEntityMapper mapper;
@@ -39,105 +29,105 @@ public class CustomerService {
     private final AuditEnversInfoRepo auditEnversInfoRepo;
 
     public CustomerEntity getById(String id) {
-<span class="fc" id="L42">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (customer.isEmpty()) {</span>
-<span class="fc" id="L44">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Customer not found&quot;).toString());</span>
+<span class="fc" id="L32">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (customer.isEmpty()) {</span>
+<span class="fc" id="L34">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Customer not found&quot;).toString());</span>
         }
-<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (customer.get().getIsStopped() == true)</span>
-<span class="fc" id="L47">            throw new ResponseStatusException(</span>
-<span class="fc" id="L48">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
-<span class="fc" id="L49">        return customer.get();</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (customer.get().getIsStopped() == true)</span>
+<span class="fc" id="L37">            throw new ResponseStatusException(</span>
+<span class="fc" id="L38">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
+<span class="fc" id="L39">        return customer.get();</span>
     }
 
     public CustomerEntity getByPhone(String phone) {
-<span class="fc" id="L53">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findByPhone(phone);</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (customer.isEmpty()) {</span>
-<span class="fc" id="L55">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Customer not found&quot;).toString());</span>
+<span class="fc" id="L43">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findByPhone(phone);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (customer.isEmpty()) {</span>
+<span class="fc" id="L45">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Customer not found&quot;).toString());</span>
         }
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (customer.get().getIsStopped() == true)</span>
-<span class="nc" id="L58">            throw new ResponseStatusException(</span>
-<span class="nc" id="L59">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
-<span class="fc" id="L60">        return customer.get();</span>
+//        if (customer.get().getIsStopped() == true)
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());
+<span class="fc" id="L50">        return customer.get();</span>
     }
 
     public List&lt;CustomerEntity&gt; getCustomer(String name) {
-<span class="fc" id="L64">        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);</span>
+<span class="fc" id="L54">        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);</span>
     }
 
     public List&lt;CustomerEntity&gt; getBannedCustomer(String name) {
-<span class="fc" id="L68">        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);</span>
+<span class="fc" id="L58">        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);</span>
     }
 
     public CustomerEntity postCustomer(CustomerDTO dto) {
-<span class="fc" id="L72">        Optional&lt;CustomerEntity&gt; customerOp = customerRepo.findByPhone(dto.getPhone());</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (customerOp.isPresent())</span>
-<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (customerOp.get().getIsStopped() == true)</span>
-<span class="nc" id="L75">                throw new ResponseStatusException(</span>
-<span class="nc" id="L76">                        HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
-<span class="fc" id="L77">        CustomerEntity customer = updateFromDTO(dto, new CustomerEntity());</span>
-<span class="fc" id="L78">        customer.setIsStopped(false);</span>
-<span class="fc" id="L79">        return customerRepo.save(customer);</span>
+<span class="fc" id="L62">        Optional&lt;CustomerEntity&gt; customerOp = customerRepo.findByPhone(dto.getPhone());</span>
+//        if (customerOp.isPresent())
+//            if (customerOp.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());
+<span class="fc" id="L67">        CustomerEntity customer = updateFromDTO(dto, new CustomerEntity());</span>
+<span class="fc" id="L68">        customer.setIsStopped(false);</span>
+<span class="fc" id="L69">        return customerRepo.save(customer);</span>
     }
 
     public void removeCustomer(String id) {
-<span class="fc" id="L83">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
-<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (customer.isEmpty())</span>
-<span class="fc" id="L85">            throw new ResponseStatusException(</span>
-<span class="fc" id="L86">                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (customer.get().getIsStopped() == true)</span>
-<span class="fc" id="L88">            throw new ResponseStatusException(</span>
-<span class="fc" id="L89">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
-<span class="fc" id="L90">        customer.get().setIsStopped(true);</span>
-<span class="fc" id="L91">        customerRepo.save(customer.get());</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L73">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (customer.isEmpty())</span>
+<span class="fc" id="L75">            throw new ResponseStatusException(</span>
+<span class="fc" id="L76">                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (customer.get().getIsStopped() == true)</span>
+<span class="fc" id="L78">            throw new ResponseStatusException(</span>
+<span class="fc" id="L79">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
+<span class="fc" id="L80">        customer.get().setIsStopped(true);</span>
+<span class="fc" id="L81">        customerRepo.save(customer.get());</span>
+<span class="fc" id="L82">    }</span>
 
     private CustomerEntity updateFromDTO(CustomerDTO customerDTO, CustomerEntity customer) {
-<span class="fc" id="L95">        mapper.updateCustomerFromDto(customerDTO, customer);</span>
-<span class="fc" id="L96">        return customer;</span>
+<span class="fc" id="L85">        mapper.updateCustomerFromDto(customerDTO, customer);</span>
+<span class="fc" id="L86">        return customer;</span>
     }
 
     public CustomerEntity update(CustomerDTO customerDTO, String id) throws IOException {
-<span class="fc" id="L100">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (customer.isEmpty())</span>
-<span class="nc" id="L102">            throw new ResponseStatusException(</span>
-<span class="nc" id="L103">                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());</span>
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (customer.get().getIsStopped() == true)</span>
-<span class="nc" id="L105">            throw new ResponseStatusException(</span>
-<span class="nc" id="L106">                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());</span>
-<span class="fc" id="L107">        CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());</span>
-<span class="fc" id="L108">        return customerRepo.save(customerEntity);</span>
+<span class="fc" id="L90">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
+//        if (customer.isEmpty())
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());
+//        if (customer.get().getIsStopped() == true)
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error(&quot;Customer has been banned &quot;).toString());
+<span class="fc" id="L97">        CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());</span>
+<span class="fc" id="L98">        return customerRepo.save(customerEntity);</span>
     }
 
     public List&lt;?&gt; getRevisions(String id) {
-<span class="fc" id="L112">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (customer.isEmpty())</span>
-<span class="fc" id="L114">            throw new ResponseStatusException(</span>
-<span class="fc" id="L115">                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());</span>
-<span class="fc" id="L116">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+<span class="fc" id="L102">        Optional&lt;CustomerEntity&gt; customer = customerRepo.findById(id);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (customer.isEmpty())</span>
+<span class="fc" id="L104">            throw new ResponseStatusException(</span>
+<span class="fc" id="L105">                    HttpStatus.NOT_FOUND, new Error(&quot;Customer not existed&quot;).toString());</span>
+<span class="fc" id="L106">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
 
-<span class="fc" id="L118">        AuditQuery query = auditReader.createQuery()</span>
-<span class="fc" id="L119">                .forRevisionsOfEntity(CustomerEntity.class, true, true)</span>
-<span class="fc" id="L120">                .add(AuditEntity.id().eq(id))</span>
-<span class="fc" id="L121">                .addProjection(AuditEntity.revisionNumber())</span>
-<span class="fc" id="L122">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
-<span class="fc" id="L123">                .addProjection(AuditEntity.property(&quot;phone&quot;))</span>
-<span class="fc" id="L124">                .addProjection(AuditEntity.property(&quot;address&quot;))</span>
-<span class="fc" id="L125">                .addProjection(AuditEntity.revisionType())</span>
-<span class="fc" id="L126">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+<span class="fc" id="L108">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L109">                .forRevisionsOfEntity(CustomerEntity.class, true, true)</span>
+<span class="fc" id="L110">                .add(AuditEntity.id().eq(id))</span>
+<span class="fc" id="L111">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L112">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
+<span class="fc" id="L113">                .addProjection(AuditEntity.property(&quot;phone&quot;))</span>
+<span class="fc" id="L114">                .addProjection(AuditEntity.property(&quot;address&quot;))</span>
+<span class="fc" id="L115">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L116">                .addOrder(AuditEntity.revisionNumber().desc());</span>
 
-<span class="fc" id="L128">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
-<span class="fc" id="L129">        List&lt;Object[]&gt; objects = query.getResultList();</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">        for (int i = 0; i &lt; objects.size(); i++) {</span>
-<span class="fc" id="L131">            Object[] objArray = objects.get(i);</span>
-<span class="fc" id="L132">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
-<span class="fc" id="L134">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
-<span class="fc" id="L135">                CustomerDTO dto = new CustomerDTO((String) objArray[1], (String) objArray[2], (String) objArray[3]);</span>
-<span class="fc" id="L136">                auditEnversInfo.setRevision(dto);</span>
-<span class="fc" id="L137">                audit.add(auditEnversInfo);</span>
+<span class="fc" id="L118">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L119">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for (int i = 0; i &lt; objects.size(); i++) {</span>
+<span class="fc" id="L121">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L122">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L124">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L125">                CustomerDTO dto = new CustomerDTO((String) objArray[1], (String) objArray[2], (String) objArray[3]);</span>
+<span class="fc" id="L126">                auditEnversInfo.setRevision(dto);</span>
+<span class="fc" id="L127">                audit.add(auditEnversInfo);</span>
             }
         }
-<span class="fc" id="L140">        return audit;</span>
+<span class="fc" id="L130">        return audit;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

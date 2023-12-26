@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-    date = &quot;2023-12-26T22:05:19+0700&quot;,
+    date = &quot;2023-12-27T00:03:09+0700&quot;,
     comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)&quot;
 )
 @Component
@@ -37,14 +37,14 @@ import org.springframework.stereotype.Component;
 
     @Override
     public void updateCategoryFromDto(CategoryDTO dto, CategoryEntity entity) {
-<span class="nc bnc" id="L40" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if ( dto == null ) {</span>
 <span class="nc" id="L41">            return;</span>
         }
 
-<span class="nc bnc" id="L44" title="All 2 branches missed.">        if ( dto.getName() != null ) {</span>
-<span class="nc" id="L45">            entity.setName( dto.getName() );</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if ( dto.getName() != null ) {</span>
+<span class="fc" id="L45">            entity.setName( dto.getName() );</span>
         }
-<span class="nc" id="L47">    }</span>
+<span class="fc" id="L47">    }</span>
 
     @Override
     public void updateProductFromDto(ProductDTO dto, ProductEntity entity) {

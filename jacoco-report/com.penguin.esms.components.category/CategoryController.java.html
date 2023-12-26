@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.category</a> &gt; <span class="el_source">CategoryController.java</span></div><h1>CategoryController.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.category;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.penguin.esms.components.category.response.FoundCategoryItem;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,52 +13,52 @@ import java.util.List;
 @RequestMapping(path = &quot;category&quot;)
 //@Getter
 //@Setter
-<span class="fc" id="L21">@RequiredArgsConstructor</span>
+<span class="fc" id="L16">@RequiredArgsConstructor</span>
 public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
     public List&lt;CategoryEntity&gt; getAllCategory(@RequestParam(defaultValue = &quot;&quot;) String name) {
-<span class="fc" id="L27">        return categoryService.getCategory(name);</span>
+<span class="fc" id="L22">        return categoryService.getCategory(name);</span>
     }
     @GetMapping(&quot;discontinued&quot;)
     public List&lt;CategoryEntity&gt; getALlDiscontinuedCategory(@RequestParam(defaultValue = &quot;&quot;) String name) {
-<span class="fc" id="L31">        return categoryService.getDiscontinuedCategory(name);</span>
+<span class="fc" id="L26">        return categoryService.getDiscontinuedCategory(name);</span>
     }
 
     @GetMapping(&quot;history/{id}&quot;)
     public List&lt;?&gt; getCategoryHistory(@PathVariable String id) {
-<span class="fc" id="L36">        return categoryService.getRevisionsForCategory(id);</span>
+<span class="fc" id="L31">        return categoryService.getRevisionsForCategory(id);</span>
     }
 
     @GetMapping(&quot;{id}&quot;)
     public CategoryEntity getCategoryById(@PathVariable String id) {
-<span class="fc" id="L41">        return categoryService.getCategoryById(id);</span>
+<span class="fc" id="L36">        return categoryService.getCategoryById(id);</span>
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity&lt;?&gt; createCategory(CategoryEntity categoryEntity) {
-<span class="fc" id="L47">        return ResponseEntity.ok(categoryService.postCategory(categoryEntity));</span>
+<span class="fc" id="L42">        return ResponseEntity.ok(categoryService.postCategory(categoryEntity));</span>
     }
     @PutMapping(path = &quot;{id}&quot;)
     public CategoryEntity editCategory(CategoryDTO categoryDTO, @PathVariable String id) {
-<span class="nc" id="L51">        return categoryService.editCategory(categoryDTO, id);</span>
+<span class="fc" id="L46">        return categoryService.editCategory(categoryDTO, id);</span>
     }
 
     @DeleteMapping(path = &quot;{id}&quot;)
     public void deleteCategory(@PathVariable String id) {
-<span class="fc" id="L56">        categoryService.deleteCategory(id);</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L51">        categoryService.deleteCategory(id);</span>
+<span class="fc" id="L52">    }</span>
 
     @ExceptionHandler({ ResponseStatusException.class })
     public ResponseEntity&lt;?&gt; handleException(ResponseStatusException e) {
-<span class="fc" id="L61">        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());</span>
+<span class="fc" id="L56">        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());</span>
     }
 
     @ExceptionHandler({ HttpMessageNotReadableException.class })
     public ResponseEntity&lt;?&gt; handleNotReadableException() {
-<span class="nc" id="L66">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Request body not found&quot;);</span>
+<span class="nc" id="L61">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Request body not found&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

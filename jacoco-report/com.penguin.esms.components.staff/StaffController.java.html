@@ -39,26 +39,26 @@ public class StaffController {
 <span class="fc" id="L39">        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();</span>
 <span class="fc" id="L40">        return ResponseEntity.ok(staff);</span>
     }
-    @GetMapping(&quot;resigned&quot;)
-    @PreAuthorize(&quot;hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')&quot;)
-    public List&lt;StaffEntity&gt; getAllResignedStaff(@RequestParam(defaultValue = &quot;&quot;) String name) {
-<span class="nc" id="L45">        return staffService.findResigned(name);</span>
-    }
-    @GetMapping(&quot;history/{id}&quot;)
-    public List&lt;?&gt; getStaffHistory(@PathVariable String id) {
-<span class="nc" id="L49">        return staffService.getRevisionsForStaff(id);</span>
-    }
+//    @GetMapping(&quot;resigned&quot;)
+//    @PreAuthorize(&quot;hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')&quot;)
+//    public List&lt;StaffEntity&gt; getAllResignedStaff(@RequestParam(defaultValue = &quot;&quot;) String name) {
+//        return staffService.findResigned(name);
+//    }
+//    @GetMapping(&quot;history/{id}&quot;)
+//    public List&lt;?&gt; getStaffHistory(@PathVariable String id) {
+//        return staffService.getRevisionsForStaff(id);
+//    }
     @GetMapping
     @PreAuthorize(&quot;hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')&quot;)
     public List&lt;StaffEntity&gt; getAllStaff(@RequestParam(defaultValue = &quot;&quot;) String name) {
 <span class="fc" id="L54">        return staffService.findByName(name);</span>
     }
   
-    @GetMapping(&quot;{id}&quot;)
-    @PreAuthorize(&quot;hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')&quot;)
-    public StaffEntity getStaffById(@PathVariable String id) {
-<span class="nc" id="L60">        return staffService.getOne(id);</span>
-    }
+//    @GetMapping(&quot;{id}&quot;)
+//    @PreAuthorize(&quot;hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')&quot;)
+//    public StaffEntity getStaffById(@PathVariable String id) {
+//        return staffService.getOne(id);
+//    }
 
     @PutMapping(path = &quot;{id}&quot;)
     public ResponseEntity&lt;?&gt;  editStaff(@RequestBody StaffDTO staffDTO, @PathVariable String id) {

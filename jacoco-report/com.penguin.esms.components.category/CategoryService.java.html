@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CategoryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.category</a> &gt; <span class="el_source">CategoryService.java</span></div><h1>CategoryService.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.category;
 
-import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
@@ -25,90 +24,90 @@ import java.util.Optional;
 @Service
 @Getter
 @Setter
-<span class="fc" id="L28">@RequiredArgsConstructor</span>
+<span class="fc" id="L27">@RequiredArgsConstructor</span>
 public class CategoryService {
     @PersistenceContext
-<span class="nc" id="L31">    private final EntityManager entityManager;</span>
-<span class="nc" id="L32">    private final AuditEnversInfoRepo auditEnversInfoRepo;</span>
-<span class="nc" id="L33">    private final CategoryRepo categoryRepo;</span>
-<span class="nc" id="L34">    private final DTOtoEntityMapper mapper;</span>
+<span class="nc" id="L30">    private final EntityManager entityManager;</span>
+<span class="nc" id="L31">    private final AuditEnversInfoRepo auditEnversInfoRepo;</span>
+<span class="nc" id="L32">    private final CategoryRepo categoryRepo;</span>
+<span class="nc" id="L33">    private final DTOtoEntityMapper mapper;</span>
     public CategoryEntity postCategory(CategoryEntity categoryEntity) {
-<span class="fc" id="L36">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());</span>
-<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (categoryEntityOptional.isPresent()) {</span>
-<span class="nc bnc" id="L38" title="All 2 branches missed.">            if (categoryEntityOptional.get().getIsStopped() == true)</span>
-<span class="nc" id="L39">                throw new ResponseStatusException(</span>
-<span class="nc" id="L40">                        HttpStatus.NOT_FOUND, new Error(&quot;Category has been discontinued &quot;).toString());</span>
-<span class="nc" id="L41">            throw new ResponseStatusException(</span>
-<span class="nc" id="L42">                    HttpStatus.BAD_REQUEST, new Error(&quot;Category existed&quot;).toString());</span>
-        }
-<span class="fc" id="L44">        categoryEntity.setIsStopped(false);</span>
-<span class="fc" id="L45">        return categoryRepo.save(categoryEntity);</span>
+<span class="fc" id="L35">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());</span>
+//        if (categoryEntityOptional.isPresent()) {
+//            if (categoryEntityOptional.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, new Error(&quot;Category has been discontinued &quot;).toString());
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error(&quot;Category existed&quot;).toString());
+//        }
+<span class="fc" id="L43">        categoryEntity.setIsStopped(false);</span>
+<span class="fc" id="L44">        return categoryRepo.save(categoryEntity);</span>
     }
 
     public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
-<span class="nc" id="L49">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (categoryEntityOptional.isEmpty())</span>
-<span class="nc" id="L51">            throw new ResponseStatusException(</span>
+<span class="fc" id="L48">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (categoryEntityOptional.isEmpty())</span>
+<span class="nc" id="L50">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;Category not existed&quot;);
-<span class="nc" id="L53">        CategoryEntity category = categoryEntityOptional.get();</span>
-<span class="nc" id="L54">        mapper.updateCategoryFromDto(categoryDTO, category);</span>
-<span class="nc" id="L55">        return categoryRepo.save(category);</span>
+<span class="fc" id="L52">        CategoryEntity category = categoryEntityOptional.get();</span>
+<span class="fc" id="L53">        mapper.updateCategoryFromDto(categoryDTO, category);</span>
+<span class="fc" id="L54">        return categoryRepo.save(category);</span>
 
     }
     public void deleteCategory(String id) {
-<span class="fc" id="L59">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
-<span class="fc" id="L61">            throw new ResponseStatusException(</span>
+<span class="fc" id="L58">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
+<span class="fc" id="L60">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;Category not existed&quot;);
-<span class="fc" id="L63">        categoryEntityOptional.get().setIsStopped(true);</span>
-<span class="fc" id="L64">        categoryRepo.save(categoryEntityOptional.get());</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L62">        categoryEntityOptional.get().setIsStopped(true);</span>
+<span class="fc" id="L63">        categoryRepo.save(categoryEntityOptional.get());</span>
+<span class="fc" id="L64">    }</span>
     public List&lt;CategoryEntity&gt; getCategory(String name) {
-<span class="fc" id="L67">        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);</span>
+<span class="fc" id="L66">        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);</span>
     }
     public List&lt;CategoryEntity&gt; getDiscontinuedCategory(String name) {
-<span class="fc" id="L70">        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);</span>
+<span class="fc" id="L69">        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);</span>
     }
     public CategoryEntity getCategoryById(String id) {
-<span class="fc" id="L73">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
-<span class="fc" id="L75">            throw new ResponseStatusException(</span>
+<span class="fc" id="L72">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
+<span class="fc" id="L74">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;Category not existed&quot;);
         else {
-<span class="fc" id="L78">            return categoryEntityOptional.get();</span>
+<span class="fc" id="L77">            return categoryEntityOptional.get();</span>
         }
     }
     @Transactional
     public List&lt;?&gt; getRevisionsForCategory(String id) {
-<span class="fc" id="L83">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
-<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
-<span class="fc" id="L85">            throw new ResponseStatusException(</span>
+<span class="fc" id="L82">        Optional&lt;CategoryEntity&gt; categoryEntityOptional = categoryRepo.findById(id);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (categoryEntityOptional.isEmpty())</span>
+<span class="fc" id="L84">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;Category not existed&quot;);
-<span class="fc" id="L87">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+<span class="fc" id="L86">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
 
-<span class="fc" id="L89">        AuditQuery query = auditReader.createQuery()</span>
-<span class="fc" id="L90">                .forRevisionsOfEntity(CategoryEntity.class, true, true)</span>
-<span class="fc" id="L91">                .add(AuditEntity.id().eq(id))</span>
-<span class="fc" id="L92">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
-<span class="fc" id="L93">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
-<span class="fc" id="L94">                .addProjection(AuditEntity.revisionNumber())</span>
-<span class="fc" id="L95">                .addProjection(AuditEntity.revisionType())</span>
-<span class="fc" id="L96">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+<span class="fc" id="L88">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L89">                .forRevisionsOfEntity(CategoryEntity.class, true, true)</span>
+<span class="fc" id="L90">                .add(AuditEntity.id().eq(id))</span>
+<span class="fc" id="L91">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L92">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
+<span class="fc" id="L93">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L94">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L95">                .addOrder(AuditEntity.revisionNumber().desc());</span>
 
-<span class="fc" id="L98">        List&lt;AuditEnversInfo&gt; categoryAudit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
-<span class="fc" id="L99">        List&lt;Object[]&gt; objects = query.getResultList();</span>
-<span class="fc bfc" id="L100" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
-<span class="fc" id="L101">            Object[] objArray = objects.get(i);</span>
-<span class="fc" id="L102">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[2]);</span>
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
-<span class="fc" id="L104">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
-<span class="fc" id="L105">                CategoryEntity category = new CategoryEntity(id, (String) objArray[1]);</span>
-<span class="fc" id="L106">                auditEnversInfo.setRevision(category);</span>
-<span class="fc" id="L107">                categoryAudit.add(auditEnversInfo);</span>
+<span class="fc" id="L97">        List&lt;AuditEnversInfo&gt; categoryAudit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L98">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L100">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L101">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[2]);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L103">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L104">                CategoryEntity category = new CategoryEntity(id, (String) objArray[1]);</span>
+<span class="fc" id="L105">                auditEnversInfo.setRevision(category);</span>
+<span class="fc" id="L106">                categoryAudit.add(auditEnversInfo);</span>
             }
         }
-<span class="fc" id="L110">        entityManager.close();</span>
-<span class="fc" id="L111">        return categoryAudit;</span>
+<span class="fc" id="L109">        entityManager.close();</span>
+<span class="fc" id="L110">        return categoryAudit;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

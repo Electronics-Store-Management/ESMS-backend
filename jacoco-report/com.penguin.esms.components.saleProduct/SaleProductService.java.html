@@ -16,27 +16,27 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Service
-@Getter
-@Setter
+//@Getter
+//@Setter
 <span class="fc" id="L21">@RequiredArgsConstructor</span>
 public class SaleProductService {
-<span class="nc" id="L23">    private final SaleProductRepo repo;</span>
-<span class="nc" id="L24">    private final ProductRepo productRepo;</span>
-<span class="nc" id="L25">    private final SaleBillRepo saleRepo;</span>
-<span class="nc" id="L26">    private final DTOtoEntityMapper mapper;</span>
-    public SaleProductEntity getSaleProduct(String saleProductId) {
-<span class="nc" id="L28">        Optional&lt;SaleProductEntity&gt; saleProduct = repo.findById(saleProductId);</span>
-<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (saleProduct.isEmpty()) {</span>
-<span class="nc" id="L30">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Product not found&quot;);</span>
-        }
-<span class="nc" id="L32">        return saleProduct.get();</span>
-    }
-    public SaleProductEntity getSaleBill(String saleBillId) {
-<span class="nc" id="L35">        Optional&lt;SaleProductEntity&gt; saleProduct = repo.findById(saleBillId);</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (saleProduct.isEmpty()) {</span>
-<span class="nc" id="L37">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Product not found&quot;);</span>
-        }
-<span class="nc" id="L39">        return saleProduct.get();</span>
-    }
+    private final SaleProductRepo repo;
+    private final ProductRepo productRepo;
+    private final SaleBillRepo saleRepo;
+    private final DTOtoEntityMapper mapper;
+//    public SaleProductEntity getSaleProduct(String saleProductId) {
+//        Optional&lt;SaleProductEntity&gt; saleProduct = repo.findById(saleProductId);
+//        if (saleProduct.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Product not found&quot;);
+//        }
+//        return saleProduct.get();
+//    }
+//    public SaleProductEntity getSaleBill(String saleBillId) {
+//        Optional&lt;SaleProductEntity&gt; saleProduct = repo.findById(saleBillId);
+//        if (saleProduct.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Product not found&quot;);
+//        }
+//        return saleProduct.get();
+//    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

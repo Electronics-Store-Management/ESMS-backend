@@ -1,93 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuditEnverInfoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.envers</a> &gt; <span class="el_source">AuditEnverInfoService.java</span></div><h1>AuditEnverInfoService.java</h1><pre class="source lang-java linenums">package com.penguin.esms.envers;
 
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.customer.dto.CustomerDTO;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.staff.Role;
-import com.penguin.esms.components.staff.StaffDTO;
-import com.penguin.esms.components.staff.StaffEntity;
-import com.penguin.esms.components.staff.StaffRepository;
-import com.penguin.esms.entity.Error;
-import com.penguin.esms.envers.dto.AuditEnverInfoDTO;
-import jakarta.persistence.EntityManager;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-@Service
-<span class="fc" id="L34">@RequiredArgsConstructor</span>
-@Setter
-@Getter
+//@Service
+<span class="nc" id="L6">@RequiredArgsConstructor</span>
+//@Setter
+//@Getter
 public class AuditEnverInfoService {
-<span class="nc" id="L38">    private final AuditEnversInfoRepo repo;</span>
-<span class="nc" id="L39">    private final StaffRepository staffRepo;</span>
-<span class="nc" id="L40">    private final EntityManager entityManager;</span>
+    private final AuditEnversInfoRepo repo;
+//    private final StaffRepository staffRepo;
+//    private final EntityManager entityManager;
 
-    public List&lt;AuditEnversInfo&gt; getRecord(String username) {
-<span class="nc bnc" id="L43" title="All 4 branches missed.">        if (username != null &amp;&amp; !username.isEmpty()) {</span>
-<span class="nc" id="L44">            Optional&lt;StaffEntity&gt; staff = staffRepo.findByEmail(username);</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">            if (staff.isEmpty()) {</span>
-<span class="nc" id="L46">                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error(&quot;staff not found&quot;).toString());</span>
-            }
-        }
-<span class="nc" id="L49">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
-<span class="nc" id="L50">        audit = repo.findByUsername(username);</span>
-<span class="nc" id="L51">        return audit;</span>
-    }
+//    public List&lt;AuditEnversInfo&gt; getRecord(String username) {
+//        if (username != null &amp;&amp; !username.isEmpty()) {
+//            Optional&lt;StaffEntity&gt; staff = staffRepo.findByEmail(username);
+//            if (staff.isEmpty()) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error(&quot;staff not found&quot;).toString());
+//            }
+//        }
+//        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();
+//        audit = repo.findByUsername(username);
+//        return audit;
+//    }
 
-    public List&lt;?&gt; view(List&lt;AuditEnversInfo&gt; audit) throws ClassNotFoundException {
-<span class="nc" id="L55">        List&lt;AuditEnversInfo&gt; auditByStaff = new ArrayList&lt;AuditEnversInfo&gt;();</span>
-<span class="nc" id="L56">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
-<span class="nc" id="L57">        List&lt;String&gt; typeEntity = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L58">        typeEntity.add(&quot;com.penguin.esms.components.product.ProductEntity&quot;);</span>
-<span class="nc" id="L59">        typeEntity.add(&quot;com.penguin.esms.components.permission.PermissionEntity&quot;);</span>
-<span class="nc" id="L60">        typeEntity.add(&quot;com.penguin.esms.components.staff.StaffEntity&quot;);</span>
-<span class="nc" id="L61">        typeEntity.add(&quot;com.penguin.esms.components.category.CategoryEntity&quot;);</span>
-<span class="nc" id="L62">        typeEntity.add(&quot;com.penguin.esms.components.supplier.SupplierEntity&quot;);</span>
-<span class="nc" id="L63">        typeEntity.add(&quot;com.penguin.esms.components.importBill.ImportBillEntity&quot;);</span>
-<span class="nc" id="L64">        typeEntity.add(&quot;com.penguin.esms.components.saleBill.SaleBillEntity&quot;);</span>
-<span class="nc" id="L65">        typeEntity.add(&quot;com.penguin.esms.components.warrantyBill.WarrantyBillEntity&quot;);</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        for (String t : typeEntity){</span>
-<span class="nc" id="L67">            Class&lt;?&gt; type = Class.forName(t);</span>
-<span class="nc" id="L68">            AuditQuery query = auditReader.createQuery()</span>
-<span class="nc" id="L69">                    .forRevisionsOfEntity(type, true, true)</span>
-<span class="nc" id="L70">                    .add(AuditEntity.revisionNumber().in((Collection) audit.stream().map(auditEnversInfo -&gt; auditEnversInfo.getId()).collect(Collectors.toList())))</span>
-<span class="nc" id="L71">                    .addProjection(AuditEntity.revisionNumber())</span>
-<span class="nc" id="L72">                    .addProjection(AuditEntity.property(&quot;id&quot;))</span>
-<span class="nc" id="L73">                    .addProjection(AuditEntity.revisionType())</span>
-<span class="nc" id="L74">                    .addOrder(AuditEntity.revisionNumber().desc());</span>
-
-//            auditByStaff.addAll(query.getResultList());
-<span class="nc" id="L77">            List&lt;Object[]&gt; objects = query.getResultList();</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">            for(int i=0; i&lt; objects.size();i++){</span>
-<span class="nc" id="L79">                Object[] objArray = objects.get(i);</span>
-<span class="nc" id="L80">                Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = repo.findById((int) objArray[0]);</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">                if (auditEnversInfoOptional.isPresent()) {</span>
-<span class="nc" id="L82">                    AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
-<span class="nc" id="L83">                    AuditEnverInfoDTO dto = new AuditEnverInfoDTO((String) objArray[1], t, (RevisionType) objArray[2], (Integer) objArray[0]);</span>
-<span class="nc" id="L84">                    dto.setName(t);</span>
-<span class="nc" id="L85">                    auditEnversInfo.setRevision(dto);</span>
-<span class="nc" id="L86">                    auditByStaff.add(auditEnversInfo);</span>
-                }
-            }
-<span class="nc" id="L89">        }</span>
-<span class="nc" id="L90">        return auditByStaff;</span>
-    }
+//    public List&lt;?&gt; view(List&lt;AuditEnversInfo&gt; audit) throws ClassNotFoundException {
+//        List&lt;AuditEnversInfo&gt; auditByStaff = new ArrayList&lt;AuditEnversInfo&gt;();
+//        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+//        List&lt;String&gt; typeEntity = new ArrayList&lt;&gt;();
+//        typeEntity.add(&quot;com.penguin.esms.components.product.ProductEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.permission.PermissionEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.staff.StaffEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.category.CategoryEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.supplier.SupplierEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.importBill.ImportBillEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.saleBill.SaleBillEntity&quot;);
+//        typeEntity.add(&quot;com.penguin.esms.components.warrantyBill.WarrantyBillEntity&quot;);
+//        for (String t : typeEntity){
+//            Class&lt;?&gt; type = Class.forName(t);
+//            AuditQuery query = auditReader.createQuery()
+//                    .forRevisionsOfEntity(type, true, true)
+//                    .add(AuditEntity.revisionNumber().in((Collection) audit.stream().map(auditEnversInfo -&gt; auditEnversInfo.getId()).collect(Collectors.toList())))
+//                    .addProjection(AuditEntity.revisionNumber())
+//                    .addProjection(AuditEntity.property(&quot;id&quot;))
+//                    .addProjection(AuditEntity.revisionType())
+//                    .addOrder(AuditEntity.revisionNumber().desc());
+//
+////            auditByStaff.addAll(query.getResultList());
+//            List&lt;Object[]&gt; objects = query.getResultList();
+//            for(int i=0; i&lt; objects.size();i++){
+//                Object[] objArray = objects.get(i);
+//                Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = repo.findById((int) objArray[0]);
+//                if (auditEnversInfoOptional.isPresent()) {
+//                    AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+//                    AuditEnverInfoDTO dto = new AuditEnverInfoDTO((String) objArray[1], t, (RevisionType) objArray[2], (Integer) objArray[0]);
+//                    dto.setName(t);
+//                    auditEnversInfo.setRevision(dto);
+//                    auditByStaff.add(auditEnversInfo);
+//                }
+//            }
+//        }
+//        return auditByStaff;
+//    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

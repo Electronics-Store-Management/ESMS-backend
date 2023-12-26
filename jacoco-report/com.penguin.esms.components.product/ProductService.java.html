@@ -2,8 +2,6 @@
 
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -15,9 +13,7 @@ import com.penguin.esms.services.AmazonS3Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -29,189 +25,188 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Getter
-@Setter
-<span class="fc" id="L39">@RequiredArgsConstructor</span>
+//@Getter
+//@Setter
+<span class="fc" id="L34">@RequiredArgsConstructor</span>
 public class ProductService {
-<span class="nc" id="L41">    private final ProductRepo productRepo;</span>
-<span class="nc" id="L42">    private final CategoryRepo categoryRepo;</span>
-<span class="nc" id="L43">    private final SupplierRepo supplierRepo;</span>
-<span class="nc" id="L44">    private final DTOtoEntityMapper mapper;</span>
-<span class="nc" id="L45">    private final AmazonS3Service amazonS3Service;</span>
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
+    private final SupplierRepo supplierRepo;
+    private final DTOtoEntityMapper mapper;
+    private final AmazonS3Service amazonS3Service;
     @PersistenceContext
-<span class="nc" id="L47">    private final EntityManager entityManager;</span>
-<span class="nc" id="L48">    private final AuditEnversInfoRepo auditEnversInfoRepo;</span>
+    private final EntityManager entityManager;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
 
     public List&lt;ProductEntity&gt; findRelatedCategory(String name, String categoryName) {
-<span class="pc bpc" id="L51" title="1 of 4 branches missed.">        if (categoryName != null &amp;&amp; !categoryName.isEmpty()) {</span>
-<span class="fc" id="L52">            Optional&lt;CategoryEntity&gt; optionalCategory = categoryRepo.findByName(categoryName);</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (optionalCategory.isEmpty())</span>
-<span class="fc" id="L54">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;category not found&quot;).toString());</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (optionalCategory.get().getIsStopped() == true)</span>
-<span class="fc" id="L56">                throw new ResponseStatusException(</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (categoryName != null &amp;&amp; !categoryName.isEmpty()) {</span>
+<span class="fc" id="L47">            Optional&lt;CategoryEntity&gt; optionalCategory = categoryRepo.findByName(categoryName);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (optionalCategory.isEmpty())</span>
+<span class="fc" id="L49">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;category not found&quot;).toString());</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (optionalCategory.get().getIsStopped() == true)</span>
+<span class="fc" id="L51">                throw new ResponseStatusException(</span>
                         HttpStatus.BAD_REQUEST, &quot;Category has been discontinued &quot;);
-<span class="fc" id="L58">            Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findByName(name);</span>
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">            if (productEntityOptional.isEmpty())</span>
-<span class="nc" id="L60">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;product not found&quot;).toString());</span>
-<span class="fc" id="L61">            return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);</span>
-<span class="pc bpc" id="L62" title="4 of 6 branches missed.">        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {</span>
-<span class="fc" id="L63">            throw new ResponseStatusException(</span>
+<span class="fc" id="L53">            Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findByName(name);</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">            if (productEntityOptional.isEmpty())</span>
+<span class="nc" id="L55">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;product not found&quot;).toString());</span>
+<span class="fc" id="L56">            return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);</span>
+<span class="pc bpc" id="L57" title="4 of 6 branches missed.">        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {</span>
+<span class="fc" id="L58">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;null &quot;);
         }
-<span class="nc" id="L66">        return null;</span>
+<span class="nc" id="L61">        return null;</span>
 
     }
     public List&lt;ProductEntity&gt; findDiscontinuedRelatedCategory(String name, String categoryName) {
-<span class="pc bpc" id="L70" title="1 of 4 branches missed.">        if (categoryName != null &amp;&amp; !categoryName.isEmpty()) {</span>
-<span class="fc" id="L71">            Optional&lt;CategoryEntity&gt; optionalCategory = categoryRepo.findByName(categoryName);</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (optionalCategory.isEmpty())</span>
-<span class="fc" id="L73">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;category not found&quot;).toString());</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (optionalCategory.get().getIsStopped() == true)</span>
-<span class="fc" id="L75">                throw new ResponseStatusException(</span>
+<span class="pc bpc" id="L65" title="1 of 4 branches missed.">        if (categoryName != null &amp;&amp; !categoryName.isEmpty()) {</span>
+<span class="fc" id="L66">            Optional&lt;CategoryEntity&gt; optionalCategory = categoryRepo.findByName(categoryName);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (optionalCategory.isEmpty())</span>
+<span class="fc" id="L68">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;category not found&quot;).toString());</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (optionalCategory.get().getIsStopped() == true)</span>
+<span class="fc" id="L70">                throw new ResponseStatusException(</span>
                         HttpStatus.BAD_REQUEST, &quot;Category has been discontinued &quot;);
-<span class="fc" id="L77">            Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findByName(name);</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            if (productEntityOptional.isEmpty())</span>
-<span class="nc" id="L79">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;product not found&quot;).toString());</span>
-<span class="fc" id="L80">            return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), true);</span>
-<span class="pc bpc" id="L81" title="4 of 6 branches missed.">        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {</span>
-<span class="fc" id="L82">            throw new ResponseStatusException(</span>
+<span class="fc" id="L72">            Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findByName(name);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">            if (productEntityOptional.isEmpty())</span>
+<span class="nc" id="L74">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;product not found&quot;).toString());</span>
+<span class="fc" id="L75">            return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), true);</span>
+<span class="pc bpc" id="L76" title="4 of 6 branches missed.">        } else if (categoryName == null || categoryName.isEmpty() ||  name == null) {</span>
+<span class="fc" id="L77">            throw new ResponseStatusException(</span>
                     HttpStatus.NOT_FOUND, &quot;null &quot;);
         }
-<span class="nc" id="L85">        return null;</span>
+<span class="nc" id="L80">        return null;</span>
     }
 
     public ProductEntity getProductById(String productId) {
-<span class="fc" id="L89">        Optional&lt;ProductEntity&gt; product = productRepo.findById(productId);</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (product.isEmpty()) {</span>
-<span class="fc" id="L91">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Product not found&quot;).toString());</span>
+<span class="fc" id="L84">        Optional&lt;ProductEntity&gt; product = productRepo.findById(productId);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (product.isEmpty()) {</span>
+<span class="fc" id="L86">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Product not found&quot;).toString());</span>
         }
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (product.get().getIsStopped() == true)</span>
-<span class="fc" id="L94">            throw new ResponseStatusException(</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (product.get().getIsStopped() == true)</span>
+<span class="fc" id="L89">            throw new ResponseStatusException(</span>
                     HttpStatus.BAD_REQUEST, &quot;Product has been discontinued &quot;);
-<span class="fc" id="L96">        return product.get();</span>
+<span class="fc" id="L91">        return product.get();</span>
     }
 
     public ProductEntity add(ProductDTO productDTO) {
-<span class="fc" id="L100">        Optional&lt;ProductEntity&gt; productOpt = productRepo.findByName(productDTO.getName());</span>
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (productOpt.isPresent()) {</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">            if (productOpt.get().getIsStopped() == true)</span>
-<span class="nc" id="L103">                throw new ResponseStatusException(</span>
-<span class="nc" id="L104">                        HttpStatus.BAD_REQUEST, new Error(&quot;Product has been discontinued &quot;).toString());</span>
-<span class="nc" id="L105">            throw new ResponseStatusException(</span>
-<span class="nc" id="L106">                    HttpStatus.BAD_REQUEST, new Error(&quot;Product existed&quot;).toString());</span>
-        }
-<span class="fc" id="L108">        ProductEntity product = updateFromDTO(productDTO, new ProductEntity());</span>
-<span class="fc" id="L109">        product.setIsStopped(false);</span>
-<span class="fc" id="L110">        return productRepo.save(product);</span>
+<span class="fc" id="L95">        Optional&lt;ProductEntity&gt; productOpt = productRepo.findByName(productDTO.getName());</span>
+//        if (productOpt.isPresent()) {
+//            if (productOpt.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, new Error(&quot;Product has been discontinued &quot;).toString());
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error(&quot;Product existed&quot;).toString());
+//        }
+<span class="fc" id="L103">        ProductEntity product = updateFromDTO(productDTO, new ProductEntity());</span>
+<span class="fc" id="L104">        product.setIsStopped(false);</span>
+<span class="fc" id="L105">        return productRepo.save(product);</span>
     }
 
     public ProductEntity update(ProductDTO productDTO, String id, MultipartFile photo) throws IOException {
-<span class="fc" id="L114">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (productEntityOptional.isEmpty())</span>
-<span class="nc" id="L116">            throw new ResponseStatusException(</span>
-                    HttpStatus.NOT_FOUND, &quot;Product not existed&quot;);
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (productEntityOptional.get().getIsStopped() == true)</span>
-<span class="nc" id="L119">            throw new ResponseStatusException(</span>
-                    HttpStatus.BAD_REQUEST, &quot;Product has been discontinued &quot;);
-<span class="fc" id="L121">        ProductEntity product = updateFromDTO(productDTO, productEntityOptional.get());</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (photo != null) {</span>
-<span class="nc" id="L123">            List&lt;String&gt; parsedURL = Arrays.stream(product.getPhotoURL().split(&quot;/&quot;)).toList();</span>
-<span class="nc" id="L124">            amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));</span>
-<span class="nc" id="L125">            String objectURL = amazonS3Service.updateFile(photo, product.getName() + &quot;_&quot; + photo.getOriginalFilename());</span>
-<span class="nc" id="L126">            product.setPhotoURL(objectURL);</span>
-        }
-<span class="fc" id="L128">        return productRepo.save(product);</span>
+<span class="fc" id="L109">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
+//        if (productEntityOptional.isEmpty())
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, &quot;Product not existed&quot;);
+//        if (productEntityOptional.get().getIsStopped() == true)
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, &quot;Product has been discontinued &quot;);
+<span class="fc" id="L116">        ProductEntity product = updateFromDTO(productDTO, productEntityOptional.get());</span>
+//        if (photo != null) {
+//            List&lt;String&gt; parsedURL = Arrays.stream(product.getPhotoURL().split(&quot;/&quot;)).toList();
+//            amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
+//            String objectURL = amazonS3Service.updateFile(photo, product.getName() + &quot;_&quot; + photo.getOriginalFilename());
+//            product.setPhotoURL(objectURL);
+//        }
+<span class="fc" id="L123">        return productRepo.save(product);</span>
     }
 
     public void remove(String id) {
-<span class="fc" id="L132">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
-<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (productEntityOptional.isEmpty())</span>
-<span class="fc" id="L134">            throw new ResponseStatusException(</span>
-<span class="fc" id="L135">                    HttpStatus.NOT_FOUND, new Error(&quot;Product not existed&quot;).toString());</span>
-<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (productEntityOptional.get().getIsStopped().equals(true))</span>
-<span class="fc" id="L137">            throw new ResponseStatusException(</span>
-<span class="fc" id="L138">                    HttpStatus.BAD_REQUEST, new Error(&quot;Product has been discontinued&quot;).toString());</span>
-<span class="fc" id="L139">        productEntityOptional.get().setIsStopped(true);</span>
-<span class="fc" id="L140">        productRepo.save(productEntityOptional.get());</span>
-<span class="fc" id="L141">    }</span>
+<span class="fc" id="L127">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (productEntityOptional.isEmpty())</span>
+<span class="fc" id="L129">            throw new ResponseStatusException(</span>
+<span class="fc" id="L130">                    HttpStatus.NOT_FOUND, new Error(&quot;Product not existed&quot;).toString());</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (productEntityOptional.get().getIsStopped().equals(true))</span>
+<span class="fc" id="L132">            throw new ResponseStatusException(</span>
+<span class="fc" id="L133">                    HttpStatus.BAD_REQUEST, new Error(&quot;Product has been discontinued&quot;).toString());</span>
+<span class="fc" id="L134">        productEntityOptional.get().setIsStopped(true);</span>
+<span class="fc" id="L135">        productRepo.save(productEntityOptional.get());</span>
+<span class="fc" id="L136">    }</span>
 
     private ProductEntity updateFromDTO(ProductDTO productDTO, ProductEntity product) {
-<span class="fc" id="L144">        mapper.updateProductFromDto(productDTO, product);</span>
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (productDTO.getCategoryId() != null) {</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (productDTO.getCategoryId().isEmpty()) {</span>
-<span class="nc" id="L147">                product.setCategory(null);</span>
-            } else {
-<span class="nc" id="L149">                Optional&lt;CategoryEntity&gt; category = categoryRepo.findById(productDTO.getCategoryId());</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">                if (category.isEmpty()) {</span>
-<span class="nc" id="L151">                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error(&quot;Category not found&quot;).toString());</span>
-                }
-<span class="nc" id="L153">                product.setCategory(category.get());</span>
-<span class="nc bnc" id="L154" title="All 2 branches missed.">                if (category.get().getIsStopped() == true)</span>
-<span class="nc" id="L155">                    throw new ResponseStatusException(</span>
-                            HttpStatus.NOT_FOUND, &quot;Category has been discontinued &quot;);
-<span class="nc" id="L157">                product.setCategory(category.get());</span>
-            }
-        }
-<span class="fc" id="L160">        List&lt;SupplierEntity&gt; supplierEntities = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L161">        productDTO.getSuppliers().forEach(s -&gt; {</span>
-<span class="nc" id="L162">            Optional&lt;SupplierEntity&gt; supplier = supplierRepo.findById(s);</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (supplier.isEmpty()) {</span>
-<span class="nc" id="L164">                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Supplier with ID: &quot; + s + &quot; not found.&quot;).toString());</span>
-            }
-<span class="nc bnc" id="L166" title="All 2 branches missed.">            if (supplier.get().getIsStopped())</span>
-<span class="nc" id="L167">                throw new ResponseStatusException(</span>
-<span class="nc" id="L168">                        HttpStatus.NOT_FOUND, new Error(&quot;Supplier has been discontinued &quot;).toString());</span>
-<span class="nc" id="L169">            supplierEntities.add(supplier.get());</span>
-<span class="nc" id="L170">        });</span>
-<span class="fc" id="L171">        product.setSuppliers(supplierEntities);</span>
-<span class="fc" id="L172">        return product;</span>
+<span class="fc" id="L139">        mapper.updateProductFromDto(productDTO, product);</span>
+//        if (productDTO.getCategoryId() != null) {
+//            if (productDTO.getCategoryId().isEmpty()) {
+//                product.setCategory(null);
+//            } else {
+//                Optional&lt;CategoryEntity&gt; category = categoryRepo.findById(productDTO.getCategoryId());
+//                if (category.isEmpty()) {
+//                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error(&quot;Category not found&quot;).toString());
+//                }
+//                product.setCategory(category.get());
+//                if (category.get().getIsStopped() == true)
+//                    throw new ResponseStatusException(
+//                            HttpStatus.NOT_FOUND, &quot;Category has been discontinued &quot;);
+//                product.setCategory(category.get());
+//            }
+//        }
+<span class="fc" id="L155">        List&lt;SupplierEntity&gt; supplierEntities = new ArrayList&lt;&gt;();</span>
+//        productDTO.getSuppliers().forEach(s -&gt; {
+//            Optional&lt;SupplierEntity&gt; supplier = supplierRepo.findById(s);
+//            if (supplier.isEmpty()) {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Supplier with ID: &quot; + s + &quot; not found.&quot;).toString());
+//            }
+//            if (supplier.get().getIsStopped())
+//                throw new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, new Error(&quot;Supplier has been discontinued &quot;).toString());
+//            supplierEntities.add(supplier.get());
+//        });
+<span class="fc" id="L166">        product.setSuppliers(supplierEntities);</span>
+<span class="fc" id="L167">        return product;</span>
     }
     @Transactional
     public List&lt;?&gt; getRevisionsForProduct(String id) {
-<span class="fc" id="L176">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (productEntityOptional.isEmpty())</span>
-<span class="fc" id="L178">            throw new ResponseStatusException(</span>
-<span class="fc" id="L179">                    HttpStatus.NOT_FOUND, new Error(&quot;Product not existed&quot;).toString());</span>
-<span class="fc" id="L180">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+<span class="fc" id="L171">        Optional&lt;ProductEntity&gt; productEntityOptional = productRepo.findById(id);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        if (productEntityOptional.isEmpty())</span>
+<span class="fc" id="L173">            throw new ResponseStatusException(</span>
+<span class="fc" id="L174">                    HttpStatus.NOT_FOUND, new Error(&quot;Product not existed&quot;).toString());</span>
+<span class="fc" id="L175">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
 
-<span class="fc" id="L182">        AuditQuery query = auditReader.createQuery()</span>
-<span class="fc" id="L183">                .forRevisionsOfEntity(ProductEntity.class, true, true)</span>
-<span class="fc" id="L184">                .add(AuditEntity.id().eq(id))</span>
-<span class="fc" id="L185">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
-<span class="fc" id="L186">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
-<span class="fc" id="L187">                .addProjection(AuditEntity.property(&quot;category_id&quot;))</span>
-<span class="fc" id="L188">                .addProjection(AuditEntity.property(&quot;unit&quot;))</span>
-<span class="fc" id="L189">                .addProjection(AuditEntity.property(&quot;price&quot;))</span>
-<span class="fc" id="L190">                .addProjection(AuditEntity.property(&quot;quantity&quot;))</span>
-<span class="fc" id="L191">                .addProjection(AuditEntity.property(&quot;warrantyPeriod&quot;))</span>
-<span class="fc" id="L192">                .addProjection(AuditEntity.property(&quot;isStopped&quot;))</span>
-<span class="fc" id="L193">                .addProjection(AuditEntity.property(&quot;photoURL&quot;))</span>
-<span class="fc" id="L194">                .addProjection(AuditEntity.revisionNumber())</span>
-<span class="fc" id="L195">                .addProjection(AuditEntity.revisionType())</span>
-<span class="fc" id="L196">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+<span class="fc" id="L177">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L178">                .forRevisionsOfEntity(ProductEntity.class, true, true)</span>
+<span class="fc" id="L179">                .add(AuditEntity.id().eq(id))</span>
+<span class="fc" id="L180">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L181">                .addProjection(AuditEntity.property(&quot;name&quot;))</span>
+<span class="fc" id="L182">                .addProjection(AuditEntity.property(&quot;category_id&quot;))</span>
+<span class="fc" id="L183">                .addProjection(AuditEntity.property(&quot;unit&quot;))</span>
+<span class="fc" id="L184">                .addProjection(AuditEntity.property(&quot;price&quot;))</span>
+<span class="fc" id="L185">                .addProjection(AuditEntity.property(&quot;quantity&quot;))</span>
+<span class="fc" id="L186">                .addProjection(AuditEntity.property(&quot;warrantyPeriod&quot;))</span>
+<span class="fc" id="L187">                .addProjection(AuditEntity.property(&quot;isStopped&quot;))</span>
+<span class="fc" id="L188">                .addProjection(AuditEntity.property(&quot;photoURL&quot;))</span>
+<span class="fc" id="L189">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L190">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L191">                .addOrder(AuditEntity.revisionNumber().desc());</span>
 
-<span class="fc" id="L198">        List&lt;AuditEnversInfo&gt; productAudit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
-<span class="nc" id="L199">        List&lt;Object[]&gt; objects = query.getResultList();</span>
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        for(int i=0; i&lt; objects.size();i++){</span>
-<span class="nc" id="L201">            Object[] objArray = objects.get(i);</span>
-<span class="nc" id="L202">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
-<span class="nc" id="L204">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
-//                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
-<span class="nc" id="L206">                ProductEntity entity = productRepo.findById((String) objArray[0]).get();</span>
-//                List&lt;ProductEntity&gt; products = productRepo.findById(entity.getId());
-//                entity.setImportProducts(importProducts);
-<span class="nc" id="L209">                auditEnversInfo.setRevision(entity);</span>
-<span class="nc" id="L210">                productAudit.add(auditEnversInfo);</span>
-            }
-        }
-<span class="nc" id="L213">        entityManager.close();</span>
-<span class="nc" id="L214">        return productAudit;</span>
+<span class="fc" id="L193">        List&lt;AuditEnversInfo&gt; productAudit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+//        List&lt;Object[]&gt; objects = query.getResultList();
+//        for(int i=0; i&lt; objects.size();i++){
+//            Object[] objArray = objects.get(i);
+//            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
+//            if (auditEnversInfoOptional.isPresent()) {
+//                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+////                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+//                ProductEntity entity = productRepo.findById((String) objArray[0]).get();
+////                List&lt;ProductEntity&gt; products = productRepo.findById(entity.getId());
+////                entity.setImportProducts(importProducts);
+//                auditEnversInfo.setRevision(entity);
+//                productAudit.add(auditEnversInfo);
+//            }
+//        }
+<span class="fc" id="L208">        entityManager.close();</span>
+<span class="fc" id="L209">        return productAudit;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

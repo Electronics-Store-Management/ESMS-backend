@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path =&quot;sale_product&quot;)
 public class SaleProductController {
     private final SaleProductService service;
-    @GetMapping(&quot;{id}&quot;)
-    public SaleProductEntity getSaleProduct(@PathVariable String id) {
-<span class="nc" id="L17">        return service.getSaleProduct(id);</span>
-    }
+//    @GetMapping(&quot;{id}&quot;)
+//    public SaleProductEntity getSaleProduct(@PathVariable String id) {
+//        return service.getSaleProduct(id);
+//    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

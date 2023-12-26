@@ -57,10 +57,10 @@ public class SupplierService {
 
     public SupplierEntity add(SupplierDTO dto) {
 <span class="fc" id="L59">        Optional&lt;SupplierEntity&gt; supplierEntityOptional = supplierRepo.findByPhone(dto.getPhone());</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (supplierEntityOptional.isPresent())</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (supplierEntityOptional.get().getIsStopped() == true)</span>
-<span class="nc" id="L62">                throw new ResponseStatusException(</span>
-<span class="nc" id="L63">                        HttpStatus.BAD_REQUEST, new Error(&quot;Supplier has terminated cooperation &quot;).toString());</span>
+//        if (supplierEntityOptional.isPresent())
+//            if (supplierEntityOptional.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, new Error(&quot;Supplier has terminated cooperation &quot;).toString());
 <span class="fc" id="L64">        SupplierEntity supplier = updateFromDTO(dto, new SupplierEntity());</span>
 <span class="fc" id="L65">        supplier.setIsStopped(false);</span>
 <span class="fc" id="L66">        return supplierRepo.save(supplier);</span>
@@ -72,9 +72,9 @@ public class SupplierService {
     }
     public SupplierEntity update(SupplierDTO supplierDTO, String id) {
 <span class="fc" id="L74">        Optional&lt;SupplierEntity&gt; optionalSupplier = supplierRepo.findById(id);</span>
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (optionalSupplier.isEmpty()) {</span>
-<span class="nc" id="L76">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Supplier not found&quot;).toString());</span>
-        }
+//        if (optionalSupplier.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Supplier not found&quot;).toString());
+//        }
 <span class="fc" id="L78">        SupplierEntity supplier = optionalSupplier.get();</span>
 <span class="fc" id="L79">        mapper.updateSupplierFromDto(supplierDTO, supplier);</span>
 <span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (supplierDTO.getNote() != null) supplier.setNote(supplierDTO.getNote());</span>

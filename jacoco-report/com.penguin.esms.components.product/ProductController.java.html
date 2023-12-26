@@ -38,7 +38,7 @@ public class ProductController {
     }
     @GetMapping(&quot;history/{id}&quot;)
     public List&lt;?&gt; getProductHistory(@PathVariable String id) {
-<span class="nc" id="L41">        return service.getRevisionsForProduct(id);</span>
+<span class="fc" id="L41">        return service.getRevisionsForProduct(id);</span>
     }
     @PostMapping
     public ResponseEntity&lt;?&gt; createProduct(@RequestParam @Nullable MultipartFile photo, @Valid ProductDTO productDTO) throws IOException {
