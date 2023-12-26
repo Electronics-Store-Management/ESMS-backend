@@ -20,19 +20,19 @@ public class WarrantyBillController {
     private final WarrantyBillService warrantyBillService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody WarrantyBillDTO dto, Principal connectedUser) {
+    public ResponseEntity<?> createWarrantyBill(@RequestBody WarrantyBillDTO dto, Principal connectedUser) {
         return ResponseEntity.ok(warrantyBillService.postWarrantyBill(dto,connectedUser));
     }
     @GetMapping("{id}")
-    public List<?> get(@PathVariable String id) {
+    public List<?> getWarrantyBillById(@PathVariable String id) {
         return warrantyBillService.getRevisions(id);
     }
     @GetMapping()
-    public List<?> get() {
+    public List<?> getAllWarrantyBill() {
         return warrantyBillService.getAll();
     }
     @GetMapping("history")
-    public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+    public ResponseEntity<?> getAllWarrantyBillInPeriod(@RequestParam long start, @RequestParam long end) {
         return ResponseEntity.ok(warrantyBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }

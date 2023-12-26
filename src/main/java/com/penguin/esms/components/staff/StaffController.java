@@ -35,22 +35,22 @@ public class StaffController {
     }
 
     @GetMapping("profile")
-    public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
+    public ResponseEntity<?> getCurrentStaff(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         return ResponseEntity.ok(staff);
     }
     @GetMapping("resigned")
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
-    public List<StaffEntity> getAllResigned(@RequestParam(defaultValue = "") String name) {
+    public List<StaffEntity> getAllResignedStaff(@RequestParam(defaultValue = "") String name) {
         return staffService.findResigned(name);
     }
     @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+    public List<?> getStaffHistory(@PathVariable String id) {
         return staffService.getRevisionsForStaff(id);
     }
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
-    public List<StaffEntity> getAll(@RequestParam(defaultValue = "") String name) {
+    public List<StaffEntity> getAllStaff(@RequestParam(defaultValue = "") String name) {
         return staffService.findByName(name);
     }
   
@@ -61,12 +61,12 @@ public class StaffController {
     }
 
     @PutMapping(path = "{id}")
-    public ResponseEntity<?>  edit(@RequestBody StaffDTO staffDTO, @PathVariable String id) {
+    public ResponseEntity<?>  editStaff(@RequestBody StaffDTO staffDTO, @PathVariable String id) {
         return ResponseEntity.ok(staffService.update(staffDTO, id));
     }
 
     @DeleteMapping(path = "{id}")
-    public void delete(@PathVariable String id) {
+    public void deleteStaff(@PathVariable String id) {
         staffService.remove(id);
     }
 }

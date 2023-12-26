@@ -20,37 +20,37 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
     @GetMapping
-    public List<CustomerEntity> getAll(@RequestParam(defaultValue = "") String name) {
+    public List<CustomerEntity> getAllCustomer(@RequestParam(defaultValue = "") String name) {
         return customerService.getCustomer(name);
     }
     @GetMapping("banned")
-    public List<CustomerEntity> getAllBanned(@RequestParam(defaultValue = "") String name) {
+    public List<CustomerEntity> getAllBannedCustomer(@RequestParam(defaultValue = "") String name) {
         return customerService.getBannedCustomer(name);
     }
     @GetMapping("{id}")
-    public CustomerEntity getById(@PathVariable String id) {
+    public CustomerEntity getCustomerById(@PathVariable String id) {
         return customerService.getById(id);
     }
     @GetMapping("phone")
-    public CustomerEntity getByPhone(@RequestParam(defaultValue = "") String phone) {
+    public CustomerEntity getCustomerByPhone(@RequestParam(defaultValue = "") String phone) {
         return customerService.getByPhone(phone);
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody CustomerDTO dto) {
+    public ResponseEntity<?> createCustomer(@RequestBody CustomerDTO dto) {
         return ResponseEntity.ok(customerService.postCustomer(dto));
     }
     @PutMapping("{id}")
-    public ResponseEntity<?> put(@RequestBody MultipartFile photo, @Valid CustomerDTO customerDTO, @PathVariable String id) throws IOException {
+    public ResponseEntity<?> editCustomer(@RequestBody MultipartFile photo, @Valid CustomerDTO customerDTO, @PathVariable String id) throws IOException {
         return ResponseEntity.ok(customerService.update(customerDTO, id));
     }
     @DeleteMapping("{id}")
-    public void remove(@PathVariable String id) {
+    public void deleteCustomer(@PathVariable String id) {
         customerService.removeCustomer(id);
     }
 
     @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+    public List<?> getCustomerHistory(@PathVariable String id) {
         return customerService.getRevisions(id);
     }
 }

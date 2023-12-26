@@ -28,20 +28,20 @@ public class SaleBillController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody SaleBillDTO dto, Principal connectedUser) {
+    public ResponseEntity<?> createSaleBill(@RequestBody SaleBillDTO dto, Principal connectedUser) {
         return ResponseEntity.ok(saleBillService.post(dto, connectedUser));
     }
 
     @GetMapping("{id}")
-    public List<?> get(@PathVariable String id) {
+    public List<?> getSaleBillById(@PathVariable String id) {
         return saleBillService.getRevisions(id);
     }
     @GetMapping()
-    public List<?> get() {
+    public List<?> getAllSaleBill() {
         return saleBillService.getAll();
     }
     @GetMapping("history")
-    public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+    public ResponseEntity<?> getAllSaleBillInPeriod(@RequestParam long start, @RequestParam long end) {
         return ResponseEntity.ok(saleBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }

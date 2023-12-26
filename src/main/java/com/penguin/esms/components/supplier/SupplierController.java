@@ -32,31 +32,31 @@ public class SupplierController {
     private final PermissionRepo permissionRepo;
 
     @GetMapping
-    public List<SupplierEntity> getAll(@RequestParam(defaultValue = "") String name) {
+    public List<SupplierEntity> getAllSupplier(@RequestParam(defaultValue = "") String name) {
         return service.findByName(name);
     }
     @GetMapping("termination")
-    public List<SupplierEntity> getAllTermination(@RequestParam(defaultValue = "") String name) {
+    public List<SupplierEntity> getAllTerminatedSupplier(@RequestParam(defaultValue = "") String name) {
         return service.findTermination(name);
     }
     @GetMapping("{id}")
-    public SupplierEntity getOne(@PathVariable String id) {
+    public SupplierEntity getSupplierById(@PathVariable String id) {
         return service.getOne(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> post(@RequestBody SupplierDTO supplierDTO) {
+    public ResponseEntity<?> createSupplier(@RequestBody SupplierDTO supplierDTO) {
         return ResponseEntity.ok(service.add(supplierDTO));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> put(@Valid SupplierDTO supplierDTO, @PathVariable String id) {
+    public ResponseEntity<?> editSupplier(@Valid SupplierDTO supplierDTO, @PathVariable String id) {
         return ResponseEntity.ok(service.update(supplierDTO, id));
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id) {
+    public void deleteSupplier(@PathVariable String id) {
         service.remove(id);
     }
 
@@ -68,7 +68,7 @@ public class SupplierController {
         return ResponseEntity.ok(new ItemPermission(permissions));
     }
     @GetMapping("history/{id}")
-    public List<?> getALlHistory(@PathVariable String id) {
+    public List<?> getSupplierHistory(@PathVariable String id) {
         return service.getRevisions(id);
     }
 }
