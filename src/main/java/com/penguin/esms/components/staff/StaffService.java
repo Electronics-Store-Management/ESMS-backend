@@ -1,25 +1,14 @@
 package com.penguin.esms.components.staff;
 
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.product.dto.ProductDTO;
-import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.Error;
-import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

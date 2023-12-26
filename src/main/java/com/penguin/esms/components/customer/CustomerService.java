@@ -1,18 +1,10 @@
 package com.penguin.esms.components.customer;
 
-import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.customer.dto.CustomerDTO;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.product.dto.ProductDTO;
-import com.penguin.esms.components.saleBill.SaleBillEntity;
-import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
-import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
-import com.penguin.esms.mapper.DTOtoEntityMapperImpl;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -21,12 +13,10 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

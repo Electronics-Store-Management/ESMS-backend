@@ -1,6 +1,5 @@
 package com.penguin.esms.components.category;
 
-import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
@@ -45,16 +44,16 @@ public class CategoryService {
         return categoryRepo.save(categoryEntity);
     }
 
-//    public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
-//        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
-//        if (categoryEntityOptional.isEmpty())
-//            throw new ResponseStatusException(
-//                    HttpStatus.NOT_FOUND, "Category not existed");
-//        CategoryEntity category = categoryEntityOptional.get();
-//        mapper.updateCategoryFromDto(categoryDTO, category);
-//        return categoryRepo.save(category);
-//
-//    }
+    public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
+        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+        if (categoryEntityOptional.isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category not existed");
+        CategoryEntity category = categoryEntityOptional.get();
+        mapper.updateCategoryFromDto(categoryDTO, category);
+        return categoryRepo.save(category);
+
+    }
     public void deleteCategory(String id) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
         if (categoryEntityOptional.isEmpty())

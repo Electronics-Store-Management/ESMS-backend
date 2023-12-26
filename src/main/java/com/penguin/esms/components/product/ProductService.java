@@ -2,8 +2,6 @@ package com.penguin.esms.components.product;
 
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -15,9 +13,7 @@ import com.penguin.esms.services.AmazonS3Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -29,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

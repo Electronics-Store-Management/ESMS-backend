@@ -1,41 +1,13 @@
 package com.penguin.esms.envers;
 
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.customer.dto.CustomerDTO;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.staff.Role;
-import com.penguin.esms.components.staff.StaffDTO;
-import com.penguin.esms.components.staff.StaffEntity;
-import com.penguin.esms.components.staff.StaffRepository;
-import com.penguin.esms.entity.Error;
-import com.penguin.esms.envers.dto.AuditEnverInfoDTO;
-import jakarta.persistence.EntityManager;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 //@Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 //@Setter
 //@Getter
 public class AuditEnverInfoService {
-//    private final AuditEnversInfoRepo repo;
+    private final AuditEnversInfoRepo repo;
 //    private final StaffRepository staffRepo;
 //    private final EntityManager entityManager;
 

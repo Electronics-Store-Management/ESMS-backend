@@ -1,28 +1,17 @@
 package com.penguin.esms.components.statistic;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.importBill.ImportBillEntity;
 import com.penguin.esms.components.importBill.ImportBillService;
-import com.penguin.esms.components.importProduct.ImportProductEntity;
-import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.SaleBillRepo;
 import com.penguin.esms.components.saleBill.SaleBillService;
-import com.penguin.esms.components.saleProduct.SaleProductEntity;
 import com.penguin.esms.components.saleProduct.SaleProductRepo;
 import com.penguin.esms.components.saleProduct.SaleProductService;
-import com.penguin.esms.components.statistic.dto.StatisticDTO;
-import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.utils.TimeUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor

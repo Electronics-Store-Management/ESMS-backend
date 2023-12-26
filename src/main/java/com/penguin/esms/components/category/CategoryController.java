@@ -1,11 +1,6 @@
 package com.penguin.esms.components.category;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.penguin.esms.components.category.response.FoundCategoryItem;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
