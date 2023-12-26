@@ -17,8 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "sale")
 @RequiredArgsConstructor
-@Getter
-@Setter
+//@Getter
+//@Setter
 public class SaleBillController {
     private final SaleBillService saleBillService;
 //    @GetMapping("{id}")

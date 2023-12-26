@@ -3,7 +3,7 @@ package com.penguin.esms.components.authentication.requests;
 import lombok.*;
 
 @Data
-@Builder
+//@Builder
 @Getter
 @Setter
 @AllArgsConstructor
