@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.exceptionHandler</a> &gt; <span class="el_source">GeneralExceptionHandler.java</span></div><h1>GeneralExceptionHandler.java</h1><pre class="source lang-java linenums">package com.penguin.esms.exceptionHandler;
+
+import com.penguin.esms.entity.Error;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
+
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+@ControllerAdvice
+<span class="fc" id="L26">public class GeneralExceptionHandler {</span>
+    @ExceptionHandler({ ResponseStatusException.class })
+    public ResponseEntity&lt;?&gt; handleException(ResponseStatusException e) {
+<span class="fc" id="L29">        return ResponseEntity.status(e.getStatusCode()).body(e.getReason());</span>
+    }
+
+    @ExceptionHandler({ HttpMessageNotReadableException.class })
+    public ResponseEntity&lt;?&gt; handleNotReadableException() {
+<span class="fc" id="L34">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Request body not found&quot;);</span>
+    }
+
+    @ExceptionHandler({ ConstraintViolationException.class })
+    public ResponseEntity&lt;?&gt; handleConstraintViolationException(ConstraintViolationException e) {
+<span class="fc" id="L39">        return new ResponseEntity&lt;&gt;(new Error(e.getConstraintViolations().stream().map(constraintViolation -&gt; constraintViolation.getPropertyPath() + &quot; &quot; + constraintViolation.getMessage()).toList()), HttpStatus.BAD_REQUEST);</span>
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getConstraintViolations().stream().toList());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;?&gt; notValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
+<span class="fc" id="L45">        List&lt;String&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L47">        ex.getAllErrors().forEach(err -&gt; errors.add(err.getDefaultMessage()));</span>
+
+<span class="fc" id="L49">        Map&lt;String, List&lt;String&gt;&gt; result = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L50">        result.put(&quot;errors&quot;, errors);</span>
+
+<span class="fc" id="L52">        return new ResponseEntity&lt;&gt;(result, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity&lt;?&gt; methodNotSupported() {
+<span class="nc" id="L57">        return new ResponseEntity&lt;&gt;(new Error(&quot;Method not supported&quot;), HttpStatus.METHOD_NOT_ALLOWED);</span>
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity&lt;?&gt; invalidJWT(SignatureException e) {
+<span class="nc" id="L62">        return new ResponseEntity&lt;&gt;(new Error(&quot;JWT invalid&quot;), HttpStatus.UNAUTHORIZED);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.config</a> &gt; <span class="el_source">SecurityConfiguration.java</span></div><h1>SecurityConfiguration.java</h1><pre class="source lang-java linenums">package com.penguin.esms.config;
+
+import com.penguin.esms.filter.CORSFilter;
+import com.penguin.esms.filter.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static com.penguin.esms.components.permission.EntityType.PRODUCT;
+import static com.penguin.esms.components.permission.PermissionType.VIEW_ALL;
+import static com.penguin.esms.components.staff.Role.*;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
+@Configuration
+@EnableWebSecurity
+<span class="fc" id="L35">@RequiredArgsConstructor</span>
+@EnableMethodSecurity
+public class SecurityConfiguration {
+
+<span class="fc" id="L39">    private static final String[] WHITE_LIST_URL = {&quot;/auth/**&quot;,</span>
+            &quot;/v2/api-docs&quot;,
+            &quot;/v3/api-docs&quot;,
+            &quot;/v3/api-docs/**&quot;,
+            &quot;/swagger-resources&quot;,
+            &quot;/swagger-resources/**&quot;,
+            &quot;/configuration/ui&quot;,
+            &quot;/configuration/security&quot;,
+            &quot;/swagger-ui/**&quot;,
+            &quot;/webjars/**&quot;,
+            &quot;/swagger-ui.html&quot;};
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
+//    private final LogoutHandler logoutHandler;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L56">        CorsConfiguration corsConfiguration = new CorsConfiguration();</span>
+<span class="fc" id="L57">        corsConfiguration.setAllowedHeaders(List.of(&quot;Authorization&quot;, &quot;Cache-Control&quot;, &quot;Content-Type&quot;));</span>
+<span class="fc" id="L58">        corsConfiguration.setAllowedOriginPatterns(List.of(&quot;*&quot;));</span>
+<span class="fc" id="L59">        corsConfiguration.setAllowedMethods(List.of(&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PUT&quot;,&quot;OPTIONS&quot;,&quot;PATCH&quot;, &quot;DELETE&quot;));</span>
+<span class="fc" id="L60">        corsConfiguration.setAllowCredentials(true);</span>
+<span class="fc" id="L61">        corsConfiguration.setExposedHeaders(List.of(&quot;Authorization&quot;));</span>
+
+<span class="fc" id="L63">        http</span>
+<span class="fc" id="L64">                .csrf(AbstractHttpConfigurer::disable)</span>
+<span class="fc" id="L65">                .cors(Customizer.withDefaults()</span>
+                )
+<span class="fc" id="L67">                .authorizeHttpRequests(req -&gt;</span>
+<span class="fc" id="L68">                        req.requestMatchers(WHITE_LIST_URL).permitAll()</span>
+<span class="fc" id="L69">                                .requestMatchers(OPTIONS, &quot;*&quot;).permitAll()</span>
+<span class="fc" id="L70">                                .anyRequest().authenticated()</span>
+                )
+<span class="fc" id="L72">                .sessionManagement(session -&gt; session.sessionCreationPolicy(STATELESS))</span>
+<span class="fc" id="L73">                .authenticationProvider(authenticationProvider)</span>
+<span class="fc" id="L74">                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);</span>
+//                .logout(logout -&gt;
+//                        logout.logoutUrl(&quot;/api/v1/auth/logout&quot;)
+//                                .addLogoutHandler(logoutHandler)
+//                                .logoutSuccessHandler((request, response, authentication) -&gt; SecurityContextHolder.clearContext())
+//                )
+        ;
+
+<span class="fc" id="L82">        return http.build();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

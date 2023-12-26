@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WarrantyBillService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.warrantyBill</a> &gt; <span class="el_source">WarrantyBillService.java</span></div><h1>WarrantyBillService.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.warrantyBill;
+
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.CustomerRepo;
+import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
+import com.penguin.esms.components.saleBill.SaleBillEntity;
+import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
+import com.penguin.esms.components.saleProduct.SaleProductEntity;
+import com.penguin.esms.components.saleProduct.SaleProductRepo;
+import com.penguin.esms.components.saleProduct.dto.SaleProductDTO;
+import com.penguin.esms.components.staff.Role;
+import com.penguin.esms.components.staff.StaffDTO;
+import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductEntity;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductRepo;
+import com.penguin.esms.components.warrantyProduct.WarrantyProductService;
+import com.penguin.esms.components.warrantyProduct.dto.WarrantyProductDTO;
+import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.envers.AuditEnversInfoRepo;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
+import jakarta.persistence.EntityManager;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L50">@RequiredArgsConstructor</span>
+@Getter
+@Setter
+public class WarrantyBillService {
+<span class="nc" id="L54">    private final EntityManager entityManager;</span>
+<span class="nc" id="L55">    private final AuditEnversInfoRepo auditEnversInfoRepo;</span>
+<span class="nc" id="L56">    private final WarrantyBillRepo warrantyBillRepo;</span>
+<span class="nc" id="L57">    private final WarrantyProductRepo warrantyProductRepo;</span>
+<span class="nc" id="L58">    private final DTOtoEntityMapper mapper;</span>
+<span class="nc" id="L59">    private final ProductRepo productRepo;</span>
+<span class="nc" id="L60">    private final CustomerRepo customerRepo;</span>
+    public Boolean checkWarranty(Date buyDate, Period periodTime){
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (Period.between(LocalDate.now(), buyDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).getMonths() &gt; periodTime.getMonths())</span>
+<span class="nc" id="L63">            return false;</span>
+<span class="nc" id="L64">        return true;</span>
+    }
+//    public WarrantyBillEntity getWarrantyBill(String warrantyBillId) {
+//        Optional&lt;WarrantyBillEntity&gt; warrantyBill = warrantyBillRepo.findById(warrantyBillId);
+//        if (warrantyBill.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error(&quot;Warranty bill not found&quot;).toString());
+//        }
+//        return warrantyBill.get();
+//    }
+//    public WarrantyBillEntity postWarrantyBill(WarrantyBillEntity warrantyBillEntity, Principal connectedUser) {
+//        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+//        warrantyBillEntity.setStaffId(staff.getId());
+//        return warrantyBillRepo.save(warrantyBillEntity);
+//    }
+    public WarrantyBillEntity postWarrantyBill(WarrantyBillDTO dto, Principal connectedUser) {
+<span class="fc" id="L79">        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();</span>
+<span class="fc" id="L80">        dto.setStaffId(staff.getId());</span>
+<span class="fc" id="L81">        List&lt;WarrantyProductDTO&gt; warrantyProducts = dto.getWarrantyProducts();</span>
+<span class="fc" id="L82">        CustomerEntity customer = customerRepo.findById(dto.getCustomerId()).get();</span>
+<span class="fc" id="L83">        WarrantyBillEntity warranty = updateFromDTO(dto, new WarrantyBillEntity());</span>
+<span class="fc" id="L84">        warranty.setCustomer(customer);</span>
+<span class="fc" id="L85">        warrantyBillRepo.save(warranty);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (WarrantyProductDTO t : warrantyProducts) {</span>
+<span class="fc" id="L87">            WarrantyProductEntity warrantyProduct = updateFromDTO(t, new WarrantyProductEntity());</span>
+<span class="fc" id="L88">            Optional&lt;ProductEntity&gt; product = productRepo.findById(t.getProductId());</span>
+<span class="fc" id="L89">            warrantyProduct.setProduct(product.get());</span>
+<span class="fc" id="L90">            warrantyProduct.setWarrantyBill(warranty);</span>
+<span class="fc" id="L91">            warrantyProductRepo.save(warrantyProduct);</span>
+<span class="fc" id="L92">            List&lt;WarrantyProductEntity&gt; warrantyPrts = warranty.getWarrantyProducts();</span>
+<span class="fc" id="L93">            warrantyPrts.add(warrantyProduct);</span>
+<span class="fc" id="L94">            warranty.setWarrantyProducts(warrantyPrts);</span>
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        warrantyBillRepo.save(warranty);</span>
+<span class="fc" id="L97">        return warranty;</span>
+    }
+    private WarrantyBillEntity updateFromDTO(WarrantyBillDTO dto, WarrantyBillEntity entity) {
+<span class="fc" id="L100">        mapper.updateWarrantyBillFromDto(dto, entity);</span>
+<span class="fc" id="L101">        return entity;</span>
+    }
+
+    private WarrantyProductEntity updateFromDTO(WarrantyProductDTO dto, WarrantyProductEntity entity) {
+<span class="fc" id="L105">        mapper.updateWarrantyProductFromDto(dto, entity);</span>
+<span class="fc" id="L106">        return entity;</span>
+    }
+    public List&lt;?&gt; getRevisions(String id) {
+<span class="fc" id="L109">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L111">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L112">                .forRevisionsOfEntity(WarrantyBillEntity.class, true, true)</span>
+<span class="fc" id="L113">                .add(AuditEntity.id().eq(id))</span>
+<span class="fc" id="L114">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L115">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L116">                .addProjection(AuditEntity.property(&quot;customer_id&quot;))</span>
+<span class="fc" id="L117">                .addProjection(AuditEntity.property(&quot;warrantyDate&quot;))</span>
+<span class="fc" id="L118">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L119">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L120">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L122">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L123">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L125">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L126">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L128">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L129">                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L130">                List&lt;WarrantyProductEntity&gt; warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());</span>
+<span class="fc" id="L131">                entity.setWarrantyProducts(warrantyProducts);</span>
+<span class="fc" id="L132">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L133">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L136">        return audit;</span>
+    }
+
+    public List&lt;?&gt; getAll() {
+<span class="fc" id="L140">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L142">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L143">                .forRevisionsOfEntity(WarrantyBillEntity.class, true, true)</span>
+<span class="fc" id="L144">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L145">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L146">                .addProjection(AuditEntity.property(&quot;customer_id&quot;))</span>
+<span class="fc" id="L147">                .addProjection(AuditEntity.property(&quot;warrantyDate&quot;))</span>
+<span class="fc" id="L148">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L149">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L150">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L152">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L153">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L155">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L156">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L158">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L159">                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L160">                List&lt;WarrantyProductEntity&gt; warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());</span>
+<span class="fc" id="L161">                entity.setWarrantyProducts(warrantyProducts);</span>
+<span class="fc" id="L162">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L163">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L166">        return audit;</span>
+    }
+
+    public List&lt;?&gt; getAllRevisions(Date start, Date end) {
+<span class="fc" id="L170">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L172">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L173">                .forRevisionsOfEntity(WarrantyBillEntity.class, true, true)</span>
+<span class="fc" id="L174">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L175">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L176">                .addProjection(AuditEntity.property(&quot;customer_id&quot;))</span>
+<span class="fc" id="L177">                .addProjection(AuditEntity.property(&quot;warrantyDate&quot;))</span>
+<span class="fc" id="L178">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L179">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L180">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L182">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L183">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L185">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L186">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L188">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L189">                WarrantyBillEntity entity = warrantyBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L190">                List&lt;WarrantyProductEntity&gt; warrantyProducts =  warrantyProductRepo.findByWarrantyBillId(entity.getId());</span>
+<span class="fc" id="L191">                entity.setWarrantyProducts(warrantyProducts);</span>
+<span class="fc" id="L192">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L193">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L196">        List&lt;AuditEnversInfo&gt; auditReturn = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        for(int i=0; i&lt; audit.size();i++){</span>
+<span class="pc bpc" id="L198" title="3 of 4 branches missed.">            if (audit.get(i).getTimestamp() &gt; start.getTime() &amp;&amp; audit.get(i).getTimestamp() &lt; end.getTime() ) {</span>
+<span class="nc" id="L199">                auditReturn.add(audit.get(i));</span>
+            }
+        }
+<span class="fc" id="L202">        return auditReturn;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

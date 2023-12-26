@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Authority.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.utils</a> &gt; <span class="el_source">Authority.java</span></div><h1>Authority.java</h1><pre class="source lang-java linenums">package com.penguin.esms.utils;
+
+import com.penguin.esms.components.permission.EntityType;
+import com.penguin.esms.components.permission.PermissionType;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
+public class Authority {
+    EntityType entityType;
+    PermissionType permissionType;
+    String entityId;
+
+<span class="nc" id="L17">    public Authority(EntityType entityType, PermissionType permissionType, String entityId) {</span>
+<span class="nc" id="L18">        this.entityType = entityType;</span>
+<span class="nc" id="L19">        this.permissionType = permissionType;</span>
+<span class="nc" id="L20">        this.entityId = entityId;</span>
+<span class="nc" id="L21">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        return permissionType + &quot;:&quot; + entityType + (entityId != null ? &quot;:&quot; + entityId : &quot;&quot;);</span>
+    }
+
+    public static final String fromList(Authority... authorities) {
+<span class="nc" id="L29">        final String str =  Stream.of(authorities).map(Object::toString).collect(Collectors.joining(&quot; or &quot;));</span>
+<span class="nc" id="L30">        return str;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

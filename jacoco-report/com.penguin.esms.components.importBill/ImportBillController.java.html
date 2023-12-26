@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImportBillController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.importBill</a> &gt; <span class="el_source">ImportBillController.java</span></div><h1>ImportBillController.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.importBill;
+
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.permission.dto.PermissionRequest;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.dto.ProductDTO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping(path = &quot;import&quot;)
+<span class="fc" id="L25">@RequiredArgsConstructor</span>
+public class ImportBillController {
+    private final ImportBillService importBillService;
+
+    @GetMapping(&quot;{id}&quot;)
+    public List&lt;?&gt; getImportBillById(@PathVariable String id) {
+<span class="fc" id="L31">        return importBillService.getRevisions(id);</span>
+    }
+    @GetMapping()
+    public List&lt;?&gt; getAllImportBill() {
+<span class="fc" id="L35">        return importBillService.getAll();</span>
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity&lt;?&gt; createImportBill(@RequestBody ImportBillDTO importBillDTO, Principal connectedUser) {
+<span class="fc" id="L41">        return ResponseEntity.ok(importBillService.postImportBill(importBillDTO, connectedUser));</span>
+    }
+
+    @GetMapping(&quot;history&quot;)
+    public ResponseEntity&lt;?&gt; getAllImportBillInPeriod(@RequestParam long start, @RequestParam long end) {
+<span class="fc" id="L46">        return ResponseEntity.ok(importBillService.getAllRevisions(new Date(start), new Date(end)));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
