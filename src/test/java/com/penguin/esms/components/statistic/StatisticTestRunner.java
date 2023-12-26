@@ -125,26 +125,22 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/staff/history/id")
-                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                    )
-                    .andDo(print()).andReturn();
-        } catch (Exception e) {
-        }
-        try {
-
             mockMvc.perform(MockMvcRequestBuilders.post("/staff")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
-                    .andDo(print()).andReturn();
-        } catch (Exception e) {
-        }
-        try {
+                    .andDo(
+                            result -> {
+                                mockMvc.perform(MockMvcRequestBuilders.get("/staff/history/" + JsonPath.read(result.getResponse().getContentAsString(), "$.id"))
+                                                .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                        )
+                                        .andDo(print()).andReturn();
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/staff/resigned/name")
-                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                    )
-                    .andDo(print()).andReturn();
+                                mockMvc.perform(MockMvcRequestBuilders.get("/staff/resigned/" + JsonPath.read(result.getResponse().getContentAsString(), "$.name"))
+                                                .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                        )
+                                        .andDo(print()).andReturn();
+                            }
+                    ).andReturn();
         } catch (Exception e) {
         }
         try {
@@ -157,18 +153,17 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.post("/permission/resigned/name")
+            mockMvc.perform(MockMvcRequestBuilders.post("/permission")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
-                    .andDo(print()).andReturn();
-        } catch (Exception e) {
-        }
-        try {
-
-            mockMvc.perform(MockMvcRequestBuilders.delete("/permission/permissionId")
-                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                    )
-                    .andDo(print()).andReturn();
+                    .andDo(
+                            result -> {
+                                mockMvc.perform(MockMvcRequestBuilders.delete("/permission/" + JsonPath.read(result.getResponse().getContentAsString(), "$.id"))
+                                                .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                        )
+                                        .andDo(print()).andReturn();
+                            }
+                    ).andReturn();
         } catch (Exception e) {
         }
         try {
@@ -181,10 +176,17 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/supplier/permission/permissionId")
+            mockMvc.perform(MockMvcRequestBuilders.post("/supplier")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
-                    .andDo(print()).andReturn();
+                    .andDo(
+                            result -> {
+                                mockMvc.perform(MockMvcRequestBuilders.get("/supplier/permission/" + JsonPath.read(result.getResponse().getContentAsString(), "$.permissionId"))
+                                                .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                        )
+                                        .andDo(print()).andReturn();
+                            }
+                    ).andReturn();
         } catch (Exception e) {
         }
         try {
@@ -204,22 +206,30 @@ class StatisticTestRunner {
         } catch (Exception e) {
         }
         try {
-
-            mockMvc.perform(MockMvcRequestBuilders.get("/warranty_product/id")
+            mockMvc.perform(MockMvcRequestBuilders.post("/warranty_product")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
-                    .andDo(print()).andReturn();
+                    .andDo(result -> {
+                        mockMvc.perform(MockMvcRequestBuilders.get("/warranty_product/" + JsonPath.read(result.getResponse().getContentAsString(), "$.id"))
+                                        .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                )
+                                .andDo(print()).andReturn();
+                    }).andReturn();
+
         } catch (Exception e) {
         }
         try {
-
-            mockMvc.perform(MockMvcRequestBuilders.get("/sale_product/id")
+            mockMvc.perform(MockMvcRequestBuilders.post("/warranty_product")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
-                    .andDo(print()).andReturn();
+                    .andDo(result -> {
+                        mockMvc.perform(MockMvcRequestBuilders.get("/sale_product/" + JsonPath.read(result.getResponse().getContentAsString(), "$.id"))
+                                        .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                )
+                        .andDo(print()).andReturn();
+                    }).andReturn();
         } catch (Exception e) {
         }
-
 
 
     }
