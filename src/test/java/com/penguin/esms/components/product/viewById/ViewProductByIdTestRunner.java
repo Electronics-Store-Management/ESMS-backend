@@ -65,7 +65,7 @@ class ViewProductByIdTestRunner {
     @Test
     public void shouldGetProductById() throws Exception {
         newProductV();
-        mockMvc.perform(MockMvcRequestBuilders.delete("/product/" + product.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/" + product.getId())
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )

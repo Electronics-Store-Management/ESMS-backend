@@ -1,6 +1,7 @@
 package com.penguin.esms.components.product.create;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import com.penguin.esms.components.customer.CustomerEntity;
@@ -71,7 +72,7 @@ class CreateProductTestRunner {
     }
 
     public static List<TestCase> testData() throws IOException {
-        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\create\\test-cases.csv", new ArrayList<>(List.of("name", "unit", "price", "quantity","photoURL")), new ArrayList<>(List.of("status")));
+        return TestUtils.readTestDataFromCsv("src\\test\\java\\com\\penguin\\esms\\components\\product\\create\\test-cases.csv", new ArrayList<>(List.of("name", "unit", "price", "quantity", "photoURL")), new ArrayList<>(List.of("status")));
     }
 
     @ParameterizedTest
@@ -87,7 +88,13 @@ class CreateProductTestRunner {
                         .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                 )
                 .andExpect(status().is(Integer.parseInt(testCase.getExpected().get("status"))))
-                .andDo(print()).andReturn();
+                .andDo(result -> {
+                            mockMvc.perform(MockMvcRequestBuilders.get("/product/history/" + JsonPath.read(result.getResponse().getContentAsString(), "$.id"))
+                                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
+                                    )
+                                    .andDo(print()).andReturn();
+                        }
+                ).andReturn();
     }
 
     @BeforeAll
@@ -101,7 +108,7 @@ class CreateProductTestRunner {
         });
 
         setupEntity.join();
-}
+    }
 
     @AfterAll
     public void cleanup() {

@@ -1,6 +1,7 @@
 package com.penguin.esms.components.statistic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.penguin.esms.EsmsApplication;
 import com.penguin.esms.components.authentication.responses.AuthenticationResponse;
 import com.penguin.esms.components.staff.StaffRepository;
@@ -76,7 +77,7 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/revenue")
+            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/revenue?start=1703592691819&end=1703592691819")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
                     .andDo(print()).andReturn();
@@ -84,7 +85,7 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/revenue/date")
+            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/revenue/1703592691819")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
                     .andDo(print()).andReturn();
@@ -100,23 +101,7 @@ class StatisticTestRunner {
         }
         try {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/cost")
-                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                    )
-                    .andDo(print()).andReturn();
-        } catch (Exception e) {
-        }
-        try {
-
-            mockMvc.perform(MockMvcRequestBuilders.get("/product/id")
-                            .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
-                    )
-                    .andDo(print()).andReturn();
-        } catch (Exception e) {
-        }
-        try {
-
-            mockMvc.perform(MockMvcRequestBuilders.get("/product/history/id")
+            mockMvc.perform(MockMvcRequestBuilders.get("/statistic/cost?start=1703592691819&end=1703592691819")
                             .header("Authorization", "Bearer " + authenticationResponse.getAccessToken())
                     )
                     .andDo(print()).andReturn();
