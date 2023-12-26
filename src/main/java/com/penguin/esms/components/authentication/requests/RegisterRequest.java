@@ -5,9 +5,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@Data
+//@Data
 //@Builder
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
     private String name;

@@ -58,11 +58,11 @@ public class WarrantyBillService {
     private final DTOtoEntityMapper mapper;
     private final ProductRepo productRepo;
     private final CustomerRepo customerRepo;
-    public Boolean checkWarranty(Date buyDate, Period periodTime){
-        if (Period.between(LocalDate.now(), buyDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).getMonths() > periodTime.getMonths())
-            return false;
-        return true;
-    }
+//    public Boolean checkWarranty(Date buyDate, Period periodTime){
+//        if (Period.between(LocalDate.now(), buyDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()).getMonths() > periodTime.getMonths())
+//            return false;
+//        return true;
+//    }
 //    public WarrantyBillEntity getWarrantyBill(String warrantyBillId) {
 //        Optional<WarrantyBillEntity> warrantyBill = warrantyBillRepo.findById(warrantyBillId);
 //        if (warrantyBill.isEmpty()) {

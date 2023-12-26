@@ -57,10 +57,10 @@ public class SupplierService {
 
     public SupplierEntity add(SupplierDTO dto) {
         Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findByPhone(dto.getPhone());
-        if (supplierEntityOptional.isPresent())
-            if (supplierEntityOptional.get().getIsStopped() == true)
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, new Error("Supplier has terminated cooperation ").toString());
+//        if (supplierEntityOptional.isPresent())
+//            if (supplierEntityOptional.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, new Error("Supplier has terminated cooperation ").toString());
         SupplierEntity supplier = updateFromDTO(dto, new SupplierEntity());
         supplier.setIsStopped(false);
         return supplierRepo.save(supplier);
@@ -72,9 +72,9 @@ public class SupplierService {
     }
     public SupplierEntity update(SupplierDTO supplierDTO, String id) {
         Optional<SupplierEntity> optionalSupplier = supplierRepo.findById(id);
-        if (optionalSupplier.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier not found").toString());
-        }
+//        if (optionalSupplier.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier not found").toString());
+//        }
         SupplierEntity supplier = optionalSupplier.get();
         mapper.updateSupplierFromDto(supplierDTO, supplier);
         if (supplierDTO.getNote() != null) supplier.setNote(supplierDTO.getNote());

@@ -2,11 +2,11 @@ package com.penguin.esms.components.authentication.requests;
 
 import lombok.*;
 
-@Data
+//@Data
 //@Builder
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
     private String email;

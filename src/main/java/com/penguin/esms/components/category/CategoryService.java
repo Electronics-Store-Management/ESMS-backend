@@ -34,27 +34,27 @@ public class CategoryService {
     private final DTOtoEntityMapper mapper;
     public CategoryEntity postCategory(CategoryEntity categoryEntity) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());
-        if (categoryEntityOptional.isPresent()) {
-            if (categoryEntityOptional.get().getIsStopped() == true)
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Category has been discontinued ").toString());
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, new Error("Category existed").toString());
-        }
+//        if (categoryEntityOptional.isPresent()) {
+//            if (categoryEntityOptional.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, new Error("Category has been discontinued ").toString());
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error("Category existed").toString());
+//        }
         categoryEntity.setIsStopped(false);
         return categoryRepo.save(categoryEntity);
     }
 
-    public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
-        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
-        if (categoryEntityOptional.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Category not existed");
-        CategoryEntity category = categoryEntityOptional.get();
-        mapper.updateCategoryFromDto(categoryDTO, category);
-        return categoryRepo.save(category);
-
-    }
+//    public CategoryEntity editCategory(CategoryDTO categoryDTO, String id) {
+//        Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
+//        if (categoryEntityOptional.isEmpty())
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, "Category not existed");
+//        CategoryEntity category = categoryEntityOptional.get();
+//        mapper.updateCategoryFromDto(categoryDTO, category);
+//        return categoryRepo.save(category);
+//
+//    }
     public void deleteCategory(String id) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findById(id);
         if (categoryEntityOptional.isEmpty())

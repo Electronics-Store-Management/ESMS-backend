@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Getter
-@Setter
+//@Getter
+//@Setter
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepo productRepo;
@@ -98,13 +98,13 @@ public class ProductService {
 
     public ProductEntity add(ProductDTO productDTO) {
         Optional<ProductEntity> productOpt = productRepo.findByName(productDTO.getName());
-        if (productOpt.isPresent()) {
-            if (productOpt.get().getIsStopped() == true)
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, new Error("Product has been discontinued ").toString());
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
-        }
+//        if (productOpt.isPresent()) {
+//            if (productOpt.get().getIsStopped() == true)
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, new Error("Product has been discontinued ").toString());
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
+//        }
         ProductEntity product = updateFromDTO(productDTO, new ProductEntity());
         product.setIsStopped(false);
         return productRepo.save(product);
@@ -112,19 +112,19 @@ public class ProductService {
 
     public ProductEntity update(ProductDTO productDTO, String id, MultipartFile photo) throws IOException {
         Optional<ProductEntity> productEntityOptional = productRepo.findById(id);
-        if (productEntityOptional.isEmpty())
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Product not existed");
-        if (productEntityOptional.get().getIsStopped() == true)
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Product has been discontinued ");
+//        if (productEntityOptional.isEmpty())
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, "Product not existed");
+//        if (productEntityOptional.get().getIsStopped() == true)
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST, "Product has been discontinued ");
         ProductEntity product = updateFromDTO(productDTO, productEntityOptional.get());
-        if (photo != null) {
-            List<String> parsedURL = Arrays.stream(product.getPhotoURL().split("/")).toList();
-            amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
-            String objectURL = amazonS3Service.updateFile(photo, product.getName() + "_" + photo.getOriginalFilename());
-            product.setPhotoURL(objectURL);
-        }
+//        if (photo != null) {
+//            List<String> parsedURL = Arrays.stream(product.getPhotoURL().split("/")).toList();
+//            amazonS3Service.deleteFile(parsedURL.get(parsedURL.size() - 1));
+//            String objectURL = amazonS3Service.updateFile(photo, product.getName() + "_" + photo.getOriginalFilename());
+//            product.setPhotoURL(objectURL);
+//        }
         return productRepo.save(product);
     }
 
@@ -142,32 +142,32 @@ public class ProductService {
 
     private ProductEntity updateFromDTO(ProductDTO productDTO, ProductEntity product) {
         mapper.updateProductFromDto(productDTO, product);
-        if (productDTO.getCategoryId() != null) {
-            if (productDTO.getCategoryId().isEmpty()) {
-                product.setCategory(null);
-            } else {
-                Optional<CategoryEntity> category = categoryRepo.findById(productDTO.getCategoryId());
-                if (category.isEmpty()) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
-                }
-                product.setCategory(category.get());
-                if (category.get().getIsStopped() == true)
-                    throw new ResponseStatusException(
-                            HttpStatus.NOT_FOUND, "Category has been discontinued ");
-                product.setCategory(category.get());
-            }
-        }
+//        if (productDTO.getCategoryId() != null) {
+//            if (productDTO.getCategoryId().isEmpty()) {
+//                product.setCategory(null);
+//            } else {
+//                Optional<CategoryEntity> category = categoryRepo.findById(productDTO.getCategoryId());
+//                if (category.isEmpty()) {
+//                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, new Error("Category not found").toString());
+//                }
+//                product.setCategory(category.get());
+//                if (category.get().getIsStopped() == true)
+//                    throw new ResponseStatusException(
+//                            HttpStatus.NOT_FOUND, "Category has been discontinued ");
+//                product.setCategory(category.get());
+//            }
+//        }
         List<SupplierEntity> supplierEntities = new ArrayList<>();
-        productDTO.getSuppliers().forEach(s -> {
-            Optional<SupplierEntity> supplier = supplierRepo.findById(s);
-            if (supplier.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier with ID: " + s + " not found.").toString());
-            }
-            if (supplier.get().getIsStopped())
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, new Error("Supplier has been discontinued ").toString());
-            supplierEntities.add(supplier.get());
-        });
+//        productDTO.getSuppliers().forEach(s -> {
+//            Optional<SupplierEntity> supplier = supplierRepo.findById(s);
+//            if (supplier.isEmpty()) {
+//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Supplier with ID: " + s + " not found.").toString());
+//            }
+//            if (supplier.get().getIsStopped())
+//                throw new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, new Error("Supplier has been discontinued ").toString());
+//            supplierEntities.add(supplier.get());
+//        });
         product.setSuppliers(supplierEntities);
         return product;
     }
@@ -196,20 +196,20 @@ public class ProductService {
                 .addOrder(AuditEntity.revisionNumber().desc());
 
         List<AuditEnversInfo> productAudit = new ArrayList<AuditEnversInfo>();
-        List<Object[]> objects = query.getResultList();
-        for(int i=0; i< objects.size();i++){
-            Object[] objArray = objects.get(i);
-            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
-            if (auditEnversInfoOptional.isPresent()) {
-                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-//                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
-                ProductEntity entity = productRepo.findById((String) objArray[0]).get();
-//                List<ProductEntity> products = productRepo.findById(entity.getId());
-//                entity.setImportProducts(importProducts);
-                auditEnversInfo.setRevision(entity);
-                productAudit.add(auditEnversInfo);
-            }
-        }
+//        List<Object[]> objects = query.getResultList();
+//        for(int i=0; i< objects.size();i++){
+//            Object[] objArray = objects.get(i);
+//            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
+//            if (auditEnversInfoOptional.isPresent()) {
+//                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+////                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+//                ProductEntity entity = productRepo.findById((String) objArray[0]).get();
+////                List<ProductEntity> products = productRepo.findById(entity.getId());
+////                entity.setImportProducts(importProducts);
+//                auditEnversInfo.setRevision(entity);
+//                productAudit.add(auditEnversInfo);
+//            }
+//        }
         entityManager.close();
         return productAudit;
     }

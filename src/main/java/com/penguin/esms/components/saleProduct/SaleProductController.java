@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path ="sale_product")
 public class SaleProductController {
     private final SaleProductService service;
-    @GetMapping("{id}")
-    public SaleProductEntity getSaleProduct(@PathVariable String id) {
-        return service.getSaleProduct(id);
-    }
+//    @GetMapping("{id}")
+//    public SaleProductEntity getSaleProduct(@PathVariable String id) {
+//        return service.getSaleProduct(id);
+//    }
 }

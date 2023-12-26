@@ -39,26 +39,26 @@ public class StaffController {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         return ResponseEntity.ok(staff);
     }
-    @GetMapping("resigned")
-    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
-    public List<StaffEntity> getAllResignedStaff(@RequestParam(defaultValue = "") String name) {
-        return staffService.findResigned(name);
-    }
-    @GetMapping("history/{id}")
-    public List<?> getStaffHistory(@PathVariable String id) {
-        return staffService.getRevisionsForStaff(id);
-    }
+//    @GetMapping("resigned")
+//    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
+//    public List<StaffEntity> getAllResignedStaff(@RequestParam(defaultValue = "") String name) {
+//        return staffService.findResigned(name);
+//    }
+//    @GetMapping("history/{id}")
+//    public List<?> getStaffHistory(@PathVariable String id) {
+//        return staffService.getRevisionsForStaff(id);
+//    }
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public List<StaffEntity> getAllStaff(@RequestParam(defaultValue = "") String name) {
         return staffService.findByName(name);
     }
   
-    @GetMapping("{id}")
-    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
-    public StaffEntity getStaffById(@PathVariable String id) {
-        return staffService.getOne(id);
-    }
+//    @GetMapping("{id}")
+//    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
+//    public StaffEntity getStaffById(@PathVariable String id) {
+//        return staffService.getOne(id);
+//    }
 
     @PutMapping(path = "{id}")
     public ResponseEntity<?>  editStaff(@RequestBody StaffDTO staffDTO, @PathVariable String id) {

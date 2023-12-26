@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("enver")
-@RequiredArgsConstructor
+//@RequestMapping("enver")
+//@RequiredArgsConstructor
 @RestController
 public class AuditEnverInfoController {
-    private final AuditEnverInfoService auditEnverInfoService;
-    @GetMapping("history")
-    public ResponseEntity<?> getHistoryByStaff(@RequestParam String username) throws ClassNotFoundException {
-        return ResponseEntity.ok(auditEnverInfoService.view(auditEnverInfoService.getRecord(username)));
-    }
+//    private final AuditEnverInfoService auditEnverInfoService;
+//    @GetMapping("history")
+//    public ResponseEntity<?> getHistoryByStaff(@RequestParam String username) throws ClassNotFoundException {
+//        return ResponseEntity.ok(auditEnverInfoService.view(auditEnverInfoService.getRecord(username)));
+//    }
 }

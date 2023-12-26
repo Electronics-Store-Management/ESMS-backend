@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 @Service
-@Getter
-@Setter
+//@Getter
+//@Setter
 @RequiredArgsConstructor
 public class ImportProductService {
     private final ImportProductRepo importProductRepo;
@@ -35,11 +35,11 @@ public class ImportProductService {
     private final ImportBillRepo importBillRepo;
     private final DTOtoEntityMapper mapper;
 
-    public ImportProductEntity getImportProduct(String importProductId) {
-        Optional<ImportProductEntity> importProduct = importProductRepo.findById(importProductId);
-        if (importProduct.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        }
-        return importProduct.get();
-    }
+//    public ImportProductEntity getImportProduct(String importProductId) {
+//        Optional<ImportProductEntity> importProduct = importProductRepo.findById(importProductId);
+//        if (importProduct.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+//        }
+//        return importProduct.get();
+//    }
 }

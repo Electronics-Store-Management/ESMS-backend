@@ -16,26 +16,26 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Service
-@Getter
-@Setter
+//@Getter
+//@Setter
 @RequiredArgsConstructor
 public class WarrantyProductService {
     private final WarrantyProductRepo repo;
     private final ProductRepo productRepo;
     private final WarrantyBillRepo warrantyRepo;
     private final DTOtoEntityMapper mapper;
-    public WarrantyProductEntity getWarrantyProduct(String warrantyProductId) {
-        Optional<WarrantyProductEntity> warrantyProduct = repo.findById(warrantyProductId);
-        if (warrantyProduct.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        }
-        return warrantyProduct.get();
-    }
-    public WarrantyProductEntity getWarrantyBill(String warrantyBillId) {
-        Optional<WarrantyProductEntity> warrantyProduct = repo.findById(warrantyBillId);
-        if (warrantyProduct.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        }
-        return warrantyProduct.get();
-    }
+//    public WarrantyProductEntity getWarrantyProduct(String warrantyProductId) {
+//        Optional<WarrantyProductEntity> warrantyProduct = repo.findById(warrantyProductId);
+//        if (warrantyProduct.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+//        }
+//        return warrantyProduct.get();
+//    }
+//    public WarrantyProductEntity getWarrantyBill(String warrantyBillId) {
+//        Optional<WarrantyProductEntity> warrantyProduct = repo.findById(warrantyBillId);
+//        if (warrantyProduct.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+//        }
+//        return warrantyProduct.get();
+//    }
 }
