@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WarrantyBillController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.warrantyBill</a> &gt; <span class="el_source">WarrantyBillController.java</span></div><h1>WarrantyBillController.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.warrantyBill;
+
+import com.penguin.esms.components.importBill.ImportBillEntity;
+import com.penguin.esms.components.importBill.ImportBillService;
+import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping(path = &quot;warranty&quot;)
+<span class="fc" id="L18">@RequiredArgsConstructor</span>
+public class WarrantyBillController {
+    private final WarrantyBillService warrantyBillService;
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity&lt;?&gt; post(@RequestBody WarrantyBillDTO dto, Principal connectedUser) {
+<span class="fc" id="L24">        return ResponseEntity.ok(warrantyBillService.postWarrantyBill(dto,connectedUser));</span>
+    }
+    @GetMapping(&quot;{id}&quot;)
+    public List&lt;?&gt; get(@PathVariable String id) {
+<span class="fc" id="L28">        return warrantyBillService.getRevisions(id);</span>
+    }
+    @GetMapping()
+    public List&lt;?&gt; get() {
+<span class="fc" id="L32">        return warrantyBillService.getAll();</span>
+    }
+    @GetMapping(&quot;history&quot;)
+    public ResponseEntity&lt;?&gt; getAll(@RequestParam long start, @RequestParam long end) {
+<span class="fc" id="L36">        return ResponseEntity.ok(warrantyBillService.getAllRevisions(new Date(start), new Date(end)));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

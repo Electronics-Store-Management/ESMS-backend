@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SaleBillEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.saleBill</a> &gt; <span class="el_source">SaleBillEntity.java</span></div><h1>SaleBillEntity.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.saleBill;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
+import com.penguin.esms.components.saleProduct.SaleProductEntity;
+import com.penguin.esms.entity.NoteEntity;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table
+@Getter
+<span class="fc" id="L22">@Setter</span>
+<span class="fc" id="L23">@RequiredArgsConstructor</span>
+@Audited
+public class SaleBillEntity extends NoteEntity {
+<span class="fc" id="L26">    private String staffId;</span>
+<span class="fc" id="L27">    private String paymentMethod;</span>
+<span class="fc" id="L28">    private Float discount;</span>
+    @JsonIgnoreProperties(value = {&quot;saleBill&quot;})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = &quot;saleBill&quot;)
+<span class="fc" id="L31">    private List&lt;SaleProductEntity&gt; saleProducts;</span>
+    @ManyToOne
+    @JoinColumn(name = &quot;customer_id&quot;)
+    @JsonIgnoreProperties(value = {&quot;saleBills&quot;})
+<span class="fc" id="L35">    private CustomerEntity customer;</span>
+
+<span class="nc" id="L37">    public SaleBillEntity(String staffId, String paymentMethod, Float discount) {</span>
+<span class="nc" id="L38">        this.staffId = staffId;</span>
+<span class="nc" id="L39">        this.paymentMethod = paymentMethod;</span>
+<span class="nc" id="L40">        this.discount =discount;</span>
+<span class="nc" id="L41">    }</span>
+<span class="nc" id="L42">    public SaleBillEntity(String staffId, CustomerEntity customer, String paymentMethod, Float discount) {</span>
+<span class="nc" id="L43">        this.staffId = staffId;</span>
+<span class="nc" id="L44">        this.setCustomer(customer);</span>
+<span class="nc" id="L45">        this.paymentMethod = paymentMethod;</span>
+<span class="nc" id="L46">        this.discount = discount;</span>
+<span class="nc" id="L47">    }</span>
+<span class="nc" id="L48">    public SaleBillEntity(String staffId, CustomerEntity customer, String paymentMethod, Float discount,String id ) {</span>
+<span class="nc" id="L49">        this.staffId = staffId;</span>
+<span class="nc" id="L50">        this.setCustomer(customer);</span>
+<span class="nc" id="L51">        this.paymentMethod = paymentMethod;</span>
+<span class="nc" id="L52">        this.discount = discount;</span>
+<span class="nc" id="L53">        this.setId(id);</span>
+<span class="nc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

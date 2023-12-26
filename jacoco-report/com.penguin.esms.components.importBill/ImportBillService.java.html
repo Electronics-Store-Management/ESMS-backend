@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImportBillService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">esms</a> &gt; <a href="index.source.html" class="el_package">com.penguin.esms.components.importBill</a> &gt; <span class="el_source">ImportBillService.java</span></div><h1>ImportBillService.java</h1><pre class="source lang-java linenums">package com.penguin.esms.components.importBill;
+
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.customer.CustomerEntity;
+import com.penguin.esms.components.customer.dto.CustomerDTO;
+import com.penguin.esms.components.importBill.dto.ImportBillDTO;
+import com.penguin.esms.components.importProduct.ImportProductEntity;
+import com.penguin.esms.components.importProduct.ImportProductRepo;
+import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
+import com.penguin.esms.components.product.ProductEntity;
+import com.penguin.esms.components.product.ProductRepo;
+import com.penguin.esms.components.product.dto.ProductDTO;
+import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
+import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
+import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.AuditEnversInfo;
+import com.penguin.esms.envers.AuditEnversInfoRepo;
+import com.penguin.esms.mapper.DTOtoEntityMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
+import java.security.Principal;
+import java.util.*;
+
+@Service
+<span class="fc" id="L40">@RequiredArgsConstructor</span>
+public class ImportBillService {
+    @PersistenceContext
+    private final EntityManager entityManager;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
+    private final ImportBillRepo importBillRepo;
+    private final ProductRepo productRepo;
+    private final DTOtoEntityMapper mapper;
+    private final ImportProductRepo importProductRepo;
+
+    public ImportBillEntity postImportBill(ImportBillDTO importBillDTO, Principal connectedUser) {
+<span class="fc" id="L51">        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();</span>
+<span class="fc" id="L52">        importBillDTO.setStaffId(staff.getId());</span>
+<span class="fc" id="L53">        List&lt;ImportProductDTO&gt; importPrts = importBillDTO.getImportProducts();</span>
+<span class="fc" id="L54">        ImportBillEntity impot = updateFromDTO(importBillDTO, new ImportBillEntity());</span>
+<span class="fc" id="L55">        importBillRepo.save(impot);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (ImportProductDTO t : importPrts){</span>
+<span class="fc" id="L57">            ImportProductEntity impotPrt = updateFromDTO(t, new ImportProductEntity());</span>
+<span class="fc" id="L58">            Optional&lt;ProductEntity&gt; product = productRepo.findById(t.getProductId());</span>
+<span class="fc" id="L59">            impotPrt.setProduct(product.get());</span>
+<span class="fc" id="L60">            impotPrt.setImportBill(impot);</span>
+<span class="fc" id="L61">            importProductRepo.save(impotPrt);</span>
+<span class="fc" id="L62">            List&lt;ImportProductEntity&gt; importProducts = impot.getImportProducts();</span>
+<span class="fc" id="L63">            importProducts.add(impotPrt);</span>
+<span class="fc" id="L64">            impot.setImportProducts(importProducts);</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        importBillRepo.save(impot);</span>
+<span class="fc" id="L67">        return impot;</span>
+    }
+    private ImportBillEntity updateFromDTO(ImportBillDTO importBillDTO, ImportBillEntity impot) {
+<span class="fc" id="L70">        mapper.updateImportBillFromDto(importBillDTO, impot);</span>
+<span class="fc" id="L71">        return impot;</span>
+    }
+    private ImportProductEntity updateFromDTO(ImportProductDTO dto, ImportProductEntity entity) {
+<span class="fc" id="L74">        mapper.updateImportProductFromDto(dto, entity);</span>
+<span class="fc" id="L75">        return entity;</span>
+    }
+    @Transactional
+    public List&lt;?&gt; getRevisions(String id) {
+<span class="fc" id="L79">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L81">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L82">                .forRevisionsOfEntity(ImportBillEntity.class, true, true)</span>
+<span class="fc" id="L83">                .add(AuditEntity.id().eq(id))</span>
+<span class="fc" id="L84">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L85">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L86">                .addProjection(AuditEntity.property(&quot;supplierId&quot;))</span>
+<span class="fc" id="L87">                .addProjection(AuditEntity.property(&quot;paymentMethod&quot;))</span>
+<span class="fc" id="L88">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L89">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L90">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L92">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L93">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L95">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L96">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L98">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L99">                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L100">                List&lt;ImportProductEntity&gt; importProducts = importProductRepo.findByImportBillId(entity.getId());</span>
+<span class="fc" id="L101">                entity.setImportProducts(importProducts);</span>
+<span class="fc" id="L102">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L103">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L106">        entityManager.close();</span>
+<span class="fc" id="L107">        return audit;</span>
+    }
+    @Transactional
+    public List&lt;?&gt; getAll() {
+<span class="fc" id="L111">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L113">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L114">                .forRevisionsOfEntity(ImportBillEntity.class, true, true)</span>
+<span class="fc" id="L115">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L116">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L117">                .addProjection(AuditEntity.property(&quot;supplierId&quot;))</span>
+<span class="fc" id="L118">                .addProjection(AuditEntity.property(&quot;paymentMethod&quot;))</span>
+<span class="fc" id="L119">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L120">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L121">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L123">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L124">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L126">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L127">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L129">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+<span class="fc" id="L130">                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L131">                List&lt;ImportProductEntity&gt; importProducts = importProductRepo.findByImportBillId(entity.getId());</span>
+<span class="fc" id="L132">                entity.setImportProducts(importProducts);</span>
+<span class="fc" id="L133">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L134">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L137">        entityManager.close();</span>
+<span class="fc" id="L138">        return audit;</span>
+    }
+    @Transactional
+    public List&lt;?&gt; getAllRevisions(Date start, Date end) {
+<span class="fc" id="L142">        AuditReader auditReader = AuditReaderFactory.get(entityManager);</span>
+
+<span class="fc" id="L144">        AuditQuery query = auditReader.createQuery()</span>
+<span class="fc" id="L145">                .forRevisionsOfEntity(ImportBillEntity.class, true, true)</span>
+<span class="fc" id="L146">                .addProjection(AuditEntity.revisionNumber())</span>
+<span class="fc" id="L147">                .addProjection(AuditEntity.property(&quot;staffId&quot;))</span>
+<span class="fc" id="L148">                .addProjection(AuditEntity.property(&quot;supplierId&quot;))</span>
+<span class="fc" id="L149">                .addProjection(AuditEntity.property(&quot;paymentMethod&quot;))</span>
+<span class="fc" id="L150">                .addProjection(AuditEntity.property(&quot;id&quot;))</span>
+<span class="fc" id="L151">                .addProjection(AuditEntity.revisionType())</span>
+<span class="fc" id="L152">                .addOrder(AuditEntity.revisionNumber().desc());</span>
+
+<span class="fc" id="L154">        List&lt;AuditEnversInfo&gt; audit = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc" id="L155">        List&lt;Object[]&gt; objects = query.getResultList();</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        for(int i=0; i&lt; objects.size();i++){</span>
+<span class="fc" id="L157">            Object[] objArray = objects.get(i);</span>
+<span class="fc" id="L158">            Optional&lt;AuditEnversInfo&gt; auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">            if (auditEnversInfoOptional.isPresent()) {</span>
+<span class="fc" id="L160">                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();</span>
+//                ImportBillEntity entity = new ImportBillEntity((String) objArray[1],  (String) objArray[2], (String) objArray[3]);
+<span class="fc" id="L162">                ImportBillEntity entity = importBillRepo.findById((String) objArray[4]).get();</span>
+<span class="fc" id="L163">                List&lt;ImportProductEntity&gt; importProducts = importProductRepo.findByImportBillId(entity.getId());</span>
+<span class="fc" id="L164">                entity.setImportProducts(importProducts);</span>
+<span class="fc" id="L165">                auditEnversInfo.setRevision(entity);</span>
+<span class="fc" id="L166">                audit.add(auditEnversInfo);</span>
+            }
+        }
+<span class="fc" id="L169">        List&lt;AuditEnversInfo&gt; auditReturn = new ArrayList&lt;AuditEnversInfo&gt;();</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        for(int i=0; i&lt; audit.size();i++){</span>
+<span class="pc bpc" id="L171" title="3 of 4 branches missed.">            if (audit.get(i).getTimestamp() &gt; start.getTime() &amp;&amp; audit.get(i).getTimestamp() &lt; end.getTime() ) {</span>
+<span class="nc" id="L172">                auditReturn.add(audit.get(i));</span>
+            }
+        }
+<span class="fc" id="L175">        entityManager.close();</span>
+<span class="fc" id="L176">        return auditReturn;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
