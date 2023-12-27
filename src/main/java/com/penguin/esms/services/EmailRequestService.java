@@ -83,7 +83,7 @@ public class EmailRequestService {
                 .build();
 
         System.out.println(redirect_uri);
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setHost("esms.hoanghy.space").setPort(8080).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setCallbackPath("https://esms.hoanghy.space/Callback").build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
