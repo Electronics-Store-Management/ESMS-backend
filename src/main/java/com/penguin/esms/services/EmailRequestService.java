@@ -20,10 +20,12 @@ import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.ListLabelsResponse;
 import com.google.api.services.gmail.model.Message;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Session;
@@ -55,6 +57,8 @@ public class EmailRequestService {
     @Value("${google.redirect_uri}")
     private String redirect_uri;
 
+//    private final Environment environment;
+
 //    public EmailRequestService(Gmail service) {
 //        this.service = service;
 //    }
@@ -78,7 +82,8 @@ public class EmailRequestService {
                 .setAccessType("offline")
                 .build();
 
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setHost(redirect_uri).build();
+        System.out.println(redirect_uri);
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
