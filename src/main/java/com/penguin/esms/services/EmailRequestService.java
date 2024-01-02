@@ -20,9 +20,12 @@ import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.ListLabelsResponse;
 import com.google.api.services.gmail.model.Message;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Session;
@@ -51,6 +54,11 @@ public class EmailRequestService {
     private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_SEND);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
+    @Value("${google.redirect_uri}")
+    private String redirect_uri;
+
+//    private final Environment environment;
+
 //    public EmailRequestService(Gmail service) {
 //        this.service = service;
 //    }
@@ -63,7 +71,7 @@ public class EmailRequestService {
                 .build();
     }
 
-    private static Credential getCredentials(final NetHttpTransport httpTransport, JsonFactory jsonFactory)
+    private Credential getCredentials(final NetHttpTransport httpTransport, JsonFactory jsonFactory)
             throws IOException {
         InputStream in = EmailRequestService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
@@ -74,7 +82,8 @@ public class EmailRequestService {
                 .setAccessType("offline")
                 .build();
 
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        System.out.println(redirect_uri);
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setCallbackPath("https://esms.hoanghy.space/Callback").build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
