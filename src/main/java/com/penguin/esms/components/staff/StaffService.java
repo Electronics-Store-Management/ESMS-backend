@@ -118,6 +118,10 @@ public class StaffService {
         return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, false);
     }
 
+    public StaffEntity findByMail(String email) {
+        return staffRepository.findByEmail(email).get();
+    }
+
     public List<StaffEntity> findResigned(String name) {
         return staffRepository.findByNameContainingIgnoreCaseAndIsStopped(name, true);
     }

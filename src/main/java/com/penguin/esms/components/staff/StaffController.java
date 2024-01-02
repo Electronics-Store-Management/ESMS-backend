@@ -58,7 +58,13 @@ public class StaffController {
     public List<StaffEntity> getAll(@RequestParam(defaultValue = "") String name) {
         return staffService.findByName(name);
     }
-  
+
+    @GetMapping("username")
+    @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
+    public StaffEntity getStaffByEmail(@RequestParam(defaultValue = "") String email) {
+        return staffService.findByMail(email);
+    }
+
     @GetMapping("{id}")
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public StaffEntity getStaffById(@PathVariable String id) {
