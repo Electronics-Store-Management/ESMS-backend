@@ -102,9 +102,9 @@ public class CustomerService {
         if (customer.isEmpty())
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, new Error("Customer not existed").toString());
-        if (customer.get().getIsStopped() == true)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
+//        if (customer.get().getIsStopped() == true)
+//            throw new ResponseStatusException(
+//                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
         CustomerEntity customerEntity = updateFromDTO(customerDTO, customerRepo.findById(id).get());
         return customerRepo.save(customerEntity);
     }

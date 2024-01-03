@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: jnhbgvfc
+      POSTGRES_DB: esms
+      POSTGRES_USER: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - postgresql
+    volumes:
+      - postgresql-volume:/var/lib/postgresql/data
+
+  web:
+    build: .
+    ports:
+      - 8080:8080
+      - 45695:45695
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - postgresql
+    volumes:
+      - C:\\Users\\hoang\\.aws\\credentials:/home/web/.aws/credentials:ro
+      - C:\\Users\\hoang\\.aws\\credentials:/root/.aws/credentials:ro
+
+networks:
+  postgresql:
+volumes:
+  postgresql-volume:
+    external: true

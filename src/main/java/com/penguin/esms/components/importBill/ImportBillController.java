@@ -43,6 +43,7 @@ public class ImportBillController {
 
     @GetMapping("history")
     public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        if (start == end) return ResponseEntity.ok(importBillService.getAll());
         return ResponseEntity.ok(importBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }

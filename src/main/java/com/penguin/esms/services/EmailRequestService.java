@@ -82,8 +82,7 @@ public class EmailRequestService {
                 .setAccessType("offline")
                 .build();
 
-        System.out.println(redirect_uri);
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setCallbackPath("https://esms.hoanghy.space/Callback").build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(45695).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 

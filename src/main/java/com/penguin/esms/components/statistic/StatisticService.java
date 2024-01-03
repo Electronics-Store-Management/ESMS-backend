@@ -91,7 +91,7 @@ public class StatisticService {
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) saleBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
             SaleBillEntity saleBill = (SaleBillEntity) i.getRevision();
-            for (SaleProductEntity t : (List<SaleProductEntity>) saleBill.getSaleProducts()) {
+            for (SaleProductEntity t : saleBill.getSaleProducts()) {
                 try {
                     dto.setQuantity(dto.getQuantity() + t.getQuantity());
                     dto.setRevenue(dto.getRevenue() + t.getPrice() * t.getQuantity());
@@ -132,11 +132,10 @@ public class StatisticService {
 
     public StatisticDTO costByPeriod(Date start, Date end) throws JsonProcessingException {
         StatisticDTO dto = new StatisticDTO(null, 0l, 0l, 0);
-        Map<String, StatisticDTO> map = new HashMap<>();
         List<AuditEnversInfo> auditEnversInfoList = (List<AuditEnversInfo>) importBillService.getAllRevisions(start, end);
         for (AuditEnversInfo i : auditEnversInfoList) {
             ImportBillEntity importBill = (ImportBillEntity) i.getRevision();
-            for (ImportProductEntity t : (List<ImportProductEntity>) importBill.getImportProducts()) {
+            for (ImportProductEntity t : importBill.getImportProducts()) {
                 try {
                     dto.setQuantity(dto.getQuantity() + t.getQuantity());
                     dto.setCost(dto.getCost() + t.getPrice() * t.getQuantity());

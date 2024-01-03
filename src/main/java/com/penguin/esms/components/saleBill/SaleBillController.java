@@ -42,6 +42,7 @@ public class SaleBillController {
     }
     @GetMapping("history")
     public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        if (start == end) return ResponseEntity.ok(saleBillService.getAll());
         return ResponseEntity.ok(saleBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }

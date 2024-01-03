@@ -38,10 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -190,13 +187,14 @@ public class SaleBillService {
                 audit.add(auditEnversInfo);
             }
         }
-        List<AuditEnversInfo> auditReturn = new ArrayList<AuditEnversInfo>();
+        Map<String, AuditEnversInfo> auditReturn = new HashMap<>();
         for (int i = 0; i < audit.size(); i++) {
             if (audit.get(i).getTimestamp() > start.getTime() && audit.get(i).getTimestamp() < end.getTime()) {
-                auditReturn.add(audit.get(i));
+                SaleBillEntity saleBillEntity = (SaleBillEntity) audit.get(i).getRevision();
+                auditReturn.put(saleBillEntity.getId(), audit.get(i));
             }
         }
         entityManager.close();
-        return auditReturn;
+        return Arrays.asList(auditReturn.values().toArray());
     }
 }

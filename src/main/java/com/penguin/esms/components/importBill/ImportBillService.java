@@ -1,19 +1,12 @@
 package com.penguin.esms.components.importBill;
 
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.customer.CustomerEntity;
-import com.penguin.esms.components.customer.dto.CustomerDTO;
 import com.penguin.esms.components.importBill.dto.ImportBillDTO;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.importProduct.ImportProductRepo;
 import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.product.ProductRepo;
-import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.staff.StaffEntity;
-import com.penguin.esms.components.supplier.SupplierEntity;
-import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
-import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
@@ -29,10 +22,8 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 
@@ -173,13 +164,14 @@ public class ImportBillService {
                 audit.add(auditEnversInfo);
             }
         }
-        List<AuditEnversInfo> auditReturn = new ArrayList<AuditEnversInfo>();
+        Map<String, AuditEnversInfo> auditReturn = new HashMap<>();
         for(int i=0; i< audit.size();i++){
             if (audit.get(i).getTimestamp() > start.getTime() && audit.get(i).getTimestamp() < end.getTime() ) {
-                auditReturn.add(audit.get(i));
+                ImportBillEntity importBillEntity = (ImportBillEntity) audit.get(i).getRevision();
+                auditReturn.put(importBillEntity.getId(), audit.get(i));
             }
         }
         entityManager.close();
-        return auditReturn;
+        return Arrays.asList(auditReturn.values().toArray());
     }
 }

@@ -55,7 +55,8 @@ public class StaffService {
         }
         StaffEntity staff = updateFromDTO(dto, new StaffEntity());
         staff.setIsStopped(false);
-        staff.setPassword(passwordEncoder.encode(random()));
+        String password = random();
+        staff.setPassword(passwordEncoder.encode(password));
         System.out.println(staff.getEmail());
         new EmailRequestService().sendMail("ESMS Account email verification needed", staff.getEmail(), String.format("""
                 Hi %s,
@@ -64,7 +65,7 @@ public class StaffService {
                              %s   
                 Best regard,
                 ESMS
-                """, staff.getName(), staff.getPassword()));
+                """, staff.getName(), password));
         return staffRepository.save(staff);
     }
 
@@ -93,7 +94,7 @@ public class StaffService {
                              %s   
                 Best regard,
                 ESMS
-                """, optional.get().getName(), optional.get().getPassword()));
+                """, optional.get().getName(), newPassword));
         staffRepository.save(optional.get());
     }
 

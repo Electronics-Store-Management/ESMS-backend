@@ -28,16 +28,17 @@ public class StatisticController {
 
     @GetMapping("revenue")
     public ResponseEntity<?> getRevenueByPeriod(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
-        return ResponseEntity.ok(service.getRevenuePeriod(new Date(start), new Date(end)));
+        return ResponseEntity.ok(service.revenueByPeriod(new Date(start), new Date(end)));
     }
 
     @GetMapping("category")
     public ResponseEntity<?> getRevenueByCategory(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
-        Optional<StatisticEntity> statistic = repo.findByName("getRevenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end));
-        if (statistic.isEmpty()) {
-            return ResponseEntity.ok(service.revenueByCategory(new Date(start), new Date(end)));
-        }
-        return ResponseEntity.ok(statistic.get());
+//        Optional<StatisticEntity> statistic = repo.findByName("getRevenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end));
+//        if (statistic.isEmpty()) {
+//            return ResponseEntity.ok(service.revenueByCategory(new Date(start), new Date(end)));
+//        }
+//        return ResponseEntity.ok(statistic.get());
+        return ResponseEntity.ok(service.revenueByCategory(new Date(start), new Date(end)));
     }
     @GetMapping("revenue/date")
     public ResponseEntity<?> getRevenueByDate(@RequestParam long date) throws JsonProcessingException {
@@ -46,6 +47,6 @@ public class StatisticController {
 
     @GetMapping("cost")
     public ResponseEntity<?> getCostByPeriod(@RequestParam long start, @RequestParam long end) throws JsonProcessingException {
-        return ResponseEntity.ok(service.getCostPeriod(new Date(start), new Date(end)));
+        return ResponseEntity.ok(service.costByPeriod(new Date(start), new Date(end)));
     }
 }
