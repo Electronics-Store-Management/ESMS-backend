@@ -6,6 +6,7 @@ import com.penguin.esms.components.customer.CustomerEntity;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
+import com.penguin.esms.entity.BaseEntity;
 import com.penguin.esms.entity.NoteEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -23,10 +24,11 @@ import java.util.Date;
 @Setter
 @RequiredArgsConstructor
 @Audited
-public class WarrantyProductEntity extends NoteEntity {
+public class WarrantyProductEntity extends BaseEntity {
     private String staffId;
     private Integer quantity;
     private String warrantyContent;
+    private String note;
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnoreProperties(value = {"warrantyProducts"})

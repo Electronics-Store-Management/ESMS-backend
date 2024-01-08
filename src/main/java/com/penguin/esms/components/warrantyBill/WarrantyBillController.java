@@ -34,6 +34,7 @@ public class WarrantyBillController {
     }
     @GetMapping("history")
     public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {
+        if (start == end) return ResponseEntity.ok(warrantyBillService.getAll());
         return ResponseEntity.ok(warrantyBillService.getAllRevisions(new Date(start), new Date(end)));
     }
 }

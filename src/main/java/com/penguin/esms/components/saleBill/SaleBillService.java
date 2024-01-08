@@ -141,7 +141,7 @@ public class SaleBillService {
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
 
-        List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
+        Map<String, AuditEnversInfo> audit = new HashMap<>();
         List<Object[]> objects = query.getResultList();
         for (int i = 0; i < objects.size(); i++) {
             Object[] objArray = objects.get(i);
@@ -152,11 +152,11 @@ public class SaleBillService {
                 List<SaleProductEntity> saleProducts = saleProductRepo.findBySaleBillId(entity.getId());
                 entity.setSaleProducts(saleProducts);
                 auditEnversInfo.setRevision(entity);
-                audit.add(auditEnversInfo);
+                audit.put(entity.getId(), auditEnversInfo);
             }
         }
         entityManager.close();
-        return audit;
+        return Arrays.asList(audit.values().toArray());
     }
     @Transactional
     public List<?> getAllRevisions(Date start, Date end) {

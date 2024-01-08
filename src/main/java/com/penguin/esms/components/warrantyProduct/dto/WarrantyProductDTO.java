@@ -14,5 +14,5 @@ public class WarrantyProductDTO {
     private Integer quantity;
     private String warrantyContent;
     private String status;
-
+    private String note;
 }

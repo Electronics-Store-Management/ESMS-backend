@@ -1,23 +1,15 @@
 package com.penguin.esms.components.staff;
 
-import com.penguin.esms.components.category.CategoryDTO;
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.staff.requests.NewStaffRequest;
-import jakarta.validation.Valid;
+import com.penguin.esms.components.permission.PermissionService;
+import com.penguin.esms.components.permission.dto.StaffPermissionResponse;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -28,6 +20,7 @@ public class StaffController {
 
     private final StaffRepository staffRepository;
     private final StaffService staffService;
+    private final PermissionService permissionService;
 
 //    @PostMapping("")
 //    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
@@ -69,6 +62,11 @@ public class StaffController {
     @PreAuthorize("hasAuthority('VIEW_ITEM:STAFF:' + #id) or hasAuthority('VIEW_ALL:STAFF') or hasAuthority('ADMIN')")
     public StaffEntity getStaffById(@PathVariable String id) {
         return staffService.getOne(id);
+    }
+
+    @GetMapping("{id}/permission")
+    public StaffPermissionResponse getPermsision(@PathVariable String id) {
+        return permissionService.getStaffPermission(id);
     }
 
     @PutMapping(path = "{id}")

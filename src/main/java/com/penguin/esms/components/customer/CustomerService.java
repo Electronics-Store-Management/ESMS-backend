@@ -49,19 +49,12 @@ public class CustomerService {
         return customer.get();
     }
 
-    public CustomerEntity getByPhone(String phone) {
-        Optional<CustomerEntity> customer = customerRepo.findByPhone(phone);
-        if (customer.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, new Error("Customer not found").toString());
-        }
-        if (customer.get().getIsStopped() == true)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, new Error("Customer has been banned ").toString());
-        return customer.get();
+    public List<CustomerEntity> getByPhone(String phone) {
+        return customerRepo.findByPhoneContainingIgnoreCase(phone);
     }
 
-    public List<CustomerEntity> getCustomer(String name) {
-        return customerRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+    public List<CustomerEntity> getCustomer(String name, String phone) {
+        return customerRepo.findByNameContainingIgnoreCaseAndPhoneContainingIgnoreCaseAndIsStopped(name, phone, false);
     }
 
     public List<CustomerEntity> getBannedCustomer(String name) {

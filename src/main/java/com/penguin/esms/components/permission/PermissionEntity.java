@@ -27,7 +27,7 @@ public class PermissionEntity extends BaseEntity {
     private EntityType entityType;
     private String entityId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "staff_id")
     @JsonIgnoreProperties(value = {"permissions"})
     @NotNull

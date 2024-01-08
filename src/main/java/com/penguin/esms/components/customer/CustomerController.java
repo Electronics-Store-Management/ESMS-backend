@@ -20,8 +20,8 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
     @GetMapping
-    public List<CustomerEntity> getAll(@RequestParam(defaultValue = "") String name) {
-        return customerService.getCustomer(name);
+    public List<CustomerEntity> getAll(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String phone) {
+        return customerService.getCustomer(name, phone);
     }
     @GetMapping("banned")
     public List<CustomerEntity> getAllBanned(@RequestParam(defaultValue = "") String name) {
@@ -32,7 +32,7 @@ public class CustomerController {
         return customerService.getById(id);
     }
     @GetMapping("phone/{phone}")
-    public CustomerEntity getByPhone(@PathVariable String phone) {
+    public List<CustomerEntity> getByPhone(@PathVariable String phone) {
         return customerService.getByPhone(phone);
     }
     @PostMapping
