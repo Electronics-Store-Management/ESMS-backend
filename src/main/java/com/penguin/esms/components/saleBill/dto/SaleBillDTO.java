@@ -36,4 +36,10 @@ public class SaleBillDTO {
         this.setId(id);
     }
 
+    public SaleBillDTO(String customerId, String paymentMethod, Float discount, List<SaleProductDTO> saleProducts) {
+        this.customerId = customerId;
+        this.paymentMethod = paymentMethod;
+        this.discount = discount;
+        this.saleProducts = saleProducts;
+    }
 }

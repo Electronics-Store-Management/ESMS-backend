@@ -20,4 +20,10 @@ public class AuditEnverInfoDTO {
         this.revType = revType;
         this.revNumber = revNumber;
     }
+
+    public AuditEnverInfoDTO(String name, RevisionType revType, Integer revNumber) {
+        this.name = name;
+        this.revType = revType;
+        this.revNumber = revNumber;
+    }
 }

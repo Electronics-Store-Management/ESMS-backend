@@ -44,49 +44,25 @@ public class Data {
     private final WarrantyBillService warrantyBillService;
     private final SaleBillService saleBillService;
 
-
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<?> postImport(@RequestBody ImportBillDTO importBillDTO, Principal connectedUser) {
-//        return ResponseEntity.ok(importBillService.postImportBill(importBillDTO, staff));
-//    }
-
-//    @PostMapping
-//    public ResponseEntity<?> postSupplier(@Valid SupplierDTO supplierDTO) {
-//        return ResponseEntity.ok(supplierService.add(supplierDTO));
-//    }
-
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<?> postCategory(CategoryEntity categoryEntity) {
-//        return ResponseEntity.ok(categoryService.postCategory(categoryEntity));
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<?> postProduct(@RequestParam @Nullable MultipartFile photo, @Valid ProductDTO productDTO) throws IOException {
-//        if (photo != null) {
-//            String objectURL = amazonS3Service.addFile(photo, productDTO.getName() + "_" + photo.getOriginalFilename());
-//            productDTO.setPhotoURL(objectURL);
-//        }
-//        return ResponseEntity.ok(productService.add(productDTO));
-//    }
-
-//    @PostMapping
-//    @PreAuthorize("hasAuthority('UPDATE_ALL:PERMISSION') or hasAuthority('UPDATE_ITEM:PERMISSION:#staffId') or hasAuthority('ADMIN')")
-//    public ResponseEntity<?> addPermission(@RequestBody PermissionRequest permissionRequest) {
-//        return ResponseEntity.ok(permissionService.add(permissionRequest, permissionRequest.getStaffId()));
-//    }
-    @PostMapping
-    public void randomData(Principal connectedUser){
-        System.out.println("lozzz");
+    @PostMapping("import")
+    public void randomImport(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        importBillService.postImportBill(importBillService.random(), staff);
+        for (int i = 0; i <= 100; i++)
+            importBillService.postImportBill(importBillService.random(), staff);
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<?> post() {
-////        importBillService.postImportBill(importBillDTO, connectedUser);
-//        return null;
-//    }
+    @PostMapping("sale")
+    public void randomSale(Principal connectedUser) {
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        for (int i = 0; i <= 200; i++)
+            saleBillService.post(saleBillService.random(), staff);
+    }
+
+    @PostMapping("warranty")
+    public void randomWarranty(Principal connectedUser) {
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        for (int i = 0; i <= 100; i++)
+            warrantyBillService.postWarrantyBill(warrantyBillService.random(), staff);
+    }
+
 }

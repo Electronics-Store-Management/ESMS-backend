@@ -13,14 +13,18 @@ import com.penguin.esms.components.product.ProductRepo;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
 import com.penguin.esms.components.saleProduct.SaleProductEntity;
 import com.penguin.esms.components.saleProduct.SaleProductRepo;
+import com.penguin.esms.components.saleProduct.SaleProductService;
 import com.penguin.esms.components.saleProduct.dto.SaleProductDTO;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -50,9 +54,12 @@ public class SaleBillService {
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final SaleBillRepo saleBillRepo;
     private final SaleProductRepo saleProductRepo;
+    private final SaleProductService saleProductService;
     private final DTOtoEntityMapper mapper;
     private final ProductRepo productRepo;
     private final CustomerRepo customerRepo;
+    private final CustomerService customerService;
+
 //
 //
 //    public SaleBillEntity getSaleBill(String saleBillId) {
@@ -62,8 +69,22 @@ public class SaleBillService {
 //        }
 //        return saleBill.get();
 //    }
-    public SaleBillEntity post(SaleBillDTO saleBillDTO, Principal connectedUser) {
-        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+    public SaleBillDTO random() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        List<SaleProductDTO> saleProductDTOS = new ArrayList<>();
+        for(int i=0; i<=3;i++){
+            saleProductDTOS.add(saleProductService.random());
+        }
+        CustomerDTO customerDTO = customerService.random();
+        CustomerEntity customerEntity = customerService.postCustomer(customerDTO);
+        String customerId = customerEntity.getId();
+        String paymentMethod = Random.random(10, characters);
+        Float discount = Float.valueOf(Random.random(1, numbers) + Random.random(2, numbers));
+        return new SaleBillDTO(customerId, paymentMethod,discount, saleProductDTOS);
+    }
+    public SaleBillEntity post(SaleBillDTO saleBillDTO, StaffEntity staff) {
         saleBillDTO.setStaffId(staff.getId());
         List<SaleProductDTO> salePrts = saleBillDTO.getSaleProducts();
         CustomerEntity customer = customerRepo.findById(saleBillDTO.getCustomerId()).get();
