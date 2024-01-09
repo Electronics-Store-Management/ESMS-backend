@@ -5,12 +5,14 @@ import com.penguin.esms.components.importBill.dto.ImportBillDTO;
 import com.penguin.esms.components.permission.dto.PermissionRequest;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.product.dto.ProductDTO;
+import com.penguin.esms.components.staff.StaffEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +40,8 @@ public class ImportBillController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> post(@RequestBody ImportBillDTO importBillDTO, Principal connectedUser) {
-        return ResponseEntity.ok(importBillService.postImportBill(importBillDTO, connectedUser));
+        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        return ResponseEntity.ok(importBillService.postImportBill(importBillDTO, staff));
     }
 
     @GetMapping("history")

@@ -1,6 +1,9 @@
 package com.penguin.esms.components.product.dto;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
+import com.penguin.esms.utils.Random;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,8 +43,17 @@ public class ProductDTO {
         this.isAvailable = isAvailable;
         this.photoURL = photoURL;
     }
-//    private List<String> saleProducts = new ArrayList<>();
-//    private List<String> warrantyProducts = new ArrayList<>();
-//    private List<String> importProducts = new ArrayList<>();
+
+    public ProductDTO(String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL){
+        this.name = name;
+        this.categoryId = categoryId;
+        this.unit = unit;
+        this.price = price;
+        this.quantity = quantity;
+        this.warrantyPeriod = warrantyPeriod;
+        this.isAvailable = isAvailable;
+        this.photoURL = photoURL;
+    }
+
 
 }

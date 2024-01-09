@@ -4,6 +4,7 @@ import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.penguin.esms.utils.Random.random;
+
 @Service
 @Getter
 @Setter
@@ -32,6 +35,12 @@ public class CategoryService {
     private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final CategoryRepo categoryRepo;
     private final DTOtoEntityMapper mapper;
+
+    public CategoryEntity random() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String name = Random.random(10, characters);
+        return new CategoryEntity(name);
+    }
     public CategoryEntity postCategory(CategoryEntity categoryEntity) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepo.findByName(categoryEntity.getName());
         if (categoryEntityOptional.isPresent()) {

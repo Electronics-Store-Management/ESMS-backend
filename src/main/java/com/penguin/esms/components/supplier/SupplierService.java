@@ -8,6 +8,7 @@ import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -24,6 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.penguin.esms.utils.Random.random;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +56,15 @@ public class SupplierService {
         return optionalSupplier.get();
     }
 
+    public static SupplierDTO random() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String name = Random.random(10, characters);
+        String phone = 0 + Random.random(10, numbers);
+        String email = Random.random(5, characters) + Random.random(5, numbers) + "@gmail.com";
+        String address = Random.random(10, characters);
+        return new SupplierDTO(name, phone, email, address);
+    }
     public SupplierEntity add(SupplierDTO supplierDTO) {
         Optional<SupplierEntity> supplierEntityOptional = supplierRepo.findByName(supplierDTO.getName());
         if (supplierEntityOptional.isPresent()) {
