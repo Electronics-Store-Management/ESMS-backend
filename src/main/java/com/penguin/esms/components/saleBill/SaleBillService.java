@@ -81,7 +81,7 @@ public class SaleBillService {
         CustomerEntity customerEntity = customerService.postCustomer(customerDTO);
         String customerId = customerEntity.getId();
         String paymentMethod = Random.random(10, characters);
-        Float discount = Float.valueOf(Random.random(1, numbers) + Random.random(2, numbers));
+        Float discount = Float.valueOf(Random.random(1, numbers) +"."+ Random.random(2, numbers));
         return new SaleBillDTO(customerId, paymentMethod,discount, saleProductDTOS);
     }
     public SaleBillEntity post(SaleBillDTO saleBillDTO, StaffEntity staff) {

@@ -60,7 +60,7 @@ public class SupplierService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         String numbers = "0123456789";
         String name = Random.random(10, characters);
-        String phone = 0 + Random.random(10, numbers);
+        String phone = "09" + Random.random(8, numbers);
         String email = Random.random(5, characters) + Random.random(5, numbers) + "@gmail.com";
         String address = Random.random(10, characters);
         return new SupplierDTO(name, phone, email, address);

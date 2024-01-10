@@ -55,7 +55,7 @@ public class WarrantyProductService {
         String warrantyContent = Random.random(20, characters);
         String status = Random.random(20, characters);
         String note = Random.random(20, characters);
-        Integer quantity = Integer.valueOf(Random.random(3, numbers));
+        Integer quantity = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1, "12")), numbers));
         return new WarrantyProductDTO(productId, quantity, warrantyContent, status, note);
     }
 }

@@ -77,7 +77,6 @@ public class WarrantyBillService {
         CustomerDTO customerDTO = customerService.random();
         CustomerEntity customerEntity = customerService.postCustomer(customerDTO);
         String customerId = customerEntity.getId();
-//        Date warrantyDate = new Date(Long.valueOf(1709824 + Random.random(6, numbers)));
         return new WarrantyBillDTO(customerId , warrantyProductDTOS);
     }
     public WarrantyBillEntity postWarrantyBill(WarrantyBillDTO dto, StaffEntity staff) {

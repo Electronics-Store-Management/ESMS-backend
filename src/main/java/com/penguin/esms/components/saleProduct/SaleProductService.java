@@ -52,8 +52,8 @@ public class SaleProductService {
         ProductDTO productDTO = productService.random();
         ProductEntity productEntity = productService.add(productDTO);
         String productId = productEntity.getId();
-        Long price = Long.valueOf(Random.random(10, numbers));
-        Integer quantity = Integer.valueOf(Random.random(3, numbers));
+        Long price = Long.valueOf(Random.random(Integer.valueOf(Random.random(1, "1234567")), numbers))*1000l;
+        Integer quantity = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1, "123")), numbers));
         String seri = Random.random(10, numbers);
         return new SaleProductDTO(productId, quantity, price, seri);
     }
