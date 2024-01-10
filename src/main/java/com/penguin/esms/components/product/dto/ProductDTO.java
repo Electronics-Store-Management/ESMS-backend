@@ -24,7 +24,7 @@ public class ProductDTO {
     private String name;
     private String categoryId;
     private String unit;
-
+    private String specifications;
     private Long price;
     private Integer quantity = 0;
     private Integer warrantyPeriod;
@@ -32,7 +32,7 @@ public class ProductDTO {
     private String photoURL;
     private List<String> suppliers = new ArrayList<>();
 
-    public ProductDTO(String id , String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL){
+    public ProductDTO(String id , String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL, String specifications){
         this.setId(id);
         this.name = name;
         this.categoryId = categoryId;
@@ -42,9 +42,10 @@ public class ProductDTO {
         this.warrantyPeriod = warrantyPeriod;
         this.isAvailable = isAvailable;
         this.photoURL = photoURL;
+        this.specifications = specifications;
     }
 
-    public ProductDTO(String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL){
+    public ProductDTO(String name, String categoryId, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL, String specifications){
         this.name = name;
         this.categoryId = categoryId;
         this.unit = unit;
@@ -53,6 +54,7 @@ public class ProductDTO {
         this.warrantyPeriod = warrantyPeriod;
         this.isAvailable = isAvailable;
         this.photoURL = photoURL;
+        this.specifications = specifications;
     }
 
 

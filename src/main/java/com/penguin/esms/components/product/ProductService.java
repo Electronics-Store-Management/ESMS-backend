@@ -100,7 +100,8 @@ public class ProductService {
         Integer warrantyPeriod = Integer.valueOf(Random.random(2, numbers));
         Boolean isAvailable = true;
         String photoURL = Random.random(15, characters);
-        return new ProductDTO(name, categoryId, unit, price, quantity, warrantyPeriod, isAvailable, photoURL);
+        String specifications = Random.random(10, characters);
+        return new ProductDTO(name, categoryId, unit, price, quantity, warrantyPeriod, isAvailable, photoURL, specifications);
     }
 
     public ProductEntity add(ProductDTO productDTO) {
@@ -191,6 +192,7 @@ public class ProductService {
                 .addProjection(AuditEntity.property("warrantyPeriod"))
                 .addProjection(AuditEntity.property("isAvailable"))
                 .addProjection(AuditEntity.property("photoURL"))
+                .addProjection(AuditEntity.property("specifications"))
                 .addProjection(AuditEntity.revisionNumber())
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
@@ -202,7 +204,7 @@ public class ProductService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8], (String) objArray[9]);
                 auditEnversInfo.setRevision(product);
                 productAudit.add(auditEnversInfo);
             }
