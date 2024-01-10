@@ -54,6 +54,7 @@ public class SaleProductService {
         String productId = productEntity.getId();
         Long price = Long.valueOf(Random.random(10, numbers));
         Integer quantity = Integer.valueOf(Random.random(3, numbers));
-        return new SaleProductDTO(productId, quantity, price);
+        String seri = Random.random(10, numbers);
+        return new SaleProductDTO(productId, quantity, price, seri);
     }
 }
