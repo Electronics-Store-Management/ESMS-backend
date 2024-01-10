@@ -41,6 +41,7 @@ public class StaffService {
     private final PasswordEncoder passwordEncoder;
 
 
+
     public void getStaffProfile(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
     }
@@ -55,7 +56,8 @@ public class StaffService {
         }
         StaffEntity staff = updateFromDTO(dto, new StaffEntity());
         staff.setIsStopped(false);
-        String password = random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String password = random(10, characters);
         staff.setPassword(passwordEncoder.encode(password));
         System.out.println(staff.getEmail());
         new EmailRequestService().sendMail("ESMS Account email verification needed", staff.getEmail(), String.format("""

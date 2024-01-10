@@ -4,6 +4,7 @@ import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
 import com.penguin.esms.components.warrantyBill.WarrantyBillEntity;
 import com.penguin.esms.components.warrantyBill.dto.WarrantyBillDTO;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,4 +30,6 @@ public class CustomerDTO {
         this.phone = phone;
         this.address = address;
     }
+
+
 }

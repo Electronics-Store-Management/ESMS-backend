@@ -1,10 +1,14 @@
 package com.penguin.esms.components.supplier.dto;
 
+import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.utils.Random;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static com.penguin.esms.utils.Random.random;
 
 @Getter
 @Setter
@@ -23,6 +27,8 @@ public class SupplierDTO {
         this.email = email;
         this.address = address;
     }
+
+
 
     private String note;
 }

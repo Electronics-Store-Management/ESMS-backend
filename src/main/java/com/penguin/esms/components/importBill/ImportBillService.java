@@ -3,14 +3,20 @@ package com.penguin.esms.components.importBill;
 import com.penguin.esms.components.importBill.dto.ImportBillDTO;
 import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.importProduct.ImportProductRepo;
+import com.penguin.esms.components.importProduct.ImportProductService;
 import com.penguin.esms.components.importProduct.dto.ImportProductDTO;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.product.ProductRepo;
+import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.supplier.SupplierEntity;
+import com.penguin.esms.components.supplier.SupplierService;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import com.penguin.esms.entity.Error;
 import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -37,6 +43,10 @@ public class ImportBillService {
     private final ProductRepo productRepo;
     private final DTOtoEntityMapper mapper;
     private final ImportProductRepo importProductRepo;
+    private final ImportProductService importProductService;
+    private final SupplierService supplierService;
+
+
 
     public ImportBillEntity getImportBill(String importBillId) {
         Optional<ImportBillEntity> importBill = importBillRepo.findById(importBillId);
@@ -45,8 +55,21 @@ public class ImportBillService {
         }
         return importBill.get();
     }
-    public ImportBillEntity postImportBill(ImportBillDTO importBillDTO, Principal connectedUser) {
-        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+
+    public ImportBillDTO random() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        List<ImportProductDTO> importProductDTOS = new ArrayList<>();
+        for(int i=0; i<=3;i++){
+            importProductDTOS.add(importProductService.random());
+        }
+        SupplierDTO supplierDTO = supplierService.random();
+        SupplierEntity supplierEntity = supplierService.add(supplierDTO);
+        String supplierId = supplierEntity.getId();
+        String paymentMethod = Random.random(10, characters);
+        return new ImportBillDTO(supplierId, paymentMethod, importProductDTOS);
+    }
+    public ImportBillEntity postImportBill(ImportBillDTO importBillDTO, StaffEntity staff) {
         importBillDTO.setStaffId(staff.getId());
         List<ImportProductDTO> importPrts = importBillDTO.getImportProducts();
         ImportBillEntity impot = updateFromDTO(importBillDTO, new ImportBillEntity());

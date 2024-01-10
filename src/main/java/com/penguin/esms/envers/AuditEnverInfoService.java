@@ -1,14 +1,12 @@
 package com.penguin.esms.envers;
 
-import com.penguin.esms.components.category.CategoryEntity;
-import com.penguin.esms.components.customer.dto.CustomerDTO;
-import com.penguin.esms.components.importBill.ImportBillEntity;
-import com.penguin.esms.components.product.ProductEntity;
-import com.penguin.esms.components.staff.Role;
-import com.penguin.esms.components.staff.StaffDTO;
+import com.penguin.esms.components.importBill.ImportBillService;
+import com.penguin.esms.components.saleBill.SaleBillService;
 import com.penguin.esms.components.staff.StaffEntity;
 import com.penguin.esms.components.staff.StaffRepository;
+import com.penguin.esms.components.warrantyBill.WarrantyBillService;
 import com.penguin.esms.entity.Error;
+import com.penguin.esms.envers.dto.AuditEnverDTO;
 import com.penguin.esms.envers.dto.AuditEnverInfoDTO;
 import jakarta.persistence.EntityManager;
 import lombok.Getter;
@@ -23,11 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,9 +29,13 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 public class AuditEnverInfoService {
-    private final AuditEnversInfoRepo repo;
+    private final AuditEnversInfoRepo auditEnversInfoRepo;
     private final StaffRepository staffRepo;
     private final EntityManager entityManager;
+
+    private final ImportBillService importBillService;
+    private final SaleBillService saleBillService;
+    private final WarrantyBillService warrantyBillService;
 
     public List<AuditEnversInfo> getRecord(String username) {
         if (username != null && !username.isEmpty()) {
@@ -47,7 +45,7 @@ public class AuditEnverInfoService {
             }
         }
         List<AuditEnversInfo> audit = new ArrayList<AuditEnversInfo>();
-        audit = repo.findByUsername(username);
+        audit = auditEnversInfoRepo.findByUsername(username);
         return audit;
     }
 
@@ -63,7 +61,7 @@ public class AuditEnverInfoService {
         typeEntity.add("com.penguin.esms.components.importBill.ImportBillEntity");
         typeEntity.add("com.penguin.esms.components.saleBill.SaleBillEntity");
         typeEntity.add("com.penguin.esms.components.warrantyBill.WarrantyBillEntity");
-        for (String t : typeEntity){
+        for (String t : typeEntity) {
             Class<?> type = Class.forName(t);
             AuditQuery query = auditReader.createQuery()
                     .forRevisionsOfEntity(type, true, true)
@@ -75,9 +73,9 @@ public class AuditEnverInfoService {
 
 //            auditByStaff.addAll(query.getResultList());
             List<Object[]> objects = query.getResultList();
-            for(int i=0; i< objects.size();i++){
+            for (int i = 0; i < objects.size(); i++) {
                 Object[] objArray = objects.get(i);
-                Optional<AuditEnversInfo> auditEnversInfoOptional = repo.findById((int) objArray[0]);
+                Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
                 if (auditEnversInfoOptional.isPresent()) {
                     AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
                     AuditEnverInfoDTO dto = new AuditEnverInfoDTO((String) objArray[1], t, (RevisionType) objArray[2], (Integer) objArray[0]);
@@ -89,4 +87,48 @@ public class AuditEnverInfoService {
         }
         return auditByStaff;
     }
+
+    //    public AuditEnverDTO randomData(Principal connectedUser) {
+//        String numbers = "123456789";
+//        StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+//
+//        importBillService.postImportBill(importBillService.random(), staff);
+//        saleBillService.post(saleBillService.random(), staff);
+//        warrantyBillService.postWarrantyBill(warrantyBillService.random(), staff);
+//
+//        List<?> importRev = importBillService.getAll();
+//        List<?> saleRev = saleBillService.getAll();
+//        List<?> warrantyRev = warrantyBillService.getAll();
+//
+//        for(int i=0; i<=Integer.valueOf(Random.random(1,numbers));i++){
+//
+////            AuditEnverInfoDTO auditEnverInfoDTO = random();
+//            CustomerEntity customerEntity = customerService.postCustomer(customerDTO);
+//            String customerId = customerEntity.getId();
+//
+//            warrantyProductDTOS.add(warrantyProductService.random());
+//        }
+//        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+//        String bool = "01";
+//        String all = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+//        String name = Random.random(10, characters);
+//        RevisionType revType = RevisionType.valueOf(Random.random(1, bool));
+//        Integer revNumber = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1,numbers)), numbers));
+//        return new AuditEnverInfoDTO(name , revType, revNumber);
+//    }
+    public void randomData() {
+        List<AuditEnversInfo> auditEnversInfoList = auditEnversInfoRepo.findAll();
+        Integer length = auditEnversInfoList.size();
+
+        for (int i = 0; i < length; i++) {
+            long timeStamp = auditEnversInfoList.get(i).getTimestamp();
+            long customTime = timeStamp - (long) (length - i) * 24 * 60 * 60 * 1000;
+            auditEnversInfoList.get(i).setTimestamp(customTime);
+
+            auditEnversInfoRepo.save(auditEnversInfoList.get(i));
+        }
+
+
+    }
+
 }

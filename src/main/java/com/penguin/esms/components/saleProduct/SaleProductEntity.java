@@ -23,6 +23,7 @@ import org.hibernate.envers.Audited;
 @Audited
 public class SaleProductEntity extends NoteEntity {
     private Integer quantity;
+    private String seri;
     private Long price;
     @ManyToOne
     @JoinColumn(name = "product_id")

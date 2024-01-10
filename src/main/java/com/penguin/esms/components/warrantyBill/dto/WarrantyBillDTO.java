@@ -33,4 +33,10 @@ public class WarrantyBillDTO {
         this.warrantyDate = warrantyDate;
         this.setId(id);
     }
+
+    public WarrantyBillDTO(String customerId, List<WarrantyProductDTO> warrantyProducts) {
+        this.customerId = customerId;
+//        this.warrantyDate = warrantyDate;
+        this.warrantyProducts = warrantyProducts;
+    }
 }

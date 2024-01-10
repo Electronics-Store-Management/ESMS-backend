@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class SupplierConfig {
     @Bean
     CommandLineRunner commandLineRunnerSupplier(SupplierRepo supplierRepo){
-        return args -> {};
+        return args -> {
+
+        };
     }
 }

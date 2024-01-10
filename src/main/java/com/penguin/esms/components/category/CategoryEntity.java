@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.staff.StaffEntity;
+import com.penguin.esms.components.supplier.dto.SupplierDTO;
 import com.penguin.esms.entity.BaseEntity;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +42,12 @@ public class CategoryEntity extends BaseEntity {
         this.setId(id);
         this.name = name;
     }
+
+    public CategoryEntity(String name) {
+        this.name = name;
+    }
+
+
 
     @Override
     public String toString() {

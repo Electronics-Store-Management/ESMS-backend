@@ -2,6 +2,7 @@ package com.penguin.esms.components.product;
 
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
+import com.penguin.esms.components.category.CategoryService;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
@@ -10,6 +11,7 @@ import com.penguin.esms.envers.AuditEnversInfo;
 import com.penguin.esms.envers.AuditEnversInfoRepo;
 import com.penguin.esms.mapper.DTOtoEntityMapper;
 import com.penguin.esms.services.AmazonS3Service;
+import com.penguin.esms.utils.Random;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -38,6 +40,8 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
+    private final CategoryService categoryService;
+
     private final SupplierRepo supplierRepo;
     private final DTOtoEntityMapper mapper;
     private final AmazonS3Service amazonS3Service;
@@ -82,6 +86,22 @@ public class ProductService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Product has been discontinued ");
         return product.get();
+    }
+
+    public ProductDTO random() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        String numbers = "123456789";
+        String name = Random.random(10, characters);
+        CategoryEntity categoryEntity = categoryService.postCategory(categoryService.random());
+        String categoryId = categoryEntity.getId();
+        String unit = Random.random(10, characters);
+        Long price = Long.valueOf(Random.random(Integer.valueOf(Random.random(1, "1234567")), numbers))*1000l;
+        Integer quantity = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1, "123")), numbers));
+        Integer warrantyPeriod = Integer.valueOf(Random.random(2, numbers));
+        Boolean isAvailable = true;
+        String photoURL = Random.random(15, characters);
+        String specifications = Random.random(10, characters);
+        return new ProductDTO(name, categoryId, unit, price, quantity, warrantyPeriod, isAvailable, photoURL, specifications);
     }
 
     public ProductEntity add(ProductDTO productDTO) {
@@ -172,6 +192,7 @@ public class ProductService {
                 .addProjection(AuditEntity.property("warrantyPeriod"))
                 .addProjection(AuditEntity.property("isAvailable"))
                 .addProjection(AuditEntity.property("photoURL"))
+                .addProjection(AuditEntity.property("specifications"))
                 .addProjection(AuditEntity.revisionNumber())
                 .addProjection(AuditEntity.revisionType())
                 .addOrder(AuditEntity.revisionNumber().desc());
@@ -183,7 +204,7 @@ public class ProductService {
             Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[9]);
             if (auditEnversInfoOptional.isPresent()) {
                 AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
-                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8]);
+                ProductDTO product = new ProductDTO(id, (String) objArray[1],  (String) objArray[2], (String) objArray[3], (Long) objArray[4], (Integer) objArray[5], (Integer) objArray[6] , (Boolean) objArray[7], (String) objArray[8], (String) objArray[9]);
                 auditEnversInfo.setRevision(product);
                 productAudit.add(auditEnversInfo);
             }
