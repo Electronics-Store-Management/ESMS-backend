@@ -96,7 +96,7 @@ public class ProductService {
         String categoryId = categoryEntity.getId();
         String unit = Random.random(10, characters);
         Long price = Long.valueOf(Random.random(Integer.valueOf(Random.random(1, "1234567")), numbers))*1000l;
-        Integer quantity = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1, "12345")), numbers));
+        Integer quantity = Integer.valueOf(Random.random(Integer.valueOf(Random.random(1, "123")), numbers));
         Integer warrantyPeriod = Integer.valueOf(Random.random(2, numbers));
         Boolean isAvailable = true;
         String photoURL = Random.random(15, characters);
