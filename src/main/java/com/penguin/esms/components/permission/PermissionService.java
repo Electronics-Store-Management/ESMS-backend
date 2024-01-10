@@ -19,7 +19,7 @@ public class PermissionService {
 
     public StaffPermissionResponse getStaffPermission(String staffId) {
         StaffEntity staff = staffRepository.findById(staffId).get();
-        return new StaffPermissionResponse(permissionRepo.findByStaffId(staffId), (List<GrantedAuthority>) staff.getAuthorities());
+        return new StaffPermissionResponse(permissionRepo.findByStaffIdAndIsStopped(staffId, false), (List<GrantedAuthority>) staff.getAuthorities());
     }
 
     public PermissionEntity add(PermissionRequest permissionRequest, String staffId) {
@@ -39,5 +39,8 @@ public class PermissionService {
 //        permission.ifPresent(permissionRepo::delete);
 //        permissionRepo.findById(permissionId);
         permissionRepo.deleteById(permissionId);
+        PermissionEntity permission = permissionRepo.findById(permissionId).get();
+        permission.setIsStopped(true);
+        permissionRepo.save(permission);
     }
 }

@@ -49,8 +49,8 @@ public class CustomerService {
         return customer.get();
     }
 
-    public List<CustomerEntity> getByPhone(String phone) {
-        return customerRepo.findByPhoneContainingIgnoreCase(phone);
+    public CustomerEntity getByPhone(String phone) {
+        return customerRepo.findByPhone(phone).get();
     }
 
     public List<CustomerEntity> getCustomer(String name, String phone) {

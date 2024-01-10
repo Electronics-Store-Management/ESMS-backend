@@ -18,7 +18,6 @@ import java.util.List;
 @Setter
 @Entity
 @Table
-@Audited
 @RequiredArgsConstructor
 public class PermissionEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)

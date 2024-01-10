@@ -14,6 +14,6 @@ public interface PermissionRepo extends JpaRepository<PermissionEntity,String> {
     Optional<PermissionEntity> findByPermissionTypeAndEntityTypeAndEntityIdAndStaffId(String permissionType, String entityType, String entityId, String staffId);
     Optional<PermissionEntity> findById(String id);
 
-    List<PermissionEntity> findByStaffId(String id);
+    List<PermissionEntity> findByStaffIdAndIsStopped(String id, boolean isStopped);
     List<PermissionEntity> findByEntityTypeAndEntityIdAndStaffId(EntityType entityType, String entityId, String staffId);
 }

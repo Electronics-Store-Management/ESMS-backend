@@ -32,7 +32,7 @@ public class CustomerController {
         return customerService.getById(id);
     }
     @GetMapping("phone/{phone}")
-    public List<CustomerEntity> getByPhone(@PathVariable String phone) {
+    public CustomerEntity getByPhone(@PathVariable String phone) {
         return customerService.getByPhone(phone);
     }
     @PostMapping
