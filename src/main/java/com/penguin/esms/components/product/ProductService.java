@@ -114,6 +114,7 @@ public class ProductService {
                     HttpStatus.BAD_REQUEST, new Error("Product existed").toString());
         }
         ProductEntity product = updateFromDTO(productDTO, new ProductEntity());
+        product.setSpecifications(productDTO.getSpecifications());
         product.setIsStopped(false);
         return productRepo.save(product);
     }

@@ -126,7 +126,7 @@ public class StatisticService {
                 }
             }
         }
-        add("revenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end), Arrays.asList(map.entrySet().toArray()));
+//        add("revenueByCategory" + TimeUtils.getDay(start) + TimeUtils.getDay(end), Arrays.asList(map.entrySet().toArray()));
         return Arrays.asList(map.entrySet().toArray());
     }
 

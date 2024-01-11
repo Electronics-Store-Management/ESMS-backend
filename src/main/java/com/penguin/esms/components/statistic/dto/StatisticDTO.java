@@ -13,7 +13,6 @@ public class StatisticDTO {
     private String name;
     private Long revenue;
     private Long cost;
-
     private Integer quantity;
 
 }

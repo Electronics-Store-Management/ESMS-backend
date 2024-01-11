@@ -60,14 +60,14 @@ public class StaffService {
         String password = random(10, characters);
         staff.setPassword(passwordEncoder.encode(password));
         System.out.println(staff.getEmail());
-        new EmailRequestService().sendMail("ESMS Account email verification needed", staff.getEmail(), String.format("""
-                Hi %s,
-                Welcome to ESMS. 
-                Here is your password to login ESMS system :
-                             %s   
-                Best regard,
-                ESMS
-                """, staff.getName(), password));
+//        new EmailRequestService().sendMail("ESMS Account email verification needed", staff.getEmail(), String.format("""
+//                Hi %s,
+//                Welcome to ESMS.
+//                Here is your password to login ESMS system :
+//                             %s
+//                Best regard,
+//                ESMS
+//                """, staff.getName(), password));
         return staffRepository.save(staff);
     }
 
@@ -89,14 +89,14 @@ public class StaffService {
         }
         optional.get().setPassword(passwordEncoder.encode(newPassword));
 
-        new EmailRequestService().sendMail("ESMS Account email verification needed", optional.get().getEmail(), String.format("""
-                Hi %s,
-                Welcome to ESMS. 
-                Here is your new password to login ESMS system :
-                             %s   
-                Best regard,
-                ESMS
-                """, optional.get().getName(), newPassword));
+//        new EmailRequestService().sendMail("ESMS Account email verification needed", optional.get().getEmail(), String.format("""
+//                Hi %s,
+//                Welcome to ESMS.
+//                Here is your new password to login ESMS system :
+//                             %s
+//                Best regard,
+//                ESMS
+//                """, optional.get().getName(), newPassword));
         staffRepository.save(optional.get());
     }
 

@@ -30,6 +30,7 @@ import java.util.List;
 @Setter
 @Audited
 public class ProductEntity extends BaseEntity {
+    @Column(length=4069)
     private String specifications;
     @Column(unique = true)
     @NotNull
@@ -49,6 +50,7 @@ public class ProductEntity extends BaseEntity {
     private Integer quantity;
     private Integer warrantyPeriod;
     private Boolean isAvailable = true;
+    @Column(length=4069)
     private String photoURL;
 
     public ProductEntity(String id , String name, CategoryEntity category, String unit, Long price, Integer quantity, Integer warrantyPeriod, Boolean isAvailable, String photoURL, String specifications){

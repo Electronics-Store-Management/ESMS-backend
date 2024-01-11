@@ -47,21 +47,21 @@ public class Data {
     @PostMapping("import")
     public void randomImport(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        for (int i = 0; i <= 100; i++)
+        for (int i = 0; i <= 10; i++)
             importBillService.postImportBill(importBillService.random(), staff);
     }
 
     @PostMapping("sale")
     public void randomSale(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        for (int i = 0; i <= 200; i++)
+        for (int i = 0; i <= 20; i++)
             saleBillService.post(saleBillService.random(), staff);
     }
 
     @PostMapping("warranty")
     public void randomWarranty(Principal connectedUser) {
         StaffEntity staff = (StaffEntity) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        for (int i = 0; i <= 100; i++)
+        for (int i = 0; i <= 10; i++)
             warrantyBillService.postWarrantyBill(warrantyBillService.random(), staff);
     }
 

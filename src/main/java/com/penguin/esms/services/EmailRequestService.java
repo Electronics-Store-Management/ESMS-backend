@@ -1,6 +1,7 @@
 package com.penguin.esms.services;
 
 //import com.amazonaws.services.appstream.model.Session;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -16,28 +17,24 @@ import com.google.api.client.util.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.Label;
-import com.google.api.services.gmail.model.ListLabelsResponse;
 import com.google.api.services.gmail.model.Message;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import static javax.mail.Message.RecipientType.TO;
 
@@ -83,6 +80,7 @@ public class EmailRequestService {
                 .build();
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(45695).build();
+
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
@@ -119,14 +117,14 @@ public class EmailRequestService {
 //    @Bean
     public static String main(String[] args) throws Exception {
         System.out.println("may co chay khong thi bao");
-        new EmailRequestService().sendMail("A new message","bt.hoanggiang@mail.com", """
-                Hello,
-                                
-                Hello bit.
-                                
-                Best bit,
-                myself
-                """);
+//        new EmailRequestService().sendMail("A new message","bt.hoanggiang@mail.com", """
+//                Hello,
+//
+//                Hello bit.
+//
+//                Best bit,
+//                myself
+//                """);
         return "";
     }
 //

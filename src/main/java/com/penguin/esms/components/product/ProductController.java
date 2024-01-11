@@ -43,7 +43,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<?> postProduct(@RequestParam @Nullable List<MultipartFile> photo, @Valid ProductDTO productDTO) throws IOException {
-        System.out.println(photo);
         if (photo != null) {
             List<String> photoURLs = new ArrayList<>();
             photo.forEach(multipartFile -> {

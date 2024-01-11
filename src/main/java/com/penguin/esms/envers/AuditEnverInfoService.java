@@ -122,7 +122,7 @@ public class AuditEnverInfoService {
 
         for (int i = 0; i < length; i++) {
             long timeStamp = auditEnversInfoList.get(i).getTimestamp();
-            long customTime = timeStamp - (long) (length - i) * 24 * 60 * 60 * 1000;
+            long customTime = timeStamp - (long) (length - i) * 5 * 60 * 60 * 1000;
             auditEnversInfoList.get(i).setTimestamp(customTime);
 
             auditEnversInfoRepo.save(auditEnversInfoList.get(i));
