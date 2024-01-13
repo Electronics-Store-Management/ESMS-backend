@@ -42,9 +42,9 @@ import static javax.mail.Message.RecipientType.TO;
 @Service
 @Getter
 @Setter
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class EmailRequestService {
-    private final Gmail service;
+//    private final Gmail service;
     private static final String APPLICATION_NAME = "ESMS";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -63,9 +63,9 @@ public class EmailRequestService {
     public EmailRequestService() throws Exception {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-        service = new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport, jsonFactory))
-                .setApplicationName("Test Mailer")
-                .build();
+//        service = new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport, jsonFactory))
+//                .setApplicationName("Test Mailer")
+//                .build();
     }
 
     private Credential getCredentials(final NetHttpTransport httpTransport, JsonFactory jsonFactory)
@@ -101,7 +101,7 @@ public class EmailRequestService {
         msg.setRaw(encodedEmail);
 
         try {
-            msg = service.users().messages().send("me", msg).execute();
+//            msg = service.users().messages().send("me", msg).execute();
             System.out.println("Message id: " + msg.getId());
             System.out.println(msg.toPrettyString());
         } catch (GoogleJsonResponseException e) {
