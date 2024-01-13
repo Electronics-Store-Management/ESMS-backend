@@ -39,11 +39,9 @@ public class StaffEntity extends BaseEntity implements UserDetails {
     @Email(message = "Invalid email address format")
     private String email;
     @Column(unique = true)
-//    @Size.List({
-//            @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
-//    })
     @Pattern(regexp = "^(\\d{9}|\\d{12})$", message = "Citizen ID must be 9 or 12 digits")
     private String citizenId;
+    private String photoURL;
     @Enumerated(EnumType.STRING)
     private Role role;
     @NotAudited

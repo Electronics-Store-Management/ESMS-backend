@@ -27,9 +27,9 @@ public class StaffDTO {
     @Size.List({
             @Size(min = 12, max = 12, message = "Citizen ID must be 12 characters long")
     })
-//    @Unique
     private String citizenId;
     private Role role;
+    private String photoURL;
 
     public StaffDTO(String id, String name, String phone, String email, String citizenId, Role role) {
         this.setId(id);

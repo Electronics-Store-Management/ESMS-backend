@@ -2,11 +2,14 @@ package com.penguin.esms.components.staff;
 
 import com.penguin.esms.components.permission.PermissionService;
 import com.penguin.esms.components.permission.dto.StaffPermissionResponse;
+import com.penguin.esms.services.AmazonS3Service;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -21,6 +24,7 @@ public class StaffController {
     private final StaffRepository staffRepository;
     private final StaffService staffService;
     private final PermissionService permissionService;
+    private final AmazonS3Service amazonS3Service;
 
 //    @PostMapping("")
 //    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
@@ -28,9 +32,13 @@ public class StaffController {
 //        return  ResponseEntity.ok(staffRepository.save(new StaffEntity(newStaff.getName(), newStaff.getPhone(), newStaff.getPassword(), newStaff.getEmail(), newStaff.getCitizenId(), newStaff.getRole())));
 //    }
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREATE:STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<?> postStaff(@RequestBody StaffDTO dto) throws Exception {
-        return  ResponseEntity.ok(staffService.addStaff(dto));
+    public ResponseEntity<?> postStaff(@RequestParam @Nullable MultipartFile photo, StaffDTO dto) throws Exception {
+        if (photo != null){
+            String objectURL = amazonS3Service.addFile(photo, dto.getName() + "_" + photo.getOriginalFilename());
+            dto.setPhotoURL(objectURL);
+        }
+
+        return ResponseEntity.ok(staffService.addStaff(dto));
     }
     @GetMapping("profile")
     public ResponseEntity<?> getStaffProfile(Principal connectedUser) {
