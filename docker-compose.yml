@@ -24,8 +24,8 @@ services:
     networks:
       - postgresql
     volumes:
-      - /root/.aws/credentials:/home/web/.aws/credentials:ro
-      - /root/.aws/credentials:/root/.aws/credentials:ro
+      - /root/.aws/credentials:/home/web/.aws:ro
+      - /root/.aws/credentials:/root/.aws:ro
 
 networks:
   postgresql:
