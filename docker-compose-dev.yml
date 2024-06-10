@@ -7,7 +7,7 @@ services:
       POSTGRES_DB: esms
       POSTGRES_USER: postgres
     ports:
-      - 5432:5432
+      - 5433:5432
     networks:
       - postgresql
     volumes:
@@ -16,7 +16,7 @@ services:
   web:
     build: .
     ports:
-      - 8080:8080
+      - 8082:8080
       - 45695:45695
     depends_on:
       - db

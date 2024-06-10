@@ -6,6 +6,7 @@ import com.penguin.esms.components.authentication.responses.AuthenticationRespon
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,11 @@ import java.sql.SQLException;
 public class AuthenticationController {
 
     private final AuthenticationService service;
+
+    @GetMapping()
+    public String findAll() {
+        return "This is string";
+    }
 
     @PostMapping("register")
     public ResponseEntity<AuthenticationResponse> register(

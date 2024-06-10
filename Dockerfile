@@ -5,8 +5,6 @@ FROM maven:3.9.5-amazoncorretto-21 AS build
 
 COPY . .
 
-RUN #mvn clean package -Pprod -DskipTests
-RUN #mvn clean install -DskipTests
 RUN mvn package -DskipTests spring-boot:repackage
 
 

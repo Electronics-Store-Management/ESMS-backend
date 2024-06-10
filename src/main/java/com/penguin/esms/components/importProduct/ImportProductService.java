@@ -55,6 +55,12 @@ public class ImportProductService {
         }
         return importProduct.get();
     }
+
+    public Integer getImportProductQuantity(String productId) {
+        Integer quantity = importProductRepo.getQuantity(productId);
+        return quantity;
+    }
+
     public ImportProductEntity getImportBill(String importBillId) {
         Optional<ImportProductEntity> importProduct = importProductRepo.findById(importBillId);
         if (importProduct.isEmpty()) {

@@ -3,7 +3,10 @@ package com.penguin.esms.components.product;
 import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.category.CategoryService;
+import com.penguin.esms.components.importProduct.ImportProductRepo;
+import com.penguin.esms.components.importProduct.ImportProductService;
 import com.penguin.esms.components.product.dto.ProductDTO;
+import com.penguin.esms.components.saleProduct.SaleProductRepo;
 import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.components.supplier.SupplierRepo;
 import com.penguin.esms.entity.Error;
@@ -41,6 +44,8 @@ public class ProductService {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
     private final CategoryService categoryService;
+    private final ImportProductRepo importProductRepo;
+    private final SaleProductRepo saleProductRepo;
 
     private final SupplierRepo supplierRepo;
     private final DTOtoEntityMapper mapper;
@@ -50,6 +55,7 @@ public class ProductService {
     private final AuditEnversInfoRepo auditEnversInfoRepo;
 
     public List<ProductEntity> findRelatedCategory(String name, String categoryName) {
+        List<ProductEntity> products;
         if (categoryName != null && !categoryName.isEmpty()) {
             Optional<CategoryEntity> optionalCategory = categoryRepo.findByName(categoryName);
             if (optionalCategory.isEmpty()) {
@@ -58,9 +64,14 @@ public class ProductService {
             if (optionalCategory.get().getIsStopped() == true)
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Category has been discontinued ");
-            return productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
+            products = productRepo.findByNameContainingIgnoreCaseAndCategoryAndIsStopped(name, optionalCategory.get(), false);
+        } else {
+            products = productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
         }
-        return productRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+
+        return products.stream().peek(product -> {
+            product.setQuantity(importProductRepo.getQuantity(product.getId()) - saleProductRepo.getQuantity(product.getId()));
+        }).toList();
     }
 
     public List<ProductEntity> findDiscontinuedRelatedCategory(String name, String categoryName) {
@@ -85,7 +96,9 @@ public class ProductService {
         if (product.get().getIsStopped() == true)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Product has been discontinued ");
-        return product.get();
+        ProductEntity productEntity = product.get();
+        productEntity.setQuantity(importProductRepo.getQuantity(product.get().getId()) - saleProductRepo.getQuantity(product.get().getId()));
+        return productEntity;
     }
 
     public ProductDTO random() {
