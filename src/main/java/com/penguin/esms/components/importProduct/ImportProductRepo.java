@@ -15,7 +15,7 @@ public interface ImportProductRepo extends JpaRepository<ImportProductEntity, St
     List<ImportProductEntity> findByImportBillId(String importBillId);
 
     @Query(value = """
-        SELECT SUM(ip.quantity) FROM ImportProductEntity ip
+        SELECT COALESCE(SUM(ip.quantity), 0) FROM ImportProductEntity ip
         WHERE ip.product.id = :productId
         """)
     Integer getQuantity(String productId);

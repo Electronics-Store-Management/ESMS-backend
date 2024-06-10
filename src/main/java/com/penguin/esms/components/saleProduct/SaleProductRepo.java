@@ -14,7 +14,7 @@ public interface SaleProductRepo extends JpaRepository<SaleProductEntity,String>
     List<SaleProductEntity> findBySaleBillId(String saleBillId);
 
     @Query(value = """
-        SELECT SUM(sp.quantity) FROM SaleProductEntity sp
+        SELECT COALESCE(SUM(sp.quantity), 0) FROM SaleProductEntity sp
         WHERE sp.product.id = :productId
         """)
     Integer getQuantity(String productId);
