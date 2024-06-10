@@ -40,8 +40,8 @@ public class SaleBillController {
         return saleBillService.getRevisions(id);
     }
     @GetMapping()
-    public List<?> get() {
-        return saleBillService.getAll();
+    public List<?> getAll(@RequestParam(value = "customerId", required = false) String customerId) {
+        return saleBillService.getAll(customerId);
     }
     @GetMapping("history")
     public ResponseEntity<?> getAll(@RequestParam long start, @RequestParam long end) {

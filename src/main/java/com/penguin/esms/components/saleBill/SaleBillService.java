@@ -147,6 +147,7 @@ public class SaleBillService {
         entityManager.close();
         return audit;
     }
+
     @Transactional
     public List<?> getAll() {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -179,6 +180,42 @@ public class SaleBillService {
         entityManager.close();
         return Arrays.asList(audit.values().toArray());
     }
+
+    @Transactional
+    public List<?> getAll(String customerId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+        AuditQuery query = auditReader.createQuery()
+                .forRevisionsOfEntity(SaleBillEntity.class, true, true)
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.property("staffId"))
+                .addProjection(AuditEntity.property("customer_id"))
+                .addProjection(AuditEntity.property("paymentMethod"))
+                .addProjection(AuditEntity.property("discount"))
+                .addProjection(AuditEntity.property("id"))
+                .addProjection(AuditEntity.revisionType())
+                .addOrder(AuditEntity.revisionNumber().desc());
+
+        Map<String, AuditEnversInfo> audit = new HashMap<>();
+        List<Object[]> objects = query.getResultList();
+        for (int i = 0; i < objects.size(); i++) {
+            Object[] objArray = objects.get(i);
+            Optional<AuditEnversInfo> auditEnversInfoOptional = auditEnversInfoRepo.findById((int) objArray[0]);
+            if (auditEnversInfoOptional.isPresent()) {
+                AuditEnversInfo auditEnversInfo = auditEnversInfoOptional.get();
+                SaleBillEntity entity = saleBillRepo.findById((String) objArray[5]).get();
+                List<SaleProductEntity> saleProducts = saleProductRepo.findBySaleBillId(entity.getId());
+                System.out.println(entity);
+                if (!entity.getCustomer().getId().equals(customerId) && customerId != null) continue;
+                entity.setSaleProducts(saleProducts);
+                auditEnversInfo.setRevision(entity);
+                audit.put(entity.getId(), auditEnversInfo);
+            }
+        }
+        entityManager.close();
+        return Arrays.asList(audit.values().toArray());
+    }
+
     @Transactional
     public List<?> getAllRevisions(Date start, Date end) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
