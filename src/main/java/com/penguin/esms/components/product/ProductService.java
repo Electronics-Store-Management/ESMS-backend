@@ -4,7 +4,6 @@ import com.penguin.esms.components.category.CategoryEntity;
 import com.penguin.esms.components.category.CategoryRepo;
 import com.penguin.esms.components.category.CategoryService;
 import com.penguin.esms.components.importProduct.ImportProductRepo;
-import com.penguin.esms.components.importProduct.ImportProductService;
 import com.penguin.esms.components.product.dto.ProductDTO;
 import com.penguin.esms.components.saleProduct.SaleProductRepo;
 import com.penguin.esms.components.supplier.SupplierEntity;
@@ -99,6 +98,18 @@ public class ProductService {
         ProductEntity productEntity = product.get();
         productEntity.setQuantity(importProductRepo.getQuantity(product.get().getId()) - saleProductRepo.getQuantity(product.get().getId()));
         return productEntity;
+    }
+
+    public List<Optional<SupplierEntity>> getSupplier(String productId) {
+        List<String> supplierIds = productRepo.findSupplierIds(productId);
+
+        List<Optional<SupplierEntity>> suppliers = new ArrayList<>();
+        for (int i = 0; i < supplierIds.size(); i++) {
+            Optional<SupplierEntity> supplier = supplierRepo.findById(supplierIds.get(i));
+            supplier.ifPresent(supplierEntity -> suppliers.add(Optional.of(supplierEntity)));
+        }
+
+        return suppliers;
     }
 
     public ProductDTO random() {

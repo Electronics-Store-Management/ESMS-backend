@@ -1,6 +1,7 @@
 package com.penguin.esms.components.product;
 
 import com.penguin.esms.components.product.dto.ProductDTO;
+import com.penguin.esms.components.supplier.SupplierEntity;
 import com.penguin.esms.services.AmazonS3Service;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -12,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +35,11 @@ public class ProductController {
     @GetMapping("{id}")
     public ProductEntity getProduct(@PathVariable String id) {
         return service.getProductById(id);
+    }
+
+    @GetMapping("{id}/suppliers")
+    public List<Optional<SupplierEntity>> getProductSuppliers(@PathVariable String id) {
+        return service.getSupplier(id);
     }
 
     @GetMapping("history/{id}")

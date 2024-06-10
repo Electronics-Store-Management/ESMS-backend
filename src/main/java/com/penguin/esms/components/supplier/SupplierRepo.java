@@ -11,4 +11,6 @@ public interface SupplierRepo extends JpaRepository<SupplierEntity, String> {
     public Optional<SupplierEntity> findByName(String name);
 
     public List<SupplierEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
+
+    Optional<SupplierEntity> findById(String id);
 }

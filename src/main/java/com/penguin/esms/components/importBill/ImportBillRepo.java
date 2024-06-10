@@ -4,6 +4,7 @@ import com.penguin.esms.components.importProduct.ImportProductEntity;
 import com.penguin.esms.components.permission.EntityType;
 import com.penguin.esms.components.permission.PermissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -15,5 +16,4 @@ public interface ImportBillRepo extends JpaRepository<ImportBillEntity, String> 
     Optional<ImportBillEntity> findById(String id);
 
 //    List<ImportBillEntity> findByCreatedDate(Date createdDate);
-
 }

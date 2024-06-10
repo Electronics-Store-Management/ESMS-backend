@@ -17,4 +17,13 @@ public interface ProductRepo extends JpaRepository<ProductEntity, String> {
     List<ProductEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
 
     List<ProductEntity> findByNameContainingIgnoreCaseAndCategoryAndIsStopped(String name, CategoryEntity category, boolean isStopped);
+
+    @Query(value = """
+            select ib.supplierId
+            from ImportBillEntity ib
+            inner join ImportProductEntity ip on ib.id = ip.importBill.id
+            where ip.product.id = :productId
+            group by ib.supplierId
+            """)
+    List<String> findSupplierIds(String productId);
 }
