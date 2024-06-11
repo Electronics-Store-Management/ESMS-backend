@@ -38,9 +38,15 @@ public class SupplierController {
     public List<SupplierEntity> getAllTermination(@RequestParam(defaultValue = "") String name) {
         return service.findTermination(name);
     }
+
     @GetMapping("{id}")
     public SupplierEntity getOne(@PathVariable String id) {
         return service.getOne(id);
+    }
+
+    @GetMapping("{id}/products")
+    public List<ProductEntity> getProducts(@PathVariable String id) {
+        return service.getProducts(id);
     }
 
     @PostMapping

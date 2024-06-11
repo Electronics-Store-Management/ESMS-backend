@@ -1,6 +1,7 @@
 package com.penguin.esms.components.supplier;
 
 import com.penguin.esms.components.category.CategoryEntity;
+import com.penguin.esms.components.product.ProductEntity;
 import com.penguin.esms.components.saleBill.SaleBillEntity;
 import com.penguin.esms.components.saleBill.dto.SaleBillDTO;
 import com.penguin.esms.components.supplier.dto.SupplierDTO;
@@ -54,6 +55,10 @@ public class SupplierService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Supplier has terminated cooperation");
         return optionalSupplier.get();
+    }
+
+    public List<ProductEntity> getProducts(String id) {
+        return this.supplierRepo.findProductList(id);
     }
 
     public static SupplierDTO random() {
