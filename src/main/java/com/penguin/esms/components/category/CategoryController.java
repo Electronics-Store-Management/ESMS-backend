@@ -23,7 +23,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryEntity> getALl(@RequestParam(defaultValue = "") String name) {
+    public List<CategoryDTO> getALl(@RequestParam(defaultValue = "") String name) {
         return categoryService.getCategory(name);
     }
     @GetMapping("discontinued")

@@ -17,4 +17,11 @@ public interface CategoryRepo extends JpaRepository<CategoryEntity, String> {
     Optional<CategoryEntity> findByName(String name);
     List<CategoryEntity> findByNameContainingIgnoreCaseAndIsStopped(String name, boolean isStopped);
     Optional<CategoryEntity> findById(String id);
+
+    @Query(value = """
+            select COALESCE(COUNT(p.id), 0)
+            from ProductEntity p
+            where p.category.id = :categoryId
+            """)
+    Integer findProductNum(String categoryId);
 }

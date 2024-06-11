@@ -72,8 +72,18 @@ public class CategoryService {
         categoryEntityOptional.get().setIsStopped(true);
         categoryRepo.save(categoryEntityOptional.get());
     }
-    public List<CategoryEntity> getCategory(String name) {
-        return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+    public List<CategoryDTO> getCategory(String name) {
+        List<CategoryEntity> categoryEntities = categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, false);
+        List<CategoryDTO> categoryDTOs = new ArrayList<>();
+
+        categoryEntities.forEach(categoryEntity -> {
+            CategoryDTO categoryDTO = new CategoryDTO(categoryEntity.getName(), 0);
+            categoryDTO.setId(categoryEntity.getId());
+            categoryDTO.setProductNum(this.categoryRepo.findProductNum(categoryEntity.getId()));
+            categoryDTOs.add(categoryDTO);
+        });
+
+        return  categoryDTOs;
     }
     public List<CategoryEntity> getDiscontinuedCategory(String name) {
         return categoryRepo.findByNameContainingIgnoreCaseAndIsStopped(name, true);
